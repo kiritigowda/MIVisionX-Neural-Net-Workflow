@@ -78,8 +78,8 @@ usage: python mivisionx_validation_tool.py  [-h]
                                             --model MODEL 
                                             --model_input_dims MODEL_INPUT_DIMS 
                                             --model_output_dims MODEL_OUTPUT_DIMS
-                        --model_batch_size MODEL_BATCH_SIZE 
-                        --rali_mode RALI_MODE
+                                            --model_batch_size MODEL_BATCH_SIZE 
+                                            --rali_mode RALI_MODE
                                             --label LABEL 
                                             --output_dir OUTPUT_DIR 
                                             --image_dir IMAGE_DIR
@@ -87,7 +87,7 @@ usage: python mivisionx_validation_tool.py  [-h]
                                             [--hierarchy HIERARCHY]
                                             [--add ADD] 
                                             [--multiply MULTIPLY]
-                            [--fp16 FP16]
+                                            [--fp16 FP16]
                                             [--replace REPLACE] 
                                             [--verbose VERBOSE]
 
