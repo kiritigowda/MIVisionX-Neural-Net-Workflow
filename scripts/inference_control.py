@@ -1,6 +1,6 @@
 import os
 from PyQt4 import QtGui, uic
-from inference_viewer import *
+#from inference_viewer import *
 from rali_training_setup import *
 
 class InferenceControl(QtGui.QMainWindow):
