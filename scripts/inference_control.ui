@@ -129,241 +129,407 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideNone</enum>
       </property>
-      <widget class="QWidget" name="tab_Data">
+      <widget class="QWidget" name="tab_Training">
        <attribute name="title">
-        <string>Data</string>
+        <string>Training</string>
        </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout">
+       <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
-         <widget class="QTabWidget" name="datatabWidget">
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="3" colspan="2">
+           <widget class="QComboBox" name="model_comboBox">
+            <item>
+             <property name="text">
+              <string>Choose the model</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>resnet50</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="5" column="6">
+           <widget class="QLineEdit" name="epoch_lineEdit">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0" colspan="7">
+           <widget class="QFrame" name="vframe">
+            <property name="frameShape">
+             <enum>QFrame::HLine</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="3" colspan="2">
+           <widget class="QLineEdit" name="idims_lineEdit"/>
+          </item>
+          <item row="2" column="5">
+           <widget class="QPushButton" name="dpath_pushButton">
+            <property name="text">
+             <string>Browse...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="2">
+           <widget class="QLabel" name="tdevice_label">
+            <property name="font">
+             <font>
+              <family>Ubuntu</family>
+             </font>
+            </property>
+            <property name="text">
+             <string>Training Device</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="5">
+           <widget class="QPushButton" name="opath_pushButton">
+            <property name="text">
+             <string>Browse...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="6">
+           <widget class="QLineEdit" name="numgpu_lineEdit">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QLabel" name="dpath_label">
+            <property name="minimumSize">
+             <size>
+              <width>111</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Ubuntu</family>
+             </font>
+            </property>
+            <property name="text">
+             <string>Data Path</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QLabel" name="dtype_label">
+            <property name="layoutDirection">
+             <enum>Qt::RightToLeft</enum>
+            </property>
+            <property name="text">
+             <string> Data Type</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="7">
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="3" column="3" colspan="2">
+           <widget class="QLineEdit" name="opath_lineEdit"/>
+          </item>
+          <item row="5" column="3">
+           <widget class="QComboBox" name="batch_comboBox">
+            <item>
+             <property name="text">
+              <string>64</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>16</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="8" column="3">
+           <widget class="QRadioButton" name="rcpu_radioButton">
+            <property name="text">
+             <string>CPU</string>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
+           </widget>
+          </item>
+          <item row="5" column="5">
+           <widget class="QLabel" name="epoch_label">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Epoch</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="3" colspan="2">
+           <widget class="QLineEdit" name="dpath_lineEdit">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="model_label">
+            <property name="text">
+             <string>Model</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2">
+           <widget class="QLabel" name="opath_label">
+            <property name="minimumSize">
+             <size>
+              <width>111</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Output Path</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0" rowspan="5" colspan="2">
+           <widget class="QLabel" name="aug_label">
+            <property name="font">
+             <font>
+              <pointsize>20</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Data Augmentation</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" rowspan="6" colspan="2">
+           <widget class="QLabel" name="input_label">
+            <property name="font">
+             <font>
+              <family>Ubuntu</family>
+              <pointsize>20</pointsize>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Input Pipeline</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="5">
+           <widget class="QLabel" name="numgpu_label">
+            <property name="text">
+             <string>Number of GPU</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="4">
+           <widget class="QRadioButton" name="rgpu_radioButton">
+            <property name="text">
+             <string>GPU</string>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
+           </widget>
+          </item>
+          <item row="5" column="2">
+           <widget class="QLabel" name="batch_label">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Batch Size</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="2">
+           <widget class="QLabel" name="rdevice_label">
+            <property name="text">
+             <string>RALI Device</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="3">
+           <widget class="QRadioButton" name="tcpu_radioButton">
+            <property name="text">
+             <string>CPU</string>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup</string>
+            </attribute>
+           </widget>
+          </item>
+          <item row="1" column="3" colspan="2">
+           <widget class="QComboBox" name="dtype_comboBox">
+            <item>
+             <property name="text">
+              <string>Choose the dataset type</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>TF Records</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Coco Dataset</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>PNG</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>LMDB</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="4" column="4">
+           <widget class="QRadioButton" name="tgpu_radioButton">
+            <property name="text">
+             <string>GPU</string>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup</string>
+            </attribute>
+           </widget>
+          </item>
+          <item row="9" column="2">
+           <widget class="QLabel" name="idims_label">
+            <property name="text">
+             <string>Input Dims</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="12" column="7">
+           <widget class="QPushButton" name="trun_pushButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Run</string>
+            </property>
+           </widget>
+          </item>
+          <item row="12" column="6">
+           <widget class="QPushButton" name="tclose_pushButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Close</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_Inference">
+       <attribute name="title">
+        <string>Inference</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_6">
+        <item>
+         <widget class="QTabWidget" name="tabWidget_2">
           <property name="currentIndex">
            <number>0</number>
           </property>
-          <widget class="QWidget" name="tab_training">
+          <widget class="QWidget" name="tab_3">
            <attribute name="title">
-            <string>Training</string>
+            <string>Tab 1</string>
            </attribute>
-           <layout class="QVBoxLayout" name="verticalLayout_8">
+           <layout class="QVBoxLayout" name="verticalLayout_2">
             <item>
-             <layout class="QGridLayout" name="gridLayout_2">
-              <item row="0" column="1" colspan="5">
-               <widget class="QComboBox" name="type_comboBox">
-                <item>
-                 <property name="text">
-                  <string>Choose the type of dataset</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>TF Records</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Coco Dataset</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>PNG</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>LMDB</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="1" column="5">
-               <widget class="QPushButton" name="path_pushButton">
-                <property name="text">
-                 <string>Browse...</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QComboBox" name="mode_comboBox_2">
-                <property name="font">
-                 <font>
-                  <family>Ubuntu</family>
-                 </font>
-                </property>
-                <item>
-                 <property name="text">
-                  <string>CPU</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>GPU</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="2" column="4" colspan="2">
-               <widget class="QLineEdit" name="numgpu_lineEdit">
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="3">
-               <widget class="QLabel" name="numgpu_label">
-                <property name="text">
-                 <string>Number of GPU</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1" colspan="4">
-               <widget class="QLineEdit" name="path_lineEdit">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="path_label">
-                <property name="minimumSize">
-                 <size>
-                  <width>111</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <family>Ubuntu</family>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Data Path</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="type_label">
-                <property name="layoutDirection">
-                 <enum>Qt::RightToLeft</enum>
-                </property>
-                <property name="text">
-                 <string>Type</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="0">
-               <widget class="QLabel" name="idims__label_2">
-                <property name="font">
-                 <font>
-                  <family>Ubuntu</family>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Input Dims</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="1" colspan="2">
-               <widget class="QLineEdit" name="idims_lineEdit_2">
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QComboBox" name="batch_comboBox_2">
-                <item>
-                 <property name="text">
-                  <string>64</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>16</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="batch_label_2">
-                <property name="text">
-                 <string>Batch Size</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="3">
-               <widget class="QLabel" name="epoch_label">
-                <property name="text">
-                 <string>Epoch</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="4">
-               <widget class="QLineEdit" name="epoch_lineEdit">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="mode_label_2">
-                <property name="font">
-                 <font>
-                  <family>Ubuntu</family>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>RALI Mode</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </widget>
-          <widget class="QWidget" name="tab_inference">
-           <attribute name="title">
-            <string>Inference</string>
-           </attribute>
-           <layout class="QVBoxLayout" name="verticalLayout_4">
-            <item>
-             <layout class="QGridLayout" name="gridLayout">
-              <item row="2" column="3">
-               <widget class="QLabel" name="name_label">
+             <layout class="QGridLayout" name="gridLayout_3">
+              <item row="2" column="4">
+               <widget class="QLabel" name="name_label_2">
                 <property name="text">
                  <string>Model Name</string>
                 </property>
@@ -372,8 +538,40 @@
                 </property>
                </widget>
               </item>
-              <item row="6" column="4">
-               <widget class="QCheckBox" name="verbose_checkBox">
+              <item row="3" column="5" colspan="2">
+               <widget class="QComboBox" name="mode_comboBox_3">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Augmentation Set 1</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Augmentation Set 2</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Augmentation Set 3</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Augmentation Set 4</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Augmentation Set 5</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="6" column="5">
+               <widget class="QCheckBox" name="verbose_checkBox_2">
                 <property name="layoutDirection">
                  <enum>Qt::RightToLeft</enum>
                 </property>
@@ -382,15 +580,15 @@
                 </property>
                </widget>
               </item>
-              <item row="4" column="1" colspan="2">
-               <widget class="QLineEdit" name="idims_lineEdit">
+              <item row="4" column="2" colspan="2">
+               <widget class="QLineEdit" name="idims_lineEdit_3">
                 <property name="text">
                  <string/>
                 </property>
                </widget>
               </item>
-              <item row="3" column="1">
-               <widget class="QComboBox" name="batch_comboBox">
+              <item row="3" column="2">
+               <widget class="QComboBox" name="batch_comboBox_3">
                 <item>
                  <property name="text">
                   <string>64</string>
@@ -403,22 +601,22 @@
                 </item>
                </widget>
               </item>
-              <item row="5" column="1" colspan="2">
-               <widget class="QLineEdit" name="padd_lineEdit">
+              <item row="5" column="2" colspan="2">
+               <widget class="QLineEdit" name="padd_lineEdit_2">
                 <property name="text">
                  <string/>
                 </property>
                </widget>
               </item>
-              <item row="1" column="5">
-               <widget class="QPushButton" name="file_pushButton">
+              <item row="1" column="6">
+               <widget class="QPushButton" name="file_pushButton_2">
                 <property name="text">
                  <string>Browse...</string>
                 </property>
                </widget>
               </item>
-              <item row="5" column="3">
-               <widget class="QLabel" name="pmul_label">
+              <item row="5" column="4">
+               <widget class="QLabel" name="pmul_label_2">
                 <property name="font">
                  <font>
                   <family>Ubuntu</family>
@@ -432,8 +630,8 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="1" colspan="5">
-               <widget class="QComboBox" name="upload_comboBox">
+              <item row="0" column="2" colspan="5">
+               <widget class="QComboBox" name="upload_comboBox_2">
                 <item>
                  <property name="text">
                   <string>Choose or Upload a pre-trained model</string>
@@ -441,8 +639,8 @@
                 </item>
                </widget>
               </item>
-              <item row="6" column="1">
-               <widget class="QCheckBox" name="gui_checkBox">
+              <item row="6" column="2">
+               <widget class="QCheckBox" name="gui_checkBox_2">
                 <property name="layoutDirection">
                  <enum>Qt::RightToLeft</enum>
                 </property>
@@ -451,8 +649,8 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="file_label">
+              <item row="1" column="1">
+               <widget class="QLabel" name="file_label_2">
                 <property name="minimumSize">
                  <size>
                   <width>111</width>
@@ -472,8 +670,8 @@
                 </property>
                </widget>
               </item>
-              <item row="4" column="3">
-               <widget class="QLabel" name="odims_label">
+              <item row="4" column="4">
+               <widget class="QLabel" name="odims_label_2">
                 <property name="font">
                  <font>
                   <family>Ubuntu</family>
@@ -487,8 +685,8 @@
                 </property>
                </widget>
               </item>
-              <item row="6" column="2">
-               <widget class="QCheckBox" name="replace_checkBox">
+              <item row="6" column="3">
+               <widget class="QCheckBox" name="replace_checkBox_2">
                 <property name="layoutDirection">
                  <enum>Qt::RightToLeft</enum>
                 </property>
@@ -497,8 +695,8 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="1" colspan="4">
-               <widget class="QLineEdit" name="file_lineEdit">
+              <item row="1" column="2" colspan="4">
+               <widget class="QLineEdit" name="file_lineEdit_2">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                   <horstretch>0</horstretch>
@@ -510,8 +708,8 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
-               <widget class="QComboBox" name="format_comboBox">
+              <item row="2" column="2">
+               <widget class="QComboBox" name="format_comboBox_2">
                 <property name="font">
                  <font>
                   <family>Ubuntu</family>
@@ -534,8 +732,8 @@
                 </item>
                </widget>
               </item>
-              <item row="4" column="0">
-               <widget class="QLabel" name="idims__label">
+              <item row="4" column="1">
+               <widget class="QLabel" name="idims__label_3">
                 <property name="font">
                  <font>
                   <family>Ubuntu</family>
@@ -549,15 +747,15 @@
                 </property>
                </widget>
               </item>
-              <item row="5" column="4" colspan="2">
-               <widget class="QLineEdit" name="pmul_lineEdit">
+              <item row="5" column="5" colspan="2">
+               <widget class="QLineEdit" name="pmul_lineEdit_2">
                 <property name="text">
                  <string/>
                 </property>
                </widget>
               </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="format_label">
+              <item row="2" column="1">
+               <widget class="QLabel" name="format_label_2">
                 <property name="font">
                  <font>
                   <family>Ubuntu</family>
@@ -571,15 +769,15 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="4" colspan="2">
-               <widget class="QLineEdit" name="name_lineEdit">
+              <item row="2" column="5" colspan="2">
+               <widget class="QLineEdit" name="name_lineEdit_3">
                 <property name="text">
                  <string/>
                 </property>
                </widget>
               </item>
-              <item row="5" column="0">
-               <widget class="QLabel" name="padd_label">
+              <item row="5" column="1">
+               <widget class="QLabel" name="padd_label_2">
                 <property name="font">
                  <font>
                   <family>Ubuntu</family>
@@ -593,8 +791,8 @@
                 </property>
                </widget>
               </item>
-              <item row="6" column="5">
-               <widget class="QCheckBox" name="loop_checkBox">
+              <item row="6" column="6">
+               <widget class="QCheckBox" name="loop_checkBox_2">
                 <property name="layoutDirection">
                  <enum>Qt::RightToLeft</enum>
                 </property>
@@ -603,8 +801,8 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="upload_label">
+              <item row="0" column="1">
+               <widget class="QLabel" name="upload_label_2">
                 <property name="layoutDirection">
                  <enum>Qt::RightToLeft</enum>
                 </property>
@@ -616,15 +814,25 @@
                 </property>
                </widget>
               </item>
-              <item row="4" column="4" colspan="2">
-               <widget class="QLineEdit" name="odims_lineEdit">
+              <item row="4" column="5" colspan="2">
+               <widget class="QLineEdit" name="odims_lineEdit_2">
                 <property name="text">
                  <string/>
                 </property>
                </widget>
               </item>
-              <item row="6" column="3">
-               <widget class="QCheckBox" name="fp16_checkBox">
+              <item row="3" column="4">
+               <widget class="QLabel" name="mode_label_3">
+                <property name="text">
+                 <string>RALI Mode</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="4">
+               <widget class="QCheckBox" name="fp16_checkBox_2">
                 <property name="layoutDirection">
                  <enum>Qt::RightToLeft</enum>
                 </property>
@@ -633,8 +841,8 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="batch_label">
+              <item row="3" column="1">
+               <widget class="QLabel" name="batch_label_3">
                 <property name="text">
                  <string>Batch Size</string>
                 </property>
@@ -643,353 +851,466 @@
                 </property>
                </widget>
               </item>
+              <item row="0" column="0" rowspan="4">
+               <widget class="QFrame" name="model_frame_3">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>150</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>150</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="frameShape">
+                 <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_5">
+                 <item>
+                  <widget class="QLabel" name="model_label_3">
+                   <property name="font">
+                    <font>
+                     <family>Ubuntu</family>
+                     <pointsize>20</pointsize>
+                     <weight>50</weight>
+                     <bold>false</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Model</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_5">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tab_4">
+           <attribute name="title">
+            <string>Tab 2</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_9">
+            <item>
+             <layout class="QGridLayout" name="inference_gridLayout">
+              <item row="5" column="7">
+               <widget class="QPushButton" name="close_pushButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Close</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLabel" name="image_label">
+                <property name="text">
+                 <string>Image Directory</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="2">
+               <widget class="QComboBox" name="container_comboBox">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>None</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Docker</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Singularity</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLabel" name="label">
+                <property name="text">
+                 <string>Label txt file</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="2" colspan="6">
+               <widget class="QLineEdit" name="hier_lineEdit">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="5">
+               <widget class="QLabel" name="gpu_label">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>50</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>GPU</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2" colspan="6">
+               <widget class="QLineEdit" name="label_lineEdit">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="2" colspan="6">
+               <widget class="QLineEdit" name="val_lineEdit">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="6">
+               <widget class="QComboBox" name="gpu_comboBox">
+                <item>
+                 <property name="text">
+                  <string>Radeon VII</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Vega 10</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Vega 20</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>MI25</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>MI50</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>MI60</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="0" column="8">
+               <widget class="QPushButton" name="output_pushButton">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="text">
+                 <string>Browse...</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="4">
+               <widget class="QComboBox" name="cpu_comboBox">
+                <item>
+                 <property name="text">
+                  <string>Threadripper</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Ryzen 3</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Ryzen 5</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Ryzen 7</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Ryzen 9</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>EPYC</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>EPYC 2</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QLabel" name="container_label">
+                <property name="text">
+                 <string>Container</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="output_label">
+                <property name="text">
+                 <string>Output Directory</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="8">
+               <widget class="QPushButton" name="hier_pushButton">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="text">
+                 <string>Browse...</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QLabel" name="val_label">
+                <property name="text">
+                 <string>Validation txt file</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="2" colspan="6">
+               <widget class="QLineEdit" name="image_lineEdit">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="8">
+               <widget class="QPushButton" name="run_pushButton">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string>Run</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="3">
+               <widget class="QLabel" name="cpu_label">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>50</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>CPU</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="8">
+               <widget class="QPushButton" name="label_pushButton">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="text">
+                 <string>Browse...</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="8">
+               <widget class="QPushButton" name="val_pushButton">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="text">
+                 <string>Browse...</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="8">
+               <widget class="QPushButton" name="image_pushButton">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="text">
+                 <string>Browse...</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QLabel" name="hier_label">
+                <property name="text">
+                 <string>Hierarchy</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2" colspan="6">
+               <widget class="QLineEdit" name="output_lineEdit">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0" rowspan="5">
+               <widget class="QFrame" name="inference_frame">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>150</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>150</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="frameShape">
+                 <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_3">
+                 <item>
+                  <widget class="QLabel" name="inference_label">
+                   <property name="font">
+                    <font>
+                     <pointsize>20</pointsize>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Inference</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_2">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </widget>
+              </item>
              </layout>
             </item>
            </layout>
           </widget>
          </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tab_Rali">
-       <attribute name="title">
-        <string>RALI</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_5"/>
-      </widget>
-      <widget class="QWidget" name="tab_Inference">
-       <attribute name="title">
-        <string>Inference</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_6">
-        <item>
-         <layout class="QGridLayout" name="inference_gridLayout">
-          <item row="2" column="0">
-           <widget class="QLabel" name="image_label">
-            <property name="text">
-             <string>Image Directory</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="6">
-           <widget class="QPushButton" name="close_pushButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Close</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="1">
-           <widget class="QComboBox" name="container_comboBox">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <item>
-             <property name="text">
-              <string>None</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Docker</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Singularity</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Label txt file</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1" colspan="6">
-           <widget class="QLineEdit" name="hier_lineEdit">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="4">
-           <widget class="QLabel" name="gpu_label">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>50</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>GPU</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1" colspan="6">
-           <widget class="QLineEdit" name="label_lineEdit">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1" colspan="6">
-           <widget class="QLineEdit" name="val_lineEdit">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="5">
-           <widget class="QComboBox" name="gpu_comboBox">
-            <item>
-             <property name="text">
-              <string>Radeon VII</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Vega 10</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Vega 20</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>MI25</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>MI50</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>MI60</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="0" column="7">
-           <widget class="QPushButton" name="output_pushButton">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="text">
-             <string>Browse...</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="container_label">
-            <property name="text">
-             <string>Container</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="3">
-           <widget class="QComboBox" name="cpu_comboBox">
-            <item>
-             <property name="text">
-              <string>Threadripper</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Ryzen 3</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Ryzen 5</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Ryzen 7</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Ryzen 9</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>EPYC</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>EPYC 2</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="output_label">
-            <property name="text">
-             <string>Output Directory</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="7">
-           <widget class="QPushButton" name="hier_pushButton">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="text">
-             <string>Browse...</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="val_label">
-            <property name="text">
-             <string>Validation txt file</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1" colspan="6">
-           <widget class="QLineEdit" name="image_lineEdit">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="7">
-           <widget class="QPushButton" name="run_pushButton">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>Run</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="2">
-           <widget class="QLabel" name="cpu_label">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>50</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>CPU</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="7">
-           <widget class="QPushButton" name="label_pushButton">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="text">
-             <string>Browse...</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="7">
-           <widget class="QPushButton" name="val_pushButton">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="text">
-             <string>Browse...</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="7">
-           <widget class="QPushButton" name="image_pushButton">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="text">
-             <string>Browse...</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="hier_label">
-            <property name="text">
-             <string>Hierarchy</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" colspan="6">
-           <widget class="QLineEdit" name="output_lineEdit">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-         </layout>
         </item>
        </layout>
       </widget>
@@ -1010,20 +1331,6 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <tabstops>
-  <tabstop>upload_comboBox</tabstop>
-  <tabstop>file_lineEdit</tabstop>
-  <tabstop>file_pushButton</tabstop>
-  <tabstop>format_comboBox</tabstop>
-  <tabstop>name_lineEdit</tabstop>
-  <tabstop>idims_lineEdit</tabstop>
-  <tabstop>odims_lineEdit</tabstop>
-  <tabstop>padd_lineEdit</tabstop>
-  <tabstop>pmul_lineEdit</tabstop>
-  <tabstop>gui_checkBox</tabstop>
-  <tabstop>replace_checkBox</tabstop>
-  <tabstop>fp16_checkBox</tabstop>
-  <tabstop>verbose_checkBox</tabstop>
-  <tabstop>loop_checkBox</tabstop>
   <tabstop>output_lineEdit</tabstop>
   <tabstop>output_pushButton</tabstop>
   <tabstop>label_lineEdit</tabstop>
@@ -1039,4 +1346,8 @@
  </tabstops>
  <resources/>
  <connections/>
+ <buttongroups>
+  <buttongroup name="buttonGroup"/>
+  <buttongroup name="buttonGroup_2"/>
+ </buttongroups>
 </ui>

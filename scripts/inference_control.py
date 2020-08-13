@@ -1,6 +1,7 @@
 import os
 from PyQt4 import QtGui, uic
 from inference_viewer import *
+from rali_training_setup import *
 
 class InferenceControl(QtGui.QMainWindow):
     def __init__(self, parent=None):
@@ -11,43 +12,55 @@ class InferenceControl(QtGui.QMainWindow):
     def initUI(self):
         uic.loadUi("inference_control.ui", self)
         #self.setStyleSheet("background-color: white")
-        self.upload_comboBox.activated.connect(self.fromFile)
-        self.file_pushButton.clicked.connect(self.browseFile)
-        self.output_pushButton.clicked.connect(self.browseOutput)
-        self.label_pushButton.clicked.connect(self.browseLabel)
-        self.image_pushButton.clicked.connect(self.browseImage)
-        self.val_pushButton.clicked.connect(self.browseVal)
-        self.hier_pushButton.clicked.connect(self.browseHier)
-        self.run_pushButton.clicked.connect(self.runConfig)
-        self.file_lineEdit.textChanged.connect(self.checkInput)
-        self.name_lineEdit.textChanged.connect(self.checkInput)
-        self.idims_lineEdit.textChanged.connect(self.checkInput)
-        self.odims_lineEdit.textChanged.connect(self.checkInput)
-        self.output_lineEdit.textChanged.connect(self.checkInput)
-        self.label_lineEdit.textChanged.connect(self.checkInput)
-        self.image_lineEdit.textChanged.connect(self.checkInput)
-        self.image_lineEdit.textChanged.connect(self.checkInput)
-        self.close_pushButton.clicked.connect(self.closeEvent)
-        self.file_lineEdit.setPlaceholderText("File Directory [required]")
-        self.name_lineEdit.setPlaceholderText("Model Name [required]")
-        self.idims_lineEdit.setPlaceholderText("c,h,w [required]")
-        self.odims_lineEdit.setPlaceholderText("c,h,w [required]")
-        self.padd_lineEdit.setPlaceholderText("r,g,b [optional]")
-        self.pmul_lineEdit.setPlaceholderText("r,g,b [optional]")
-        self.output_lineEdit.setPlaceholderText("Output Directory [required]")
-        self.label_lineEdit.setPlaceholderText("Label File [required]")
-        self.image_lineEdit.setPlaceholderText("Image Folder [required]")
-        self.val_lineEdit.setPlaceholderText("[optional]")
-        self.hier_lineEdit.setPlaceholderText("[optional]")
-        self.close_pushButton.setStyleSheet("color: white; background-color: darkRed")
-        self.gui_checkBox.setChecked(True)
-        self.readSetupFile()
+        # self.upload_comboBox.activated.connect(self.fromFile)
+        # self.file_pushButton.clicked.connect(self.browseFile)
+        # self.output_pushButton.clicked.connect(self.browseOutput)
+        # self.label_pushButton.clicked.connect(self.browseLabel)
+        # self.image_pushButton.clicked.connect(self.browseImage)
+        # self.val_pushButton.clicked.connect(self.browseVal)
+        # self.hier_pushButton.clicked.connect(self.browseHier)
+        # self.run_pushButton.clicked.connect(self.runConfig)
+        # self.file_lineEdit.textChanged.connect(self.checkInput)
+        # self.name_lineEdit.textChanged.connect(self.checkInput)
+        # self.idims_lineEdit.textChanged.connect(self.checkInput)
+        # self.odims_lineEdit.textChanged.connect(self.checkInput)
+        # self.output_lineEdit.textChanged.connect(self.checkInput)
+        # self.label_lineEdit.textChanged.connect(self.checkInput)
+        # self.image_lineEdit.textChanged.connect(self.checkInput)
+        # self.image_lineEdit.textChanged.connect(self.checkInput)
+        # self.close_pushButton.clicked.connect(self.closeEvent)
+        # self.file_lineEdit.setPlaceholderText("File Directory [required]")
+        # self.name_lineEdit.setPlaceholderText("Model Name [required]")
+        # self.idims_lineEdit.setPlaceholderText("c,h,w [required]")
+        # self.odims_lineEdit.setPlaceholderText("c,h,w [required]")
+        # self.padd_lineEdit.setPlaceholderText("r,g,b [optional]")
+        # self.pmul_lineEdit.setPlaceholderText("r,g,b [optional]")
+        # self.output_lineEdit.setPlaceholderText("Output Directory [required]")
+        # self.label_lineEdit.setPlaceholderText("Label File [required]")
+        # self.image_lineEdit.setPlaceholderText("Image Folder [required]")
+        # self.val_lineEdit.setPlaceholderText("[optional]")
+        # self.hier_lineEdit.setPlaceholderText("[optional]")
+        # self.close_pushButton.setStyleSheet("color: white; background-color: darkRed")
+        # self.gui_checkBox.setChecked(True)
+        #self.readSetupFile()
+        self.tcpu_radioButton.setChecked(1)
+        self.rcpu_radioButton.setChecked(1)
+        self.dpath_pushButton.clicked.connect(self.browseDPath)
+        self.opath_pushButton.clicked.connect(self.browseOPath)
+        self.trun_pushButton.clicked.connect(self.runTraining)
+        self.tclose_pushButton.clicked.connect(self.closeEvent)
 
     def browseFile(self):
         if self.format_comboBox.currentText() == 'nnef':
             self.file_lineEdit.setText(QtGui.QFileDialog.getExistingDirectory(self, 'Open Folder', './'))    
         else:
             self.file_lineEdit.setText(QtGui.QFileDialog.getOpenFileName(self, 'Open File', './', '*'))
+
+    def browseDPath(self):
+        self.dpath_lineEdit.setText(QtGui.QFileDialog.getExistingDirectory(self, 'Open Folder', './'))
+
+    def browseOPath(self):
+        self.opath_lineEdit.setText(QtGui.QFileDialog.getExistingDirectory(self, 'Open Folder', './'))
 
     def browseOutput(self):
         self.output_lineEdit.setText(QtGui.QFileDialog.getExistingDirectory(self, 'Open Folder', './'))
@@ -184,6 +197,47 @@ class InferenceControl(QtGui.QMainWindow):
         else:
             self.run_pushButton.setEnabled(False)
             self.run_pushButton.setStyleSheet("background-color: 0")
+
+    def runTraining(self):
+        training_device = not self.tcpu_radioButton.isChecked() and torch.cuda.is_available() #checks for rocm installation of pytorch
+        device = torch.device("cuda" if training_device else "cpu") #device = GPU in this case
+        model = (str)(self.model_comboBox.currentText())
+        PATH = (str)(self.opath_lineEdit.currentText())
+
+        datapath = (str)(self.dpath_lineEdit.currentText())
+        dataset_train =  datapath + '/train'
+        if not os.path.exists(dataset_train):
+            print("the dataset is invalid, requires train folder")
+            exit(1)
+        dataset_val = datapath + '/val'
+        if not os.path.exists(dataset_val):
+            print("the dataset is invalid, requires val folder")
+            exit(1)
+        batch_size = (int)(self.batch_comboBox.currentText())
+        epochs = (int)(self.epoch_lineEdit.currentText())
+        num_gpu = (int)(self.numgpu_lineEdit.currentText())
+        input_dims = (str)('%s' % (self.idims_lineEdit.text()))
+        rali_cpu = self.rcpu_radioButton.isChecked()
+        num_thread = 1
+        crop = 224
+
+        model = rali_training_setup.ResNet(device)
+        print(model)
+
+        #training
+        train_loader = rali_training_setup.get_pytorch_train_loader(dataset_train, batch_size, num_thread, crop, rali_cpu)
+        optimizer = optim.SGD(model.parameters(), lr=0.001)
+        criterion = nn.CrossEntropyLoss()
+
+        for epoch in range(epochs):
+            train(model, device, train_loader, optimizer, criterion, epoch)
+
+        print('Finished Training')
+        torch.save(model.state_dict(), PATH)      #save trained model
+
+        #test
+        val_loader = get_pytorch_val_loader(dataset_val, batch_size, num_thread, crop, rali_cpu)
+        test(model, device, val_loader, PATH)
 
     def runConfig(self):
         model_format = (str)(self.format_comboBox.currentText())
