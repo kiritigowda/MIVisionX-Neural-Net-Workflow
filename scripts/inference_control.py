@@ -200,6 +200,7 @@ class InferenceControl(QtWidgets.QMainWindow):
             self.run_pushButton.setStyleSheet("background-color: 0")
 
     def runTraining(self):
+        self.close()
         training_device = not self.tcpu_radioButton.isChecked() and torch.cuda.is_available() #checks for rocm installation of pytorch
         device = torch.device("cuda" if training_device else "cpu") #device = GPU in this case
         model = (str)(self.model_comboBox.currentText())
@@ -224,7 +225,7 @@ class InferenceControl(QtWidgets.QMainWindow):
 
         model = ResNet(device)
         print(model)
-
+    
         #training
         train_loader = get_pytorch_train_loader(dataset_train, batch_size, num_thread, crop, rali_cpu)
         optimizer = optim.SGD(model.parameters(), lr=0.001)

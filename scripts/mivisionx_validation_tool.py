@@ -10,8 +10,8 @@ __script_name__ = "MIVisionX Validation Tool"
 
 import sys
 import argparse
-#from PyQt4 import QtGui
-from PyQt5 import QtWidgets
+from PyQt4 import QtGui
+#from PyQt5 import QtWidgets
 from inference_control import *
 
 # MIVisionX Classifier
