@@ -203,9 +203,9 @@ class InferenceControl(QtWidgets.QMainWindow):
         training_device = not self.tcpu_radioButton.isChecked() and torch.cuda.is_available() #checks for rocm installation of pytorch
         device = torch.device("cuda" if training_device else "cpu") #device = GPU in this case
         model = (str)(self.model_comboBox.currentText())
-        PATH = (str)(self.opath_lineEdit.currentText())
+        PATH = (str)(self.opath_lineEdit.text())
 
-        datapath = (str)(self.dpath_lineEdit.currentText())
+        datapath = (str)(self.dpath_lineEdit.text())
         dataset_train =  datapath + '/train'
         if not os.path.exists(dataset_train):
             print("the dataset is invalid, requires train folder")
@@ -215,8 +215,8 @@ class InferenceControl(QtWidgets.QMainWindow):
             print("the dataset is invalid, requires val folder")
             exit(1)
         batch_size = (int)(self.batch_comboBox.currentText())
-        epochs = (int)(self.epoch_lineEdit.currentText())
-        num_gpu = (int)(self.numgpu_lineEdit.currentText())
+        epochs = (int)(self.epoch_lineEdit.text())
+        num_gpu = (int)(self.numgpu_lineEdit.text())
         input_dims = (str)('%s' % (self.idims_lineEdit.text()))
         rali_cpu = self.rcpu_radioButton.isChecked()
         num_thread = 1
