@@ -222,11 +222,11 @@ class InferenceControl(QtWidgets.QMainWindow):
         num_thread = 1
         crop = 224
 
-        model = rali_training_setup.ResNet(device)
+        model = ResNet(device)
         print(model)
 
         #training
-        train_loader = rali_training_setup.get_pytorch_train_loader(dataset_train, batch_size, num_thread, crop, rali_cpu)
+        train_loader = get_pytorch_train_loader(dataset_train, batch_size, num_thread, crop, rali_cpu)
         optimizer = optim.SGD(model.parameters(), lr=0.001)
         criterion = nn.CrossEntropyLoss()
 
