@@ -66,7 +66,7 @@ class trainLoader():
         self.crop = crop
         self.rali_cpu = rali_cpu
 
-    def get_pytorch_train_loader(data_path, batch_size, num_thread, crop, rali_cpu):
+    def get_pytorch_train_loader(self):
         print("in get_pytorch_train_loader fucntion")   
         pipe_train = trainPipeline(self.data_path, self.batch_size, self.num_thread, self.crop, self.rali_cpu)
         pipe_train.build()
@@ -128,17 +128,17 @@ class trainAndTest():
         self.val_loader = val_loader
         self.optimizer = optimizer
         self.criterion = criterion
-        self.epoch = epoch
         self.PATH = PATH
 
     def train(self, epoch):
         print("in train fucntion")
-        print("epoch:: ",self.epoch)
+        print("epoch:: ", epoch)
         running_loss = 0.0
         for i, (inputs, labels) in enumerate(self.train_loader, 0):
             inputs, labels = inputs.to(self.device), labels.to(self.device)
             self.optimizer.zero_grad()
             outputs = self.net(inputs)
+
             loss = self.criterion(outputs, labels)
             loss.backward()
             self.optimizer.step()
@@ -148,7 +148,7 @@ class trainAndTest():
             print_interval = 1
             if i % print_interval == (print_interval-1):
                 print('[%d, %5d] loss: %.3f' %
-                      (self.epoch + 1, i + 1, running_loss / print_interval))
+                      (epoch + 1, i + 1, running_loss / print_interval))
                 running_loss = 0.0
 
     def test(self):
@@ -186,7 +186,8 @@ def main():
     input_dims = args.input_dimensions
     rali_cpu = args.rali_cpu
     num_thread = 1
-    crop = input_dimensions[3] #crop to the width or height of model input_dimensions
+    input_dimensions = list(args.input_dimensions.split(","))
+    crop = int(input_dimensions[3]) #crop to the width or height of model input_dimensions
     
     #object for class Net
     net_obj = Net(device)
@@ -198,9 +199,11 @@ def main():
     train_loader_obj = trainLoader(dataset_train, batch_size, num_thread, crop, rali_cpu)
     train_loader = train_loader_obj.get_pytorch_train_loader()
 
+    print(train_loader)
     #test loader
     val_loader_obj = valLoader(dataset_val, batch_size, num_thread, crop, rali_cpu)
     val_loader = val_loader_obj.get_pytorch_val_loader()
+    print(val_loader)
 
     optimizer = optim.SGD(net.parameters(), lr=0.001)
     criterion = nn.CrossEntropyLoss()
