@@ -200,7 +200,6 @@ class InferenceControl(QtWidgets.QMainWindow):
             self.run_pushButton.setStyleSheet("background-color: 0")
 
     def runTraining(self):
-        self.close()
         training_device = not self.tcpu_radioButton.isChecked() and torch.cuda.is_available() #checks for rocm installation of pytorch
         device = torch.device("cuda" if training_device else "cpu") #device = GPU in this case
         model = (str)(self.model_comboBox.currentText())
@@ -215,6 +214,9 @@ class InferenceControl(QtWidgets.QMainWindow):
         if not os.path.exists(dataset_val):
             print("the dataset is invalid, requires val folder")
             exit(1)
+
+        print (datapath)
+        print (model)
         batch_size = (int)(self.batch_comboBox.currentText())
         epochs = (int)(self.epoch_lineEdit.text())
         num_gpu = (int)(self.numgpu_lineEdit.text())
@@ -230,7 +232,7 @@ class InferenceControl(QtWidgets.QMainWindow):
         train_loader = get_pytorch_train_loader(dataset_train, batch_size, num_thread, crop, rali_cpu)
         optimizer = optim.SGD(model.parameters(), lr=0.001)
         criterion = nn.CrossEntropyLoss()
-
+        self.close()
         for epoch in range(epochs):
             train(model, device, train_loader, optimizer, criterion, epoch)
 

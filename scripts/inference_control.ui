@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>923</width>
+    <width>948</width>
     <height>732</height>
    </rect>
   </property>
@@ -387,20 +387,6 @@
             </attribute>
            </widget>
           </item>
-          <item row="0" column="3" colspan="2">
-           <widget class="QComboBox" name="model_comboBox">
-            <item>
-             <property name="text">
-              <string>Choose the model</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>resnet50</string>
-             </property>
-            </item>
-           </widget>
-          </item>
           <item row="12" column="6">
            <widget class="QPushButton" name="tclose_pushButton">
             <property name="sizePolicy">
@@ -475,35 +461,6 @@
             </attribute>
            </widget>
           </item>
-          <item row="1" column="3" colspan="2">
-           <widget class="QComboBox" name="dtype_comboBox">
-            <item>
-             <property name="text">
-              <string>Choose the dataset type</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>TF Records</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Coco Dataset</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>PNG</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>LMDB</string>
-             </property>
-            </item>
-           </widget>
-          </item>
           <item row="8" column="2">
            <widget class="QLabel" name="rdevice_label">
             <property name="text">
@@ -554,6 +511,49 @@
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
+           </widget>
+          </item>
+          <item row="0" column="3" colspan="3">
+           <widget class="QComboBox" name="model_comboBox">
+            <item>
+             <property name="text">
+              <string>Choose the model</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>resnet50</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="1" column="3" colspan="3">
+           <widget class="QComboBox" name="dtype_comboBox">
+            <item>
+             <property name="text">
+              <string>Choose the dataset type</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>TF Records</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Coco Dataset</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>PNG</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>LMDB</string>
+             </property>
+            </item>
            </widget>
           </item>
          </layout>
@@ -1351,7 +1351,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>923</width>
+     <width>948</width>
      <height>22</height>
     </rect>
    </property>
@@ -1361,7 +1361,7 @@
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroup"/>
   <buttongroup name="buttonGroup_2"/>
+  <buttongroup name="buttonGroup"/>
  </buttongroups>
 </ui>
