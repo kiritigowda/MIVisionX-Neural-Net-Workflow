@@ -291,7 +291,7 @@ class DataLoader(RaliGraph):
 		self.w = self.getOutputWidth()
 		self.h = self.getOutputHeight()
 		self.b = self.getBatchSize()
-            	self.n = self.raliGetAugmentationBranchCount()
+		self.n = self.raliGetAugmentationBranchCount()
 		color_format = self.getOutputColorFormat()
 		self.p = (1 if color_format is ColorFormat.IMAGE_U8 else 3)
 		height = self.h*self.n
@@ -379,9 +379,9 @@ class DataLoader(RaliGraph):
 		self.reset()
 		
 	def get_next_augmentation(self):
-                if self.raliIsEmpty() == 1:
-			#raise StopIteration
+		if self.raliIsEmpty() == 1:
 			return -1
+			#raise StopIteration
 		self.renew_parameters()
 		if self.run() != 0:
 			#raise StopIteration

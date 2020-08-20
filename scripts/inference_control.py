@@ -1,8 +1,8 @@
 import os
 #from PyQt4 import QtGui, uic
 from PyQt5 import QtWidgets, uic
-#from inference_viewer import *
-from rali_training_setup import *
+from inference_viewer import *
+#from rali_training_setup import *
 
 class InferenceControl(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
@@ -12,38 +12,38 @@ class InferenceControl(QtWidgets.QMainWindow):
 
     def initUI(self):
         uic.loadUi("inference_control.ui", self)
-        #self.setStyleSheet("background-color: white")
-        # self.upload_comboBox.activated.connect(self.fromFile)
-        # self.file_pushButton.clicked.connect(self.browseFile)
-        # self.output_pushButton.clicked.connect(self.browseOutput)
-        # self.label_pushButton.clicked.connect(self.browseLabel)
-        # self.image_pushButton.clicked.connect(self.browseImage)
-        # self.val_pushButton.clicked.connect(self.browseVal)
-        # self.hier_pushButton.clicked.connect(self.browseHier)
-        # self.run_pushButton.clicked.connect(self.runConfig)
-        # self.file_lineEdit.textChanged.connect(self.checkInput)
-        # self.name_lineEdit.textChanged.connect(self.checkInput)
-        # self.idims_lineEdit.textChanged.connect(self.checkInput)
-        # self.odims_lineEdit.textChanged.connect(self.checkInput)
-        # self.output_lineEdit.textChanged.connect(self.checkInput)
-        # self.label_lineEdit.textChanged.connect(self.checkInput)
-        # self.image_lineEdit.textChanged.connect(self.checkInput)
-        # self.image_lineEdit.textChanged.connect(self.checkInput)
-        # self.close_pushButton.clicked.connect(self.closeEvent)
-        # self.file_lineEdit.setPlaceholderText("File Directory [required]")
-        # self.name_lineEdit.setPlaceholderText("Model Name [required]")
-        # self.idims_lineEdit.setPlaceholderText("c,h,w [required]")
-        # self.odims_lineEdit.setPlaceholderText("c,h,w [required]")
-        # self.padd_lineEdit.setPlaceholderText("r,g,b [optional]")
-        # self.pmul_lineEdit.setPlaceholderText("r,g,b [optional]")
-        # self.output_lineEdit.setPlaceholderText("Output Directory [required]")
-        # self.label_lineEdit.setPlaceholderText("Label File [required]")
-        # self.image_lineEdit.setPlaceholderText("Image Folder [required]")
-        # self.val_lineEdit.setPlaceholderText("[optional]")
-        # self.hier_lineEdit.setPlaceholderText("[optional]")
-        # self.close_pushButton.setStyleSheet("color: white; background-color: darkRed")
-        # self.gui_checkBox.setChecked(True)
-        #self.readSetupFile()
+        self.setStyleSheet("background-color: white")
+        self.upload_comboBox.activated.connect(self.fromFile)
+        self.file_pushButton.clicked.connect(self.browseFile)
+        self.output_pushButton.clicked.connect(self.browseOutput)
+        self.label_pushButton.clicked.connect(self.browseLabel)
+        self.image_pushButton.clicked.connect(self.browseImage)
+        self.val_pushButton.clicked.connect(self.browseVal)
+        self.hier_pushButton.clicked.connect(self.browseHier)
+        self.run_pushButton.clicked.connect(self.runConfig)
+        self.file_lineEdit.textChanged.connect(self.checkInput)
+        self.name_lineEdit.textChanged.connect(self.checkInput)
+        self.idims_lineEdit.textChanged.connect(self.checkInput)
+        self.odims_lineEdit.textChanged.connect(self.checkInput)
+        self.output_lineEdit.textChanged.connect(self.checkInput)
+        self.label_lineEdit.textChanged.connect(self.checkInput)
+        self.image_lineEdit.textChanged.connect(self.checkInput)
+        self.image_lineEdit.textChanged.connect(self.checkInput)
+        self.close_pushButton.clicked.connect(self.closeEvent)
+        self.file_lineEdit.setPlaceholderText("File Directory [required]")
+        self.name_lineEdit.setPlaceholderText("Model Name [required]")
+        self.idims_lineEdit.setPlaceholderText("c,h,w [required]")
+        self.odims_lineEdit.setPlaceholderText("c,h,w [required]")
+        self.padd_lineEdit.setPlaceholderText("r,g,b [optional]")
+        self.pmul_lineEdit.setPlaceholderText("r,g,b [optional]")
+        self.output_lineEdit.setPlaceholderText("Output Directory [required]")
+        self.label_lineEdit.setPlaceholderText("Label File [required]")
+        self.image_lineEdit.setPlaceholderText("Image Folder [required]")
+        self.val_lineEdit.setPlaceholderText("[optional]")
+        self.hier_lineEdit.setPlaceholderText("[optional]")
+        self.close_pushButton.setStyleSheet("color: white; background-color: darkRed")
+        self.gui_checkBox.setChecked(True)
+        self.readSetupFile()
         self.tcpu_radioButton.setChecked(1)
         self.rcpu_radioButton.setChecked(1)
         self.dpath_pushButton.clicked.connect(self.browseDPath)
@@ -189,10 +189,10 @@ class InferenceControl(QtWidgets.QMainWindow):
                         self.format_comboBox.setEnabled(False)
 
     def checkInput(self):
-        if not self.file_lineEdit.text().isEmpty() and not self.name_lineEdit.text().isEmpty() \
-            and not self.idims_lineEdit.text().isEmpty() \
-            and not self.odims_lineEdit.text().isEmpty() and not self.output_lineEdit.text().isEmpty() \
-            and not self.label_lineEdit.text().isEmpty() and not self.image_lineEdit.text().isEmpty():
+        if not (self.file_lineEdit.text() == '') and not (self.name_lineEdit.text() == '') \
+            and not (self.idims_lineEdit.text() == '') \
+            and not (self.odims_lineEdit.text() == '') and not (self.output_lineEdit.text() == '') \
+            and not (self.label_lineEdit.text() == '') and not (self.image_lineEdit.text() == ''):
                 self.run_pushButton.setEnabled(True)
                 self.run_pushButton.setStyleSheet("background-color: lightgreen")
         else:

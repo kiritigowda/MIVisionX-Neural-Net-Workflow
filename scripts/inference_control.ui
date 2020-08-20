@@ -129,7 +129,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideNone</enum>
@@ -566,9 +566,9 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <layout class="QGridLayout" name="gridLayout_3">
+         <layout class="QGridLayout" name="model_gridLayout">
           <item row="2" column="4">
-           <widget class="QLabel" name="name_label_2">
+           <widget class="QLabel" name="name_label">
             <property name="text">
              <string>Model Name</string>
             </property>
@@ -578,7 +578,7 @@
            </widget>
           </item>
           <item row="6" column="5">
-           <widget class="QCheckBox" name="verbose_checkBox_2">
+           <widget class="QCheckBox" name="verbose_checkBox">
             <property name="layoutDirection">
              <enum>Qt::RightToLeft</enum>
             </property>
@@ -588,14 +588,14 @@
            </widget>
           </item>
           <item row="4" column="2" colspan="2">
-           <widget class="QLineEdit" name="idims_lineEdit_3">
+           <widget class="QLineEdit" name="idims_lineEdit_2">
             <property name="text">
              <string/>
             </property>
            </widget>
           </item>
           <item row="3" column="2">
-           <widget class="QComboBox" name="batch_comboBox_3">
+           <widget class="QComboBox" name="batch_comboBox_2">
             <item>
              <property name="text">
               <string>64</string>
@@ -609,21 +609,21 @@
            </widget>
           </item>
           <item row="5" column="2" colspan="2">
-           <widget class="QLineEdit" name="padd_lineEdit_2">
+           <widget class="QLineEdit" name="padd_lineEdit">
             <property name="text">
              <string/>
             </property>
            </widget>
           </item>
           <item row="1" column="6">
-           <widget class="QPushButton" name="file_pushButton_2">
+           <widget class="QPushButton" name="file_pushButton">
             <property name="text">
              <string>Browse...</string>
             </property>
            </widget>
           </item>
           <item row="5" column="4">
-           <widget class="QLabel" name="pmul_label_2">
+           <widget class="QLabel" name="pmul_label">
             <property name="font">
              <font>
               <family>Ubuntu</family>
@@ -638,7 +638,7 @@
            </widget>
           </item>
           <item row="0" column="2" colspan="5">
-           <widget class="QComboBox" name="upload_comboBox_2">
+           <widget class="QComboBox" name="upload_comboBox">
             <item>
              <property name="text">
               <string>Choose or Upload a pre-trained model</string>
@@ -647,7 +647,7 @@
            </widget>
           </item>
           <item row="6" column="2">
-           <widget class="QCheckBox" name="gui_checkBox_2">
+           <widget class="QCheckBox" name="gui_checkBox">
             <property name="layoutDirection">
              <enum>Qt::RightToLeft</enum>
             </property>
@@ -657,7 +657,7 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QLabel" name="file_label_2">
+           <widget class="QLabel" name="file_label">
             <property name="minimumSize">
              <size>
               <width>111</width>
@@ -678,7 +678,7 @@
            </widget>
           </item>
           <item row="4" column="4">
-           <widget class="QLabel" name="odims_label_2">
+           <widget class="QLabel" name="odims_label">
             <property name="font">
              <font>
               <family>Ubuntu</family>
@@ -693,7 +693,7 @@
            </widget>
           </item>
           <item row="6" column="3">
-           <widget class="QCheckBox" name="replace_checkBox_2">
+           <widget class="QCheckBox" name="replace_checkBox">
             <property name="layoutDirection">
              <enum>Qt::RightToLeft</enum>
             </property>
@@ -703,7 +703,7 @@
            </widget>
           </item>
           <item row="1" column="2" colspan="4">
-           <widget class="QLineEdit" name="file_lineEdit_2">
+           <widget class="QLineEdit" name="file_lineEdit">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -716,7 +716,7 @@
            </widget>
           </item>
           <item row="2" column="2">
-           <widget class="QComboBox" name="format_comboBox_2">
+           <widget class="QComboBox" name="format_comboBox">
             <property name="font">
              <font>
               <family>Ubuntu</family>
@@ -740,7 +740,7 @@
            </widget>
           </item>
           <item row="4" column="1">
-           <widget class="QLabel" name="idims__label_3">
+           <widget class="QLabel" name="idims_label_2">
             <property name="font">
              <font>
               <family>Ubuntu</family>
@@ -755,14 +755,14 @@
            </widget>
           </item>
           <item row="5" column="5" colspan="2">
-           <widget class="QLineEdit" name="pmul_lineEdit_2">
+           <widget class="QLineEdit" name="pmul_lineEdit">
             <property name="text">
              <string/>
             </property>
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QLabel" name="format_label_2">
+           <widget class="QLabel" name="format_label">
             <property name="font">
              <font>
               <family>Ubuntu</family>
@@ -777,14 +777,14 @@
            </widget>
           </item>
           <item row="2" column="5" colspan="2">
-           <widget class="QLineEdit" name="name_lineEdit_3">
+           <widget class="QLineEdit" name="name_lineEdit">
             <property name="text">
              <string/>
             </property>
            </widget>
           </item>
           <item row="5" column="1">
-           <widget class="QLabel" name="padd_label_2">
+           <widget class="QLabel" name="padd_label">
             <property name="font">
              <font>
               <family>Ubuntu</family>
@@ -799,7 +799,7 @@
            </widget>
           </item>
           <item row="6" column="6">
-           <widget class="QCheckBox" name="loop_checkBox_2">
+           <widget class="QCheckBox" name="loop_checkBox">
             <property name="layoutDirection">
              <enum>Qt::RightToLeft</enum>
             </property>
@@ -809,7 +809,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLabel" name="upload_label_2">
+           <widget class="QLabel" name="upload_label">
             <property name="layoutDirection">
              <enum>Qt::RightToLeft</enum>
             </property>
@@ -822,14 +822,14 @@
            </widget>
           </item>
           <item row="4" column="5" colspan="2">
-           <widget class="QLineEdit" name="odims_lineEdit_2">
+           <widget class="QLineEdit" name="odims_lineEdit">
             <property name="text">
              <string/>
             </property>
            </widget>
           </item>
           <item row="6" column="4">
-           <widget class="QCheckBox" name="fp16_checkBox_2">
+           <widget class="QCheckBox" name="fp16_checkBox">
             <property name="layoutDirection">
              <enum>Qt::RightToLeft</enum>
             </property>
@@ -839,7 +839,7 @@
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QLabel" name="batch_label_3">
+           <widget class="QLabel" name="batch_label_2">
             <property name="text">
              <string>Batch Size</string>
             </property>
@@ -849,7 +849,7 @@
            </widget>
           </item>
           <item row="0" column="0" rowspan="4">
-           <widget class="QFrame" name="model_frame_3">
+           <widget class="QFrame" name="model_frame">
             <property name="sizePolicy">
              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -876,7 +876,7 @@
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_5">
              <item>
-              <widget class="QLabel" name="model_label_3">
+              <widget class="QLabel" name="model_label_2">
                <property name="font">
                 <font>
                  <family>Ubuntu</family>
@@ -894,7 +894,7 @@
               </widget>
              </item>
              <item>
-              <spacer name="verticalSpacer_5">
+              <spacer name="verticalSpacer">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
                </property>
@@ -910,7 +910,7 @@
            </widget>
           </item>
           <item row="3" column="5" colspan="2">
-           <widget class="QComboBox" name="mode_comboBox_3">
+           <widget class="QComboBox" name="mode_comboBox">
             <property name="enabled">
              <bool>true</bool>
             </property>
@@ -942,7 +942,7 @@
            </widget>
           </item>
           <item row="3" column="4">
-           <widget class="QLabel" name="mode_label_3">
+           <widget class="QLabel" name="mode_label">
             <property name="text">
              <string>RALI Mode</string>
             </property>
@@ -954,9 +954,9 @@
          </layout>
         </item>
         <item>
-         <layout class="QGridLayout" name="inference_gridLayout_3">
+         <layout class="QGridLayout" name="inference_gridLayout">
           <item row="5" column="7">
-           <widget class="QPushButton" name="close_pushButton_3">
+           <widget class="QPushButton" name="close_pushButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -969,7 +969,7 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QLabel" name="image_label_3">
+           <widget class="QLabel" name="image_label">
             <property name="text">
              <string>Image Directory</string>
             </property>
@@ -979,7 +979,7 @@
            </widget>
           </item>
           <item row="5" column="2">
-           <widget class="QComboBox" name="container_comboBox_3">
+           <widget class="QComboBox" name="container_comboBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -1004,7 +1004,7 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QLabel" name="label_3">
+           <widget class="QLabel" name="label_label">
             <property name="text">
              <string>Label txt file</string>
             </property>
@@ -1014,7 +1014,7 @@
            </widget>
           </item>
           <item row="4" column="2" colspan="6">
-           <widget class="QLineEdit" name="hier_lineEdit_3">
+           <widget class="QLineEdit" name="hier_lineEdit">
             <property name="enabled">
              <bool>true</bool>
             </property>
@@ -1024,7 +1024,7 @@
            </widget>
           </item>
           <item row="5" column="5">
-           <widget class="QLabel" name="gpu_label_3">
+           <widget class="QLabel" name="gpu_label">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -1046,7 +1046,7 @@
            </widget>
           </item>
           <item row="1" column="2" colspan="6">
-           <widget class="QLineEdit" name="label_lineEdit_3">
+           <widget class="QLineEdit" name="label_lineEdit">
             <property name="enabled">
              <bool>true</bool>
             </property>
@@ -1056,7 +1056,7 @@
            </widget>
           </item>
           <item row="3" column="2" colspan="6">
-           <widget class="QLineEdit" name="val_lineEdit_3">
+           <widget class="QLineEdit" name="val_lineEdit">
             <property name="enabled">
              <bool>true</bool>
             </property>
@@ -1066,7 +1066,7 @@
            </widget>
           </item>
           <item row="5" column="6">
-           <widget class="QComboBox" name="gpu_comboBox_3">
+           <widget class="QComboBox" name="gpu_comboBox">
             <item>
              <property name="text">
               <string>Radeon VII</string>
@@ -1100,7 +1100,7 @@
            </widget>
           </item>
           <item row="0" column="8">
-           <widget class="QPushButton" name="output_pushButton_3">
+           <widget class="QPushButton" name="output_pushButton">
             <property name="enabled">
              <bool>true</bool>
             </property>
@@ -1110,7 +1110,7 @@
            </widget>
           </item>
           <item row="5" column="4">
-           <widget class="QComboBox" name="cpu_comboBox_3">
+           <widget class="QComboBox" name="cpu_comboBox">
             <item>
              <property name="text">
               <string>Threadripper</string>
@@ -1149,7 +1149,7 @@
            </widget>
           </item>
           <item row="5" column="1">
-           <widget class="QLabel" name="container_label_3">
+           <widget class="QLabel" name="container_label">
             <property name="text">
              <string>Container</string>
             </property>
@@ -1159,7 +1159,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLabel" name="output_label_3">
+           <widget class="QLabel" name="output_label">
             <property name="text">
              <string>Output Directory</string>
             </property>
@@ -1169,7 +1169,7 @@
            </widget>
           </item>
           <item row="4" column="8">
-           <widget class="QPushButton" name="hier_pushButton_3">
+           <widget class="QPushButton" name="hier_pushButton">
             <property name="enabled">
              <bool>true</bool>
             </property>
@@ -1179,7 +1179,7 @@
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QLabel" name="val_label_3">
+           <widget class="QLabel" name="val_label">
             <property name="text">
              <string>Validation txt file</string>
             </property>
@@ -1189,7 +1189,7 @@
            </widget>
           </item>
           <item row="2" column="2" colspan="6">
-           <widget class="QLineEdit" name="image_lineEdit_3">
+           <widget class="QLineEdit" name="image_lineEdit">
             <property name="enabled">
              <bool>true</bool>
             </property>
@@ -1199,7 +1199,7 @@
            </widget>
           </item>
           <item row="5" column="8">
-           <widget class="QPushButton" name="run_pushButton_3">
+           <widget class="QPushButton" name="run_pushButton">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -1209,7 +1209,7 @@
            </widget>
           </item>
           <item row="5" column="3">
-           <widget class="QLabel" name="cpu_label_3">
+           <widget class="QLabel" name="cpu_label">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -1231,7 +1231,7 @@
            </widget>
           </item>
           <item row="1" column="8">
-           <widget class="QPushButton" name="label_pushButton_3">
+           <widget class="QPushButton" name="label_pushButton">
             <property name="enabled">
              <bool>true</bool>
             </property>
@@ -1241,7 +1241,7 @@
            </widget>
           </item>
           <item row="3" column="8">
-           <widget class="QPushButton" name="val_pushButton_3">
+           <widget class="QPushButton" name="val_pushButton">
             <property name="enabled">
              <bool>true</bool>
             </property>
@@ -1251,7 +1251,7 @@
            </widget>
           </item>
           <item row="2" column="8">
-           <widget class="QPushButton" name="image_pushButton_3">
+           <widget class="QPushButton" name="image_pushButton">
             <property name="enabled">
              <bool>true</bool>
             </property>
@@ -1261,7 +1261,7 @@
            </widget>
           </item>
           <item row="4" column="1">
-           <widget class="QLabel" name="hier_label_3">
+           <widget class="QLabel" name="hier_label">
             <property name="text">
              <string>Hierarchy</string>
             </property>
@@ -1271,7 +1271,7 @@
            </widget>
           </item>
           <item row="0" column="0" rowspan="5">
-           <widget class="QFrame" name="inference_frame_3">
+           <widget class="QFrame" name="inference_frame">
             <property name="sizePolicy">
              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -1298,7 +1298,7 @@
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_8">
              <item>
-              <widget class="QLabel" name="inference_label_3">
+              <widget class="QLabel" name="inference_label">
                <property name="font">
                 <font>
                  <pointsize>20</pointsize>
@@ -1313,7 +1313,7 @@
               </widget>
              </item>
              <item>
-              <spacer name="verticalSpacer_6">
+              <spacer name="verticalSpacer_2">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
                </property>
@@ -1329,7 +1329,7 @@
            </widget>
           </item>
           <item row="0" column="2" colspan="6">
-           <widget class="QLineEdit" name="output_lineEdit_3">
+           <widget class="QLineEdit" name="output_lineEdit">
             <property name="enabled">
              <bool>true</bool>
             </property>
