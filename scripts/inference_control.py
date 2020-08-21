@@ -277,7 +277,10 @@ class InferenceControl(QtWidgets.QMainWindow):
         verbose = 'yes' if self.verbose_checkBox.isChecked() else 'no'
         loop = 'yes' if self.loop_checkBox.isChecked() else 'no'
         container_logo = self.container_comboBox.currentIndex()
-        fps_file = ''t images: %d %%' % (100 * correct / total))
+        fps_file = ''
+        cpu_name = self.cpu_comboBox.currentText()
+        gpu_name = self.gpu_comboBox.currentText()
+        self.runningState = True
 
         self.close()
 
