@@ -1,7 +1,7 @@
 import os
 #from PyQt4 import QtGui, uic
 from PyQt5 import QtWidgets, uic
-from inference_viewer import *
+#from inference_viewer import *
 #from rali_training_setup import *
 
 class InferenceControl(QtWidgets.QMainWindow):
@@ -58,10 +58,10 @@ class InferenceControl(QtWidgets.QMainWindow):
             self.file_lineEdit.setText(QtWidgets.QFileDialog.getOpenFileName(self, 'Open File', './')[0])
 
     def browseDPath(self):
-        self.dpath_lineEdit.setText(QtWidgets.QFileDialog.getExistingDirectory(self, 'Open Folder', './')[0])
+        self.dpath_lineEdit.setText(QtWidgets.QFileDialog.getExistingDirectory(self, 'Open Folder', './'))
 
     def browseOPath(self):
-        self.opath_lineEdit.setText(QtWidgets.QFileDialog.getExistingDirectory(self, 'Open Folder', './')[0])
+        self.opath_lineEdit.setText(QtWidgets.QFileDialog.getExistingDirectory(self, 'Open Folder', './'))
 
     def browseOutput(self):
         self.output_lineEdit.setText(QtWidgets.QFileDialog.getExistingDirectory(self, 'Open Folder', './')[0])
