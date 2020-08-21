@@ -1,9 +1,8 @@
 import os
-import torch
 #from PyQt4 import QtGui, uic
 from PyQt5 import QtWidgets, uic
 #from inference_viewer import *
-#from rali_training_setup import *
+from rali_training_setup import *
 
 class InferenceControl(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
