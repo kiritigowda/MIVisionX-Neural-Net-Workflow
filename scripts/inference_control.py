@@ -1,4 +1,5 @@
 import os
+import torch
 #from PyQt4 import QtGui, uic
 from PyQt5 import QtWidgets, uic
 #from inference_viewer import *
