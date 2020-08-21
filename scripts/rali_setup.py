@@ -306,7 +306,7 @@ class DataLoader(RaliGraph):
 
 	def process_validation(self, validation_list):
 		for i in range(len(validation_list)):
-			name, groundTruthIndex = validation_list[i].decode("utf-8").split(' ')
+			name, groundTruthIndex = validation_list[i].split(' ')
 			self.validation_dict[name] = groundTruthIndex
 
 	def get_ground_truth(self):

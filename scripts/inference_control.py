@@ -55,28 +55,28 @@ class InferenceControl(QtWidgets.QMainWindow):
         if self.format_comboBox.currentText() == 'nnef':
             self.file_lineEdit.setText(QtWidgets.QFileDialog.getExistingDirectory(self, 'Open Folder', './'))    
         else:
-            self.file_lineEdit.setText(QtWidgets.QFileDialog.getOpenFileName(self, 'Open File', './', '*'))
+            self.file_lineEdit.setText(QtWidgets.QFileDialog.getOpenFileName(self, 'Open File', './')[0])
 
     def browseDPath(self):
-        self.dpath_lineEdit.setText(QtWidgets.QFileDialog.getExistingDirectory(self, 'Open Folder', './'))
+        self.dpath_lineEdit.setText(QtWidgets.QFileDialog.getExistingDirectory(self, 'Open Folder', './')[0])
 
     def browseOPath(self):
-        self.opath_lineEdit.setText(QtWidgets.QFileDialog.getExistingDirectory(self, 'Open Folder', './'))
+        self.opath_lineEdit.setText(QtWidgets.QFileDialog.getExistingDirectory(self, 'Open Folder', './')[0])
 
     def browseOutput(self):
-        self.output_lineEdit.setText(QtWidgets.QFileDialog.getExistingDirectory(self, 'Open Folder', './'))
+        self.output_lineEdit.setText(QtWidgets.QFileDialog.getExistingDirectory(self, 'Open Folder', './')[0])
 
     def browseLabel(self):
-        self.label_lineEdit.setText(QtWidgets.QFileDialog.getOpenFileName(self, 'Open File', './', '*.txt'))
+        self.label_lineEdit.setText(QtWidgets.QFileDialog.getOpenFileName(self, 'Open File', './', '*.txt')[0])
 
     def browseImage(self):
-        self.image_lineEdit.setText(QtWidgets.QFileDialog.getExistingDirectory(self, 'Open Folder', './'))
+        self.image_lineEdit.setText(QtWidgets.QFileDialog.getExistingDirectory(self, 'Open Folder', './')[0])
 
     def browseVal(self):
-        self.val_lineEdit.setText(QtWidgets.QFileDialog.getOpenFileName(self, 'Open File', './', '*.txt'))
+        self.val_lineEdit.setText(QtWidgets.QFileDialog.getOpenFileName(self, 'Open File', './', '*.txt')[0])
 
     def browseHier(self):
-        self.hier_lineEdit.setText(QtWidgets.QFileDialog.getOpenFileName(self, 'Open File', './', '*.csv'))
+        self.hier_lineEdit.setText(QtWidgets.QFileDialog.getOpenFileName(self, 'Open File', './', '*.csv')[0])
 
     def readSetupFile(self):
         setupDir = '~/.mivisionx-validation-tool'
@@ -215,8 +215,6 @@ class InferenceControl(QtWidgets.QMainWindow):
             print("the dataset is invalid, requires val folder")
             exit(1)
 
-        print (datapath)
-        print (model)
         batch_size = (int)(self.batch_comboBox.currentText())
         epochs = (int)(self.epoch_lineEdit.text())
         num_gpu = (int)(self.numgpu_lineEdit.text())
@@ -225,23 +223,32 @@ class InferenceControl(QtWidgets.QMainWindow):
         num_thread = 1
         crop = 224
 
-        model = ResNet(device)
-        print(model)
-    
-        #training
-        train_loader = get_pytorch_train_loader(dataset_train, batch_size, num_thread, crop, rali_cpu)
-        optimizer = optim.SGD(model.parameters(), lr=0.001)
+        net_obj = Net(device)
+        if model == 'resnet50':
+            net = net_obj.ResNet()
+            print(net)
+
+        #train loader
+        train_loader_obj = trainLoader(dataset_train, batch_size, num_thread, crop, rali_cpu)
+        train_loader = train_loader_obj.get_pytorch_train_loader()
+
+        print(train_loader)
+        #test loader
+        val_loader_obj = valLoader(dataset_val, batch_size, num_thread, crop, rali_cpu)
+        val_loader = val_loader_obj.get_pytorch_val_loader()
+        print(val_loader)
+
+        optimizer = optim.SGD(net.parameters(), lr=0.001)
         criterion = nn.CrossEntropyLoss()
-        self.close()
+
+        train_test_obj = trainAndTest(net, device, train_loader, val_loader, optimizer, criterion, PATH)
         for epoch in range(epochs):
-            train(model, device, train_loader, optimizer, criterion, epoch)
+            train_test_obj.train(epoch)
 
         print('Finished Training')
-        torch.save(model.state_dict(), PATH)      #save trained model
+        torch.save(net.state_dict(), PATH)      #save trained model
 
-        #test
-        val_loader = get_pytorch_val_loader(dataset_val, batch_size, num_thread, crop, rali_cpu)
-        test(model, device, val_loader, PATH)
+        train_test_obj.test()
 
     def runConfig(self):
         model_format = (str)(self.format_comboBox.currentText())
@@ -270,10 +277,8 @@ class InferenceControl(QtWidgets.QMainWindow):
         verbose = 'yes' if self.verbose_checkBox.isChecked() else 'no'
         loop = 'yes' if self.loop_checkBox.isChecked() else 'no'
         container_logo = self.container_comboBox.currentIndex()
-        fps_file = ''
-        cpu_name = self.cpu_comboBox.currentText()
-        gpu_name = self.gpu_comboBox.currentText()
-        self.runningState = True
+        fps_file = ''t images: %d %%' % (100 * correct / total))
+
         self.close()
 
         viewer = InferenceViewer(model_name, model_format, image_dir, model_location, label, hierarchy, image_val, input_dims, output_dims, batch_size, output_dir, 
