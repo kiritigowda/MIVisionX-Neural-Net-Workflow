@@ -145,6 +145,8 @@ class trainAndTest():
         self.optimizer = optimizer
         self.criterion = criterion
         self.PATH = PATH
+        self.results = []
+        self.test_acc = 0.0
 
     def accuracy(self, outputs, labels, topk=(1,5)):
         #Computes the accuracy over the k top predictions for the specified values of k
@@ -160,7 +162,7 @@ class trainAndTest():
                 res.append(correct_k.mul_(100.0 / batch_size))
             return res
 
-    def train(self, epoch, results):
+    def train(self, epoch):
         print("epoch:: ", epoch)
         running_loss = 0.0
         losses = AverageMeter()
@@ -199,7 +201,7 @@ class trainAndTest():
                       (epoch + 1, i + 1, acc5 / print_interval))
 
         temp = [epoch, losses.avg, top1.avg.item(), top5.avg.item()]
-        results.append(temp)
+        self.results.append(temp)
             
     def test(self):
         self.net.load_state_dict(torch.load(self.PATH))
@@ -213,9 +215,19 @@ class trainAndTest():
                 _, predicted = torch.max(outputs.data, 1)
                 total += labels.size(0)
                 correct += (predicted == labels).sum().item()
-        test_acc = 100 * correct / total
-        print('Accuracy of the network on the test images: %d %%' % (100 * correct / total))
-        return test_acc
+        self.test_acc = 100 * correct / total
+        #print('Accuracy of the network on the test images: %d %%' % (100 * correct / total))
+
+    def getLoss(self, epoch):
+        return self.results[epoch][1]
+
+
+    def getTop1(self, epoch):
+        return self.results[epoch][2]
+
+
+    def getTop5(self, epoch):
+        return self.results[epoch][3]
 
 def main():
     #initialing parameters
@@ -261,15 +273,22 @@ def main():
     criterion = nn.CrossEntropyLoss()
 
     train_test_obj = trainAndTest(net, device, train_loader, val_loader, optimizer, criterion, PATH)
-    results = [] #contains (epoch, top1, top5, loss)
     for epoch in range(epochs):
-        train_test_obj.train(epoch, results)
+        train_test_obj.train(epoch)
 
-    print('final results' , results)
+    print('final results' , train_test_obj.results)
     print('Finished Training')
     torch.save(net.state_dict(), PATH)      #save trained model
 
-    test_acc = train_test_obj.test()		#validation accuracy
+    train_test_obj.test()		#validation accuracy
+    print('test accuracy' , train_test_obj.test_acc)
+
+    #individual result fucntion tests
+    loss = train_test_obj.getLoss(1)
+    top1 = train_test_obj.getTop1(1)
+    top5 = train_test_obj.getTop5(1)
+
+    print(loss, top1,top5)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
