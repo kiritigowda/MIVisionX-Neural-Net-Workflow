@@ -113,11 +113,27 @@ class valLoader():
         self.rali_cpu = rali_cpu
 
     def get_pytorch_val_loader(self):
-        print("in get_pytorch_val_loader function")  
         pipe_val = valPipeline(self.data_path, self.batch_size, self.num_thread, self.crop, self.rali_cpu)
         pipe_val.build()
         val_loader = RALIClassificationIterator(pipe_val)
         return val_loader
+
+class AverageMeter(object):
+    #Computes and stores the average and current value
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self.val = 0
+        self.avg = 0
+        self.sum = 0
+        self.count = 0
+
+    def update(self, val, n=1):
+        self.val = val
+        self.sum += val * n
+        self.count += n
+        self.avg = self.sum / self.count
 
 
 class trainAndTest():
@@ -129,11 +145,29 @@ class trainAndTest():
         self.optimizer = optimizer
         self.criterion = criterion
         self.PATH = PATH
+        self.results = []
+        self.test_acc = 0.0
+
+    def accuracy(self, outputs, labels, topk=(1,5)):
+        #Computes the accuracy over the k top predictions for the specified values of k
+        with torch.no_grad():
+            maxk = max(topk)
+            batch_size = labels.size(0)
+            _, pred = outputs.topk(maxk, 1, True, True)
+            pred = pred.t()
+            correct = pred.eq(labels.view(1, -1).expand_as(pred))
+            res = []
+            for k in topk:
+                correct_k = correct[:k].view(-1).float().sum(0, keepdim=True)
+                res.append(correct_k.mul_(100.0 / batch_size))
+            return res
 
     def train(self, epoch):
-        print("in train fucntion")
         print("epoch:: ", epoch)
         running_loss = 0.0
+        losses = AverageMeter()
+        top1 = AverageMeter()
+        top5 = AverageMeter()
         for i, (inputs, labels) in enumerate(self.train_loader, 0):
             inputs, labels = inputs.to(self.device), labels.to(self.device)
             self.optimizer.zero_grad()
@@ -144,13 +178,31 @@ class trainAndTest():
             self.optimizer.step()
 
             # print statistics
+            #loss
             running_loss += loss.item()
+            losses.update(running_loss, inputs.size(0))
+
             print_interval = 1
             if i % print_interval == (print_interval-1):
                 print('[%d, %5d] loss: %.3f' %
                       (epoch + 1, i + 1, running_loss / print_interval))
                 running_loss = 0.0
 
+            #accuracy
+            acc1, acc5 = self.accuracy(outputs, labels)
+            top1.update(acc1, inputs.size(0))
+            top5.update(acc5, inputs.size(0))
+
+            print_interval = 1
+            if i % print_interval == (print_interval-1):
+                print('[%d, %5d] accuracy1: %.3f' %
+                      (epoch + 1, i + 1, acc1 / print_interval))
+                print('[%d, %5d] accuracy5: %.3f' %
+                      (epoch + 1, i + 1, acc5 / print_interval))
+
+        temp = [epoch, losses.avg, top1.avg.item(), top5.avg.item()]
+        self.results.append(temp)
+            
     def test(self):
         self.net.load_state_dict(torch.load(self.PATH))
         correct = 0
@@ -163,7 +215,19 @@ class trainAndTest():
                 _, predicted = torch.max(outputs.data, 1)
                 total += labels.size(0)
                 correct += (predicted == labels).sum().item()
-        print('Accuracy of the network on the 10000 test images: %d %%' % (100 * correct / total))
+        self.test_acc = 100 * correct / total
+        #print('Accuracy of the network on the test images: %d %%' % (100 * correct / total))
+
+    def getLoss(self, epoch):
+        return self.results[epoch][1]
+
+
+    def getTop1(self, epoch):
+        return self.results[epoch][2]
+
+
+    def getTop5(self, epoch):
+        return self.results[epoch][3]
 
 def main():
     #initialing parameters
@@ -192,18 +256,18 @@ def main():
     #object for class Net
     net_obj = Net(device)
     if model == 'resnet50':
-        net = net_obj.ResNet()
-        print(net)
+    	net = net_obj.ResNet()
+    	#print(net)
 
     #train loader
     train_loader_obj = trainLoader(dataset_train, batch_size, num_thread, crop, rali_cpu)
     train_loader = train_loader_obj.get_pytorch_train_loader()
 
-    print(train_loader)
+    #print(train_loader)
     #test loader
     val_loader_obj = valLoader(dataset_val, batch_size, num_thread, crop, rali_cpu)
     val_loader = val_loader_obj.get_pytorch_val_loader()
-    print(val_loader)
+    #print(val_loader)
 
     optimizer = optim.SGD(net.parameters(), lr=0.001)
     criterion = nn.CrossEntropyLoss()
@@ -212,10 +276,19 @@ def main():
     for epoch in range(epochs):
         train_test_obj.train(epoch)
 
+    print('final results' , train_test_obj.results)
     print('Finished Training')
     torch.save(net.state_dict(), PATH)      #save trained model
 
-    train_test_obj.test()
+    train_test_obj.test()		#validation accuracy
+    print('test accuracy' , train_test_obj.test_acc)
+
+    #individual result fucntion tests
+    loss = train_test_obj.getLoss(1)
+    top1 = train_test_obj.getTop1(1)
+    top5 = train_test_obj.getTop5(1)
+
+    print(loss, top1,top5)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
