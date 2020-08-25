@@ -248,8 +248,8 @@ class modelTraining(QtCore.QObject):
 
         self.dataset_train = datapath + '/train'
         self.dataset_val = datapath + '/val'
-
-        self.crop = int(input_dims[3])
+        
+        self.crop = (int)(modelInputDims.split(',')[2])
         self.net = None
         #self.train_loader = None
         #self.val_loader = None

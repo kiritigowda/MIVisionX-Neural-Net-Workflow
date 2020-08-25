@@ -129,7 +129,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideNone</enum>
@@ -469,7 +469,7 @@
             </widget>
            </item>
            <item row="1" column="1">
-            <widget class="QLabel" name="idims_label">
+            <widget class="QLabel" name="tidims_label">
              <property name="text">
               <string>Input Dims</string>
              </property>
@@ -499,7 +499,7 @@
             </widget>
            </item>
            <item row="1" column="2" colspan="2">
-            <widget class="QLineEdit" name="idims_lineEdit"/>
+            <widget class="QLineEdit" name="tidims_lineEdit"/>
            </item>
            <item row="0" column="1">
             <widget class="QLabel" name="rdevice_label">
@@ -607,7 +607,7 @@
            </widget>
           </item>
           <item row="4" column="2" colspan="2">
-           <widget class="QLineEdit" name="idims_lineEdit_2">
+           <widget class="QLineEdit" name="idims_lineEdit">
             <property name="text">
              <string/>
             </property>
@@ -759,7 +759,7 @@
            </widget>
           </item>
           <item row="4" column="1">
-           <widget class="QLabel" name="idims_label_2">
+           <widget class="QLabel" name="idims_label">
             <property name="font">
              <font>
               <family>Ubuntu</family>

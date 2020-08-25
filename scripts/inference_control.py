@@ -34,7 +34,7 @@ class InferenceControl(QtWidgets.QMainWindow):
         self.close_pushButton.clicked.connect(self.closeEvent)
         self.file_lineEdit.setPlaceholderText("File Directory [required]")
         self.name_lineEdit.setPlaceholderText("Model Name [required]")
-        self.idims_lineEdit_2.setPlaceholderText("c,h,w [required]")
+        self.idims_lineEdit.setPlaceholderText("c,h,w [required]")
         self.odims_lineEdit.setPlaceholderText("c,h,w [required]")
         self.padd_lineEdit.setPlaceholderText("r,g,b [optional]")
         self.pmul_lineEdit.setPlaceholderText("r,g,b [optional]")
@@ -48,7 +48,7 @@ class InferenceControl(QtWidgets.QMainWindow):
         self.readSetupFile()
 
         # training
-        self.idims_lineEdit.setPlaceholderText("n,c,h,w [required]")
+        self.tidims_lineEdit.setPlaceholderText("n,c,h,w [required]")
         self.tclose_pushButton.setStyleSheet("color: white; background-color: darkRed")
         self.dpath_lineEdit.setPlaceholderText("Data Directory [required]")
         self.opath_lineEdit.setPlaceholderText("Output Directory [required]")
@@ -59,7 +59,7 @@ class InferenceControl(QtWidgets.QMainWindow):
         self.trun_pushButton.setEnabled(False)
         self.model_comboBox.currentIndexChanged.connect(self.checkTInput)
         self.dtype_comboBox.currentIndexChanged.connect(self.checkTInput)
-        self.idims_lineEdit.textChanged.connect(self.checkTInput)
+        self.tidims_lineEdit.textChanged.connect(self.checkTInput)
         self.opath_lineEdit.textChanged.connect(self.checkTInput)
         self.dpath_lineEdit.textChanged.connect(self.checkTInput)
         self.numgpu_lineEdit.textChanged.connect(self.checkTInput)
@@ -74,7 +74,7 @@ class InferenceControl(QtWidgets.QMainWindow):
         self.opath_lineEdit.setText("./")
         self.numgpu_lineEdit.setText("1")
         self.epoch_lineEdit.setText("10")
-        self.idims_lineEdit.setText("1,3,224,224")
+        self.tidims_lineEdit.setText("1,3,224,224")
 
     def browseFile(self):
         if self.format_comboBox.currentText() == 'nnef':
@@ -227,7 +227,7 @@ class InferenceControl(QtWidgets.QMainWindow):
     def checkTInput(self):
         if not (self.model_comboBox.currentIndex() == 0) and not (self.dtype_comboBox.currentIndex() == 0) \
             and not (self.dpath_lineEdit.text() == '') and not (self.opath_lineEdit.text() == '') \
-            and not (self.idims_lineEdit.text() == '') and not (self.numgpu_lineEdit.text() == '') \
+            and not (self.tidims_lineEdit.text() == '') and not (self.numgpu_lineEdit.text() == '') \
             and not (self.epoch_lineEdit.text() == ''):
                 self.trun_pushButton.setEnabled(True)
                 self.trun_pushButton.setStyleSheet("background-color: lightgreen")
@@ -253,7 +253,7 @@ class InferenceControl(QtWidgets.QMainWindow):
         batch_size = (int)(self.batch_comboBox.currentText())
         epochs = (int)(self.epoch_lineEdit.text())
         rali_cpu = self.rcpu_radioButton.isChecked()
-        input_dims = (str)('%s' % (self.idims_lineEdit.text()))
+        input_dims = (str)('%s' % (self.tidims_lineEdit.text()))
         num_thread = 1
         gui = self.tgui_checkBox.isChecked()
 
