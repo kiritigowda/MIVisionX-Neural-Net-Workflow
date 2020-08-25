@@ -335,11 +335,6 @@
             <widget class="QComboBox" name="batch_comboBox">
              <item>
               <property name="text">
-               <string>64</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
                <string>32</string>
               </property>
              </item>

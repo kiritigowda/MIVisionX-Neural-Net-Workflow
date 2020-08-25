@@ -230,12 +230,13 @@ class trainAndTest():
         return self.results[epoch][3]
 
 class modelTraining(QtCore.QObject):
-    def __init__(self, model, datapath, PATH, device, num_gpu, batch_size, epochs, rali_cpu, input_dims, num_thread, gui, parent=None):
+    def __init__(self, model, datapath, PATH, training_device, num_gpu, batch_size, epochs, rali_cpu, input_dims, num_thread, gui, parent=None):
         super(modelTraining, self).__init__(parent)
         self.model = model
         # self.datapath = datapath
         self.PATH = PATH
-        self.device = device
+        training_device = self.training_device and torch.cuda.is_available() #checks for rocm installation of pytorch
+        self.device = torch.device("cuda" if training_device else "cpu") #device = GPU in this case
         self.num_gpu = num_gpu
         self.batch_size = batch_size
         self.epochs = epochs

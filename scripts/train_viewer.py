@@ -3,17 +3,17 @@ import queue
 from PyQt5 import QtGui, uic
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import QTime, QTimer, QThread
-#from rali_training_setup import *
+from rali_training_setup import *
 
 class TrainViewer(QtGui.QMainWindow):
-    def __init__(self, model, datapath, PATH, device, num_gpu, batch_size, epochs, rali_cpu, input_dims, num_thread, gui, parent):
+    def __init__(self, model, datapath, PATH, training_device, num_gpu, batch_size, epochs, rali_cpu, input_dims, num_thread, gui, parent):
         super(TrainViewer, self).__init__(parent)
         self.parent = parent
 
         self.model = model
         self.datapath = datapath
         self.PATH = PATH
-        self.device = device
+        self.training_device = training_device
         self.num_gpu = num_gpu
         self.batch_size = batch_size
         self.epochs = epochs
@@ -110,7 +110,7 @@ class TrainViewer(QtGui.QMainWindow):
     def initEngines(self):
         self.receiver_thread = QThread()
         # Creating an object for train
-        self.trainEngine = modelTraining(self.model, self.datapath, self.PATH, self.device, self.num_gpu, self.batch_size, self.epochs, self.rali_cpu, self.input_dims, self.num_thread, self.gui)
+        self.trainEngine = modelTraining(self.model, self.datapath, self.PATH, self.training_device, self.num_gpu, self.batch_size, self.epochs, self.rali_cpu, self.input_dims, self.num_thread, self.gui)
         
         self.trainEngine.moveToThread(self.receiver_thread)
         self.receiver_thread.started.connect(self.trainEngine.runTraining)

@@ -34,7 +34,7 @@ class InferenceControl(QtWidgets.QMainWindow):
         self.close_pushButton.clicked.connect(self.closeEvent)
         self.file_lineEdit.setPlaceholderText("File Directory [required]")
         self.name_lineEdit.setPlaceholderText("Model Name [required]")
-        self.idims_lineEdit.setPlaceholderText("c,h,w [required]")
+        self.idims_lineEdit_2.setPlaceholderText("c,h,w [required]")
         self.odims_lineEdit.setPlaceholderText("c,h,w [required]")
         self.padd_lineEdit.setPlaceholderText("r,g,b [optional]")
         self.pmul_lineEdit.setPlaceholderText("r,g,b [optional]")
@@ -48,8 +48,13 @@ class InferenceControl(QtWidgets.QMainWindow):
         self.readSetupFile()
 
         # training
+        self.idims_lineEdit.setPlaceholderText("n,c,h,w [required]")
         self.tclose_pushButton.setStyleSheet("color: white; background-color: darkRed")
-        self.tcpu_radioButton.setChecked(1)
+        self.dpath_lineEdit.setPlaceholderText("Data Directory [required]")
+        self.opath_lineEdit.setPlaceholderText("Output Directory [required]")
+        self.numgpu_lineEdit.setPlaceholderText("GPU(s)")
+        self.epoch_lineEdit.setPlaceholderText("Epoch(s)")
+        self.tgpu_radioButton.setChecked(1)
         self.rcpu_radioButton.setChecked(1)
         self.trun_pushButton.setEnabled(False)
         self.model_comboBox.currentIndexChanged.connect(self.checkTInput)
@@ -57,6 +62,8 @@ class InferenceControl(QtWidgets.QMainWindow):
         self.idims_lineEdit.textChanged.connect(self.checkTInput)
         self.opath_lineEdit.textChanged.connect(self.checkTInput)
         self.dpath_lineEdit.textChanged.connect(self.checkTInput)
+        self.numgpu_lineEdit.textChanged.connect(self.checkTInput)
+        self.epoch_lineEdit.textChanged.connect(self.checkTInput)
         self.dpath_pushButton.clicked.connect(self.browseDPath)
         self.opath_pushButton.clicked.connect(self.browseOPath)
         self.trun_pushButton.clicked.connect(self.runTraining)
@@ -213,7 +220,8 @@ class InferenceControl(QtWidgets.QMainWindow):
     def checkTInput(self):
         if not (self.model_comboBox.currentIndex() == 0) and not (self.dtype_comboBox.currentIndex() == 0) \
             and not (self.dpath_lineEdit.text() == '') and not (self.opath_lineEdit.text() == '') \
-            and not (self.idims_lineEdit.text() == ''):
+            and not (self.idims_lineEdit.text() == '') and not (self.numgpu_lineEdit.text() == '') \
+            and not (self.epoch_lineEdit.text() == ''):
                 self.trun_pushButton.setEnabled(True)
                 self.trun_pushButton.setStyleSheet("background-color: lightgreen")
         else:
@@ -233,8 +241,7 @@ class InferenceControl(QtWidgets.QMainWindow):
             return
 
         PATH = (str)(self.opath_lineEdit.text())
-        training_device = not self.tcpu_radioButton.isChecked() and torch.cuda.is_available() #checks for rocm installation of pytorch
-        device = torch.device("cuda" if training_device else "cpu") #device = GPU in this case
+        training_device = self.tgpu_radioButton.isChecked()
         num_gpu = (int)(self.numgpu_lineEdit.text())
         batch_size = (int)(self.batch_comboBox.currentText())
         epochs = (int)(self.epoch_lineEdit.text())
@@ -245,7 +252,7 @@ class InferenceControl(QtWidgets.QMainWindow):
 
         self.runningState = True
         self.close()
-        trainer = TrainViewer(model, datapath, PATH, device, num_gpu, batch_size, epochs, rali_cpu, input_dims, num_thread, gui, self)
+        trainer = TrainViewer(model, datapath, PATH, training_device, num_gpu, batch_size, epochs, rali_cpu, input_dims, num_thread, gui, self)
         trainer.show()
 
     def runConfig(self):
