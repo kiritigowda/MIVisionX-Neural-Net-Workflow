@@ -7,6 +7,7 @@ import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 import torch.optim as optim
 import torch.nn as nn
+from PyQt5 import QtCore
 from PIL import Image
 
 DATA_BACKEND_CHOICES = ['pytorch']
