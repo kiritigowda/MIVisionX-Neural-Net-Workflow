@@ -1,8 +1,8 @@
 import os
 #from PyQt4 import QtGui, uic
 from PyQt5 import QtWidgets, uic
-#from inference_viewer import *
-from rali_training_setup import *
+from inference_viewer import *
+from train_viewer import *
 
 class InferenceControl(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
@@ -12,7 +12,9 @@ class InferenceControl(QtWidgets.QMainWindow):
 
     def initUI(self):
         uic.loadUi("inference_control.ui", self)
-        self.setStyleSheet("background-color: white")
+        #self.setStyleSheet("background-color: white")
+
+        #inference
         self.upload_comboBox.activated.connect(self.fromFile)
         self.file_pushButton.clicked.connect(self.browseFile)
         self.output_pushButton.clicked.connect(self.browseOutput)
@@ -44,8 +46,17 @@ class InferenceControl(QtWidgets.QMainWindow):
         self.close_pushButton.setStyleSheet("color: white; background-color: darkRed")
         self.gui_checkBox.setChecked(True)
         self.readSetupFile()
+
+        # training
+        self.tclose_pushButton.setStyleSheet("color: white; background-color: darkRed")
         self.tcpu_radioButton.setChecked(1)
         self.rcpu_radioButton.setChecked(1)
+        self.trun_pushButton.setEnabled(False)
+        self.model_comboBox.currentIndexChanged.connect(self.checkTInput)
+        self.dtype_comboBox.currentIndexChanged.connect(self.checkTInput)
+        self.idims_lineEdit.textChanged.connect(self.checkTInput)
+        self.opath_lineEdit.textChanged.connect(self.checkTInput)
+        self.dpath_lineEdit.textChanged.connect(self.checkTInput)
         self.dpath_pushButton.clicked.connect(self.browseDPath)
         self.opath_pushButton.clicked.connect(self.browseOPath)
         self.trun_pushButton.clicked.connect(self.runTraining)
@@ -199,56 +210,43 @@ class InferenceControl(QtWidgets.QMainWindow):
             self.run_pushButton.setEnabled(False)
             self.run_pushButton.setStyleSheet("background-color: 0")
 
+    def checkTInput(self):
+        if not (self.model_comboBox.currentIndex() == 0) and not (self.dtype_comboBox.currentIndex() == 0) \
+            and not (self.dpath_lineEdit.text() == '') and not (self.opath_lineEdit.text() == '') \
+            and not (self.idims_lineEdit.text() == ''):
+                self.trun_pushButton.setEnabled(True)
+                self.trun_pushButton.setStyleSheet("background-color: lightgreen")
+        else:
+            self.trun_pushButton.setEnabled(False)
+            self.trun_pushButton.setStyleSheet("background-color: 0")
+            
     def runTraining(self):
-        training_device = not self.tcpu_radioButton.isChecked() and torch.cuda.is_available() #checks for rocm installation of pytorch
-        device = torch.device("cuda" if training_device else "cpu") #device = GPU in this case
         model = (str)(self.model_comboBox.currentText())
-        PATH = (str)(self.opath_lineEdit.text())
-
         datapath = (str)(self.dpath_lineEdit.text())
         dataset_train =  datapath + '/train'
         if not os.path.exists(dataset_train):
-            print("the dataset is invalid, requires train folder")
-            exit(1)
+            msg = QtWidgets.QMessageBox.critical(self, "Error", "Invalid dataset, requires train folder")
+            return
         dataset_val = datapath + '/val'
         if not os.path.exists(dataset_val):
-            print("the dataset is invalid, requires val folder")
-            exit(1)
+            msg = QtWidgets.QMessageBox.critical(self, "Error", "Invalid dataset, requires val folder")
+            return
 
+        PATH = (str)(self.opath_lineEdit.text())
+        training_device = not self.tcpu_radioButton.isChecked() and torch.cuda.is_available() #checks for rocm installation of pytorch
+        device = torch.device("cuda" if training_device else "cpu") #device = GPU in this case
+        num_gpu = (int)(self.numgpu_lineEdit.text())
         batch_size = (int)(self.batch_comboBox.currentText())
         epochs = (int)(self.epoch_lineEdit.text())
-        num_gpu = (int)(self.numgpu_lineEdit.text())
-        input_dims = (str)('%s' % (self.idims_lineEdit.text()))
         rali_cpu = self.rcpu_radioButton.isChecked()
+        input_dims = (str)('%s' % (self.idims_lineEdit.text()))
         num_thread = 1
-        crop = 224
+        gui = self.tgui_checkBox.isChecked()
 
-        net_obj = Net(device)
-        if model == 'resnet50':
-            net = net_obj.ResNet()
-            print(net)
-
-        #train loader
-        train_loader_obj = trainLoader(dataset_train, batch_size, num_thread, crop, rali_cpu)
-        train_loader = train_loader_obj.get_pytorch_train_loader()
-
-        print(train_loader)
-        #test loader
-        val_loader_obj = valLoader(dataset_val, batch_size, num_thread, crop, rali_cpu)
-        val_loader = val_loader_obj.get_pytorch_val_loader()
-        print(val_loader)
-
-        optimizer = optim.SGD(net.parameters(), lr=0.001)
-        criterion = nn.CrossEntropyLoss()
-
-        train_test_obj = trainAndTest(net, device, train_loader, val_loader, optimizer, criterion, PATH)
-        for epoch in range(epochs):
-            train_test_obj.train(epoch)
-
-        print('Finished Training')
-        torch.save(net.state_dict(), PATH)      #save trained model
-
-        train_test_obj.test()
+        self.runningState = True
+        self.close()
+        trainer = TrainViewer(model, datapath, PATH, device, num_gpu, batch_size, epochs, rali_cpu, input_dims, num_thread, gui, self)
+        trainer.show()
 
     def runConfig(self):
         model_format = (str)(self.format_comboBox.currentText())
