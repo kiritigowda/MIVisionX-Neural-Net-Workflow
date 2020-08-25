@@ -69,6 +69,13 @@ class InferenceControl(QtWidgets.QMainWindow):
         self.trun_pushButton.clicked.connect(self.runTraining)
         self.tclose_pushButton.clicked.connect(self.closeEvent)
 
+        self.model_comboBox.setCurrentIndex(1)
+        self.dtype_comboBox.setCurrentIndex(3)
+        self.opath_lineEdit.setText("./")
+        self.numgpu_lineEdit.setText("1")
+        self.epoch_lineEdit.setText("10")
+        self.idims_lineEdit.setText("1,3,224,224")
+
     def browseFile(self):
         if self.format_comboBox.currentText() == 'nnef':
             self.file_lineEdit.setText(QtWidgets.QFileDialog.getExistingDirectory(self, 'Open Folder', './'))    

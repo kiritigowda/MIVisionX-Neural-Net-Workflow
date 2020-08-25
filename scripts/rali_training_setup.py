@@ -236,7 +236,7 @@ class modelTraining(QtCore.QObject):
         self.model = model
         # self.datapath = datapath
         self.PATH = PATH
-        training_device = self.training_device and torch.cuda.is_available() #checks for rocm installation of pytorch
+        training_device = training_device and torch.cuda.is_available() #checks for rocm installation of pytorch
         self.device = torch.device("cuda" if training_device else "cpu") #device = GPU in this case
         self.num_gpu = num_gpu
         self.batch_size = batch_size
