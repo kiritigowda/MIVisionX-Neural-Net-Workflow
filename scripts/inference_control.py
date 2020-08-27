@@ -1,18 +1,30 @@
 import os
+import enum
 #from PyQt4 import QtGui, uic
 from PyQt5 import QtWidgets, uic
 from inference_viewer import *
-from train_viewer import *
+#from train_viewer import *
+
+class Mode(enum.Enum):
+    TRAINING = 0,
+    INFERENCE = 1
 
 class InferenceControl(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         super(InferenceControl, self).__init__(parent)
         self.runningState = False
+        self.mode = None
         self.initUI()
 
     def initUI(self):
         uic.loadUi("inference_control.ui", self)
         #self.setStyleSheet("background-color: white")
+        self.tabWidget.setCurrentIndex(0)
+        self.ti_pushButton.clicked.connect(self.confirmMode)
+        self.close_pushButton.clicked.connect(self.closeEvent)
+        self.run_pushButton.clicked.connect(self.runConfig)
+        self.run_pushButton.setEnabled(False)
+        self.close_pushButton.setStyleSheet("color: white; background-color: darkRed")
 
         #inference
         self.upload_comboBox.activated.connect(self.fromFile)
@@ -22,7 +34,6 @@ class InferenceControl(QtWidgets.QMainWindow):
         self.image_pushButton.clicked.connect(self.browseImage)
         self.val_pushButton.clicked.connect(self.browseVal)
         self.hier_pushButton.clicked.connect(self.browseHier)
-        self.run_pushButton.clicked.connect(self.runConfig)
         self.file_lineEdit.textChanged.connect(self.checkInput)
         self.name_lineEdit.textChanged.connect(self.checkInput)
         self.idims_lineEdit.textChanged.connect(self.checkInput)
@@ -31,7 +42,6 @@ class InferenceControl(QtWidgets.QMainWindow):
         self.label_lineEdit.textChanged.connect(self.checkInput)
         self.image_lineEdit.textChanged.connect(self.checkInput)
         self.image_lineEdit.textChanged.connect(self.checkInput)
-        self.close_pushButton.clicked.connect(self.closeEvent)
         self.file_lineEdit.setPlaceholderText("File Directory [required]")
         self.name_lineEdit.setPlaceholderText("Model Name [required]")
         self.idims_lineEdit.setPlaceholderText("c,h,w [required]")
@@ -43,20 +53,17 @@ class InferenceControl(QtWidgets.QMainWindow):
         self.image_lineEdit.setPlaceholderText("Image Folder [required]")
         self.val_lineEdit.setPlaceholderText("[optional]")
         self.hier_lineEdit.setPlaceholderText("[optional]")
-        self.close_pushButton.setStyleSheet("color: white; background-color: darkRed")
         self.gui_checkBox.setChecked(True)
         self.readSetupFile()
 
         # training
         self.tidims_lineEdit.setPlaceholderText("n,c,h,w [required]")
-        self.tclose_pushButton.setStyleSheet("color: white; background-color: darkRed")
         self.dpath_lineEdit.setPlaceholderText("Data Directory [required]")
         self.opath_lineEdit.setPlaceholderText("Output Directory [required]")
         self.numgpu_lineEdit.setPlaceholderText("GPU(s)")
         self.epoch_lineEdit.setPlaceholderText("Epoch(s)")
         self.tgpu_radioButton.setChecked(1)
         self.rcpu_radioButton.setChecked(1)
-        self.trun_pushButton.setEnabled(False)
         self.model_comboBox.currentIndexChanged.connect(self.checkTInput)
         self.dtype_comboBox.currentIndexChanged.connect(self.checkTInput)
         self.tidims_lineEdit.textChanged.connect(self.checkTInput)
@@ -66,8 +73,6 @@ class InferenceControl(QtWidgets.QMainWindow):
         self.epoch_lineEdit.textChanged.connect(self.checkTInput)
         self.dpath_pushButton.clicked.connect(self.browseDPath)
         self.opath_pushButton.clicked.connect(self.browseOPath)
-        self.trun_pushButton.clicked.connect(self.runTraining)
-        self.tclose_pushButton.clicked.connect(self.closeEvent)
 
         self.model_comboBox.setCurrentIndex(1)
         self.dtype_comboBox.setCurrentIndex(3)
@@ -75,6 +80,24 @@ class InferenceControl(QtWidgets.QMainWindow):
         self.numgpu_lineEdit.setText("1")
         self.epoch_lineEdit.setText("10")
         self.tidims_lineEdit.setText("1,3,224,224")
+
+    def confirmMode(self):
+        self.tabWidget.setEnabled(True)
+        self.ti_comboBox.setEnabled(False)
+        self.ti_pushButton.setEnabled(False)
+
+        if self.ti_comboBox.currentIndex() == 0:
+            self.mode = Mode.TRAINING
+            self.tabWidget.setCurrentIndex(0)
+            self.tabWidget.setTabEnabled(0, True)
+            self.tabWidget.setTabEnabled(1, False)
+        elif self.ti_comboBox.currentIndex() == 1:
+            self.mode = Mode.INFERENCE
+            self.tabWidget.setCurrentIndex(1)
+            self.tabWidget.setTabEnabled(1, True)
+            self.tabWidget.setTabEnabled(0, False)
+
+
 
     def browseFile(self):
         if self.format_comboBox.currentText() == 'nnef':
@@ -229,11 +252,11 @@ class InferenceControl(QtWidgets.QMainWindow):
             and not (self.dpath_lineEdit.text() == '') and not (self.opath_lineEdit.text() == '') \
             and not (self.tidims_lineEdit.text() == '') and not (self.numgpu_lineEdit.text() == '') \
             and not (self.epoch_lineEdit.text() == ''):
-                self.trun_pushButton.setEnabled(True)
-                self.trun_pushButton.setStyleSheet("background-color: lightgreen")
+                self.run_pushButton.setEnabled(True)
+                self.run_pushButton.setStyleSheet("background-color: lightgreen")
         else:
-            self.trun_pushButton.setEnabled(False)
-            self.trun_pushButton.setStyleSheet("background-color: 0")
+            self.run_pushButton.setEnabled(False)
+            self.run_pushButton.setStyleSheet("background-color: 0")
             
     def runTraining(self):
         model = (str)(self.model_comboBox.currentText())
@@ -262,7 +285,7 @@ class InferenceControl(QtWidgets.QMainWindow):
         trainer = TrainViewer(model, datapath, PATH, training_device, num_gpu, batch_size, epochs, rali_cpu, input_dims, num_thread, gui, self)
         trainer.show()
 
-    def runConfig(self):
+    def runInference(self):
         model_format = (str)(self.format_comboBox.currentText())
         model_name = (str)(self.name_lineEdit.text())
         model_location = (str)(self.file_lineEdit.text())
@@ -301,6 +324,13 @@ class InferenceControl(QtWidgets.QMainWindow):
         if gui == 'yes':
             #viewer.show()
             viewer.showMaximized()
+            
+
+    def runConfig(self):
+        if self.mode == Mode.TRAINING:
+            self.runTraining()
+        elif self.mode == Mode.INFERENCE:
+            self.runInference()
             
 
     def closeEvent(self, event):

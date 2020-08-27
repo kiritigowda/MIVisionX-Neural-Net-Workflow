@@ -121,7 +121,55 @@
      </spacer>
     </item>
     <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QLabel" name="ti_label">
+        <property name="text">
+         <string>Choose a mode to run</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="ti_comboBox">
+        <item>
+         <property name="text">
+          <string>Training</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Inference</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="ti_pushButton">
+        <property name="text">
+         <string>Confirm</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
      <widget class="QTabWidget" name="tabWidget">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="tabPosition">
        <enum>QTabWidget::North</enum>
       </property>
@@ -138,7 +186,7 @@
        <attribute name="title">
         <string>Training</string>
        </attribute>
-       <widget class="QWidget" name="">
+       <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
           <x>10</x>
@@ -534,47 +582,7 @@
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout">
-           <item>
-            <spacer name="horizontalSpacer">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QPushButton" name="tclose_pushButton">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>Close</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="trun_pushButton">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>Run</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
+          <layout class="QHBoxLayout" name="horizontalLayout"/>
          </item>
         </layout>
        </widget>
@@ -931,7 +939,7 @@
           <item row="3" column="5" colspan="2">
            <widget class="QComboBox" name="mode_comboBox">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <item>
              <property name="text">
@@ -974,19 +982,6 @@
         </item>
         <item>
          <layout class="QGridLayout" name="inference_gridLayout">
-          <item row="5" column="7">
-           <widget class="QPushButton" name="close_pushButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Close</string>
-            </property>
-           </widget>
-          </item>
           <item row="2" column="1">
            <widget class="QLabel" name="image_label">
             <property name="text">
@@ -1035,7 +1030,7 @@
           <item row="4" column="2" colspan="6">
            <widget class="QLineEdit" name="hier_lineEdit">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="text">
              <string/>
@@ -1067,7 +1062,7 @@
           <item row="1" column="2" colspan="6">
            <widget class="QLineEdit" name="label_lineEdit">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="text">
              <string/>
@@ -1077,7 +1072,7 @@
           <item row="3" column="2" colspan="6">
            <widget class="QLineEdit" name="val_lineEdit">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="text">
              <string/>
@@ -1121,7 +1116,7 @@
           <item row="0" column="8">
            <widget class="QPushButton" name="output_pushButton">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="text">
              <string>Browse...</string>
@@ -1190,7 +1185,7 @@
           <item row="4" column="8">
            <widget class="QPushButton" name="hier_pushButton">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="text">
              <string>Browse...</string>
@@ -1210,20 +1205,10 @@
           <item row="2" column="2" colspan="6">
            <widget class="QLineEdit" name="image_lineEdit">
             <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="8">
-           <widget class="QPushButton" name="run_pushButton">
-            <property name="enabled">
              <bool>false</bool>
             </property>
             <property name="text">
-             <string>Run</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -1252,7 +1237,7 @@
           <item row="1" column="8">
            <widget class="QPushButton" name="label_pushButton">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="text">
              <string>Browse...</string>
@@ -1262,7 +1247,7 @@
           <item row="3" column="8">
            <widget class="QPushButton" name="val_pushButton">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="text">
              <string>Browse...</string>
@@ -1272,7 +1257,7 @@
           <item row="2" column="8">
            <widget class="QPushButton" name="image_pushButton">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="text">
              <string>Browse...</string>
@@ -1350,7 +1335,7 @@
           <item row="0" column="2" colspan="6">
            <widget class="QLineEdit" name="output_lineEdit">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="text">
              <string/>
@@ -1362,6 +1347,52 @@
        </layout>
       </widget>
      </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>598</width>
+          <height>22</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="close_pushButton">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Close</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="run_pushButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Run</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
