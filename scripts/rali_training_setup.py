@@ -1,6 +1,7 @@
 import os
 import torch
 import argparse
+import csv
 import numpy as np
 import torchvision.models as models
 import torchvision.datasets as datasets
@@ -201,6 +202,11 @@ class trainAndTest():
                       (epoch + 1, i + 1, acc5 / print_interval))
 
         temp = [epoch, losses.avg, top1.avg.item(), top5.avg.item()]
+        with open('results_file.csv', 'w', newline='') as outcsv:
+            writer = csv.writer(outcsv)
+            writer = csv.DictWriter(outcsv, fieldnames=['Epoch', 'running_loss', 'top1', 'top5'])
+            writer.writeheader()
+            writer.writerow({'Epoch':epoch, 'running_loss':losses.avg, 'top1':top1.avg.item(), 'top5':top5.avg.item()})
         self.results.append(temp)
             
     def test(self):
@@ -276,19 +282,12 @@ def main():
     for epoch in range(epochs):
         train_test_obj.train(epoch)
 
-    print('final results' , train_test_obj.results)
+    #print('final results' , train_test_obj.results)
     print('Finished Training')
     torch.save(net.state_dict(), PATH)      #save trained model
 
     train_test_obj.test()		#validation accuracy
     print('test accuracy' , train_test_obj.test_acc)
-
-    #individual result fucntion tests
-    loss = train_test_obj.getLoss(1)
-    top1 = train_test_obj.getTop1(1)
-    top5 = train_test_obj.getTop5(1)
-
-    print(loss, top1,top5)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
