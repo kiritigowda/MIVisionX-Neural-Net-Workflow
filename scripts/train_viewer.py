@@ -3,162 +3,131 @@ import queue
 from PyQt5 import QtGui, uic
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import QTime, QTimer, QThread
-from inference_setup import *
+from rali_training_setup import *
 
-class InferenceViewer(QtGui.QMainWindow):
-    def __init__(self, model_name, model_format, image_dir, model_location, label, hierarchy, image_val, input_dims, output_dims, batch_size, output_dir, 
-                                        add, multiply, verbose, fp16, replace, loop, rali_mode, gui, container_logo, fps_file, cpu_name, gpu_name, parent):
-        super(InferenceViewer, self).__init__(parent)
+class TrainViewer(QtGui.QMainWindow):
+    def __init__(self, model, datapath, PATH, training_device, num_gpu, batch_size, epochs, rali_cpu, input_dims, num_thread, gui, parent):
+        super(TrainViewer, self).__init__(parent)
         self.parent = parent
 
-        self.model_name = model_name
-        self.model_format = model_format 
-        self.image_dir = image_dir
-        self.model_location = model_location
-        self.label = label
-        self.hierarchy = hierarchy
-        self.image_val = image_val
-        self.input_dims = input_dims
-        self.output_dims = output_dims
+        self.model = model
+        self.datapath = datapath
+        self.PATH = PATH
+        self.training_device = training_device
+        self.num_gpu = num_gpu
         self.batch_size = batch_size
-        self.batch_size_int = (int)(batch_size)
-        self.output_dir = output_dir
-        self.add = add
-        self.multiply = multiply
-        self.gui = True if gui == 'yes' else False
-        self.fp16 = fp16
-        self.replace = replace
-        self.verbose = verbose
-        self.loop = loop
-        self.rali_mode = rali_mode
-        inputImageDir = os.path.expanduser(image_dir)
-        self.total_images = len(os.listdir(inputImageDir))
-        self.origImageQueue = queue.Queue()
-        self.augImageQueue = queue.Queue()
-        self.fps_file = fps_file
-        self.inferenceEngine = None
+        self.epochs = epochs
+        self.rali_cpu = rali_cpu
+        self.input_dims = input_dims
+        self.num_thread = num_thread
+        self.gui = gui
+        self.trainEngine = None
         self.receiver_thread = None
 
         self.initEngines()
         
         if self.gui:
-            self.container_index = (int)(container_logo)
-            self.cpu_name = cpu_name
-            self.gpu_name = gpu_name
-            self.pauseState = False
-            self.showAug = False
-            self.elapsedTime = QTime.currentTime()
-            self.lastTime = 0
-            self.totalElapsedTime = 0.0
-            self.totalAccuracy = 0
-            self.progIndex = 0
-            self.augIntensity = 0.0
-            self.imgCount = 0
-            self.frameCount = 9
-            self.lastIndex = self.frameCount - 1
-            self.x = [0] 
-            self.y = [0]
-            self.augAccuracy = []
-            self.totalCurve = None
-            self.augCurve = None
-            self.graph = None
-            self.legend = None
-            self.lastAugName = None
-            self.pen = pg.mkPen('w', width=4)
-            self.AMD_Radeon_pixmap = QPixmap("./data/images/AMD_Radeon.png")
-            self.AMD_Radeon_white_pixmap = QPixmap("./data/images/AMD_Radeon-white.png")
-            self.MIVisionX_pixmap = QPixmap("./data/images/MIVisionX-logo.png")
-            self.MIVisionX_white_pixmap = QPixmap("./data/images/MIVisionX-logo-white.png")
-            self.EPYC_pixmap = QPixmap("./data/images/EPYC-blue.png")
-            self.EPYC_white_pixmap = QPixmap("./data/images/EPYC-blue-white.png")
-            self.docker_pixmap = QPixmap("./data/images/Docker.png")
-            self.singularity_pixmap = QPixmap("./data/images/Singularity.png")
-            self.rali_pixmap = QPixmap("./data/images/RALI.png")
-            self.rali_white_pixmap = QPixmap("./data/images/RALI-white.png")
-            self.graph_image_pixmap = QPixmap("./data/images/Graph-image.png")
-            self.graph_image_white_pixmap = QPixmap("./data/images/Graph-image-white.png")
+            # self.container_index = (int)(container_logo)
+            # self.cpu_name = cpu_name
+            # self.gpu_name = gpu_name
+            # self.pauseState = False
+            # self.showAug = False
+            # self.elapsedTime = QTime.currentTime()
+            # self.lastTime = 0
+            # self.totalElapsedTime = 0.0
+            # self.totalAccuracy = 0
+            # self.progIndex = 0
+            # self.augIntensity = 0.0
+            # self.imgCount = 0
+            # self.frameCount = 9
+            # self.lastIndex = self.frameCount - 1
+            # self.x = [0] 
+            # self.y = [0]
+            # self.augAccuracy = []
+            # self.totalCurve = None
+            # self.augCurve = None
+            # self.graph = None
+            # self.legend = None
+            # self.lastAugName = None
+            # self.pen = pg.mkPen('w', width=4)
+            # self.AMD_Radeon_pixmap = QPixmap("./data/images/AMD_Radeon.png")
+            # self.AMD_Radeon_white_pixmap = QPixmap("./data/images/AMD_Radeon-white.png")
+            # self.MIVisionX_pixmap = QPixmap("./data/images/MIVisionX-logo.png")
+            # self.MIVisionX_white_pixmap = QPixmap("./data/images/MIVisionX-logo-white.png")
+            # self.EPYC_pixmap = QPixmap("./data/images/EPYC-blue.png")
+            # self.EPYC_white_pixmap = QPixmap("./data/images/EPYC-blue-white.png")
+            # self.docker_pixmap = QPixmap("./data/images/Docker.png")
+            # self.singularity_pixmap = QPixmap("./data/images/Singularity.png")
+            # self.rali_pixmap = QPixmap("./data/images/RALI.png")
+            # self.rali_white_pixmap = QPixmap("./data/images/RALI-white.png")
+            # self.graph_image_pixmap = QPixmap("./data/images/Graph-image.png")
+            # self.graph_image_white_pixmap = QPixmap("./data/images/Graph-image-white.png")
             
             self.initUI()
             self.updateTimer = QTimer()
             self.updateTimer.timeout.connect(self.update)
             self.updateTimer.timeout.connect(self.plotGraph)
-            self.updateTimer.timeout.connect(self.setProgressBar)
+            #self.updateTimer.timeout.connect(self.setProgressBar)
             self.updateTimer.start(40)
        
     def initUI(self):
-        uic.loadUi("inference_viewer.ui", self)
+        uic.loadUi("train_viewer.ui", self)
         self.setStyleSheet("background-color: white")
-        self.name_label.setText("Model: %s" % (self.model_name))
-        self.cpuName_label.setText(self.cpu_name)
-        self.gpuName_label.setText(self.gpu_name)
-        self.dataset_label.setText("Augmentation set - %d" % (self.rali_mode))
-        self.imagesFrame.setStyleSheet(".QFrame {border-width: 20px; border-image: url(./data/images/filmStrip.png);}")
-        self.total_progressBar.setStyleSheet("QProgressBar::chunk { background: lightblue; }")
-        self.top1_progressBar.setStyleSheet("QProgressBar::chunk { background: green; }")
-        self.top5_progressBar.setStyleSheet("QProgressBar::chunk { background: lightgreen; }")
-        self.mis_progressBar.setStyleSheet("QProgressBar::chunk { background: red; }")
-        self.total_progressBar.setMaximum(self.total_images*self.batch_size_int)
-        self.graph = pg.PlotWidget(title="Accuracy vs Time")
-        self.graph.setLabel('left', 'Accuracy', '%')
-        self.graph.setLabel('bottom', 'Time', 's')
-        self.graph.setYRange(0, 100, padding=0)
+        self.lgraph = pg.PlotWidget(title="Loss vs Epoch")
+        self.lgraph.setLabel('left', 'Loss')
+        self.lgraph.setLabel('bottom', 'Epoch(s)')
+        self.lgraph.setXRange(0, self.epochs, padding=0)
+        self.lgraph.setYRange(0, 100, padding=0)
         pg.setConfigOptions(antialias=True)
-        self.totalCurve = self.graph.plot(pen=self.pen)
-        self.augCurve = self.graph.plot(pen=pg.mkPen('b', width=4))
+        
+        self.lcurve = self.lgraph.plot(pen=pg.mkPen('b', width=4))
         self.legend = pg.LegendItem(offset=(370,1))
-        self.legend.setParentItem(self.graph.plotItem)
-        self.legend.addItem(self.totalCurve, 'Cumulative')
-        self.graph.setBackground(None)
-        self.graph.setMaximumWidth(550)
-        self.graph.setMaximumHeight(300)
-        self.verticalLayout_2.addWidget(self.graph)
-        self.level_slider.setMaximum(100)
-        self.level_slider.valueChanged.connect(self.setIntensity)
-        self.pause_pushButton.setStyleSheet("color: white; background-color: darkBlue")
-        self.stop_pushButton.setStyleSheet("color: white; background-color: darkRed")
-        self.pause_pushButton.clicked.connect(self.pauseView)
-        self.stop_pushButton.clicked.connect(self.terminate)
-        self.dark_checkBox.stateChanged.connect(self.setBackground)
-        self.verbose_checkBox.stateChanged.connect(self.showVerbose)
-        self.rali_checkBox.stateChanged.connect(self.showRALI)
-        self.dark_checkBox.setChecked(True)
-        self.graph_imageLabel.setPixmap(self.graph_image_pixmap)
-        if self.container_index == 1:
-            self.container_logo.setPixmap(self.docker_pixmap)
-        elif self.container_index == 2:
-            self.container_logo.setPixmap(self.singularity_pixmap)
-        else:
-            self.container_logo.hide()
-        for augmentation in range(self.batch_size_int):
-            self.augAccuracy.append([0])
+        self.legend.setParentItem(self.lgraph.plotItem)
+        #self.legend.addItem(self.totalCurve, 'Cumulative')
+        self.lgraph.setBackground(None)
+        self.lgraph.setMaximumWidth(550)
+        self.lgraph.setMaximumHeight(300)
+        self.verticalLayout.addWidget(self.graph)
+        # self.pause_pushButton.clicked.connect(self.pauseView)
+        # self.stop_pushButton.clicked.connect(self.terminate)
+        # self.dark_checkBox.stateChanged.connect(self.setBackground)
+        # self.verbose_checkBox.stateChanged.connect(self.showVerbose)
+        # self.rali_checkBox.stateChanged.connect(self.showRALI)
+        # self.dark_checkBox.setChecked(True)
+        # self.graph_imageLabel.setPixmap(self.graph_image_pixmap)
+        # if self.container_index == 1:
+        #     self.container_logo.setPixmap(self.docker_pixmap)
+        # elif self.container_index == 2:
+        #     self.container_logo.setPixmap(self.singularity_pixmap)
+        # else:
+        #     self.container_logo.hide()
+        # for augmentation in range(self.batch_size_int):
+        #     self.augAccuracy.append([0])
 
-        self.showVerbose()
-        self.showRALI()
+        #self.showVerbose()
+        #self.showRALI()
 
     def initEngines(self):
         self.receiver_thread = QThread()
-        # Creating an object for inference.
-        self.inferenceEngine = modelInference(self.model_name, self.model_format, self.image_dir, self.model_location, self.label, self.hierarchy, self.image_val,
-                                                self.input_dims, self.output_dims, self.batch_size, self.output_dir, self.add, self.multiply, self.verbose, self.fp16, 
-                                                self.replace, self.loop, self.rali_mode, self.origImageQueue, self.augImageQueue, self.gui, self.total_images, self.fps_file)
+        # Creating an object for train
+        self.trainEngine = modelTraining(self.model, self.datapath, self.PATH, self.training_device, self.num_gpu, self.batch_size, self.epochs, self.rali_cpu, self.input_dims, self.num_thread, self.gui)
         
-        self.inferenceEngine.moveToThread(self.receiver_thread)
-        self.receiver_thread.started.connect(self.inferenceEngine.runInference)
-        self.receiver_thread.finished.connect(self.inferenceEngine.deleteLater)
+        self.trainEngine.moveToThread(self.receiver_thread)
+        self.receiver_thread.started.connect(self.trainEngine.runTraining)
+        self.receiver_thread.finished.connect(self.trainEngine.deleteLater)
         self.receiver_thread.start()
         self.receiver_thread.terminate()
 
-    def paintEvent(self, event):
-        self.showAugImage()
-        self.showImage()
-        self.displayFPS()
-        if self.imgCount == self.total_images:
-            if self.loop == 'yes':
-                self.resetViewer()
-            else:
-                self.terminate()
+    #def paintEvent(self, event):
+        #self.showAugImage()
+        #self.showImage()
+        #self.displayFPS()
+        # if self.imgCount == self.total_images:
+        #     if self.loop == 'yes':
+        #         self.resetViewer()
+        #     else:
+        #        self.terminate()
                 
-
     def resetViewer(self):
         self.imgCount = 0
         del self.x[:]
@@ -179,45 +148,6 @@ class InferenceViewer(QtGui.QMainWindow):
         self.augCurve.clear()
         self.name_label.setText("Model: %s" % (self.model_name))
         self.legend.removeItem(self.lastAugName)
-
-    def setProgressBar(self):
-        if self.showAug:
-            self.setAugProgress(self.progIndex)
-        else:
-            self.setTotalProgress()
-
-    def setTotalProgress(self):
-        totalStats = self.inferenceEngine.getTotalStats()
-        top1 = totalStats[0]
-        top5 = totalStats[1]
-        mis = totalStats[2]
-        totalCount = top5 + mis
-        self.totalAccuracy = (float)(top5) / (totalCount+1) * 100
-        self.total_progressBar.setValue(totalCount)
-        self.total_progressBar.setMaximum(self.total_images*self.batch_size_int)
-        self.imgProg_label.setText("Processed: %d of %d" % (totalCount, self.total_images*self.batch_size_int))
-        self.top1_progressBar.setValue(top1)
-        self.top1_progressBar.setMaximum(totalCount)
-        self.top5_progressBar.setValue(top5)
-        self.top5_progressBar.setMaximum(totalCount)
-        self.mis_progressBar.setValue(mis)
-        self.mis_progressBar.setMaximum(totalCount)
-
-    def setAugProgress(self, augmentation):
-        augStats = self.inferenceEngine.getAugStats(augmentation)
-        top1 = augStats[0]
-        top5 = augStats[1]
-        mis = augStats[2]
-        totalCount = top5 + mis
-        self.total_progressBar.setValue(totalCount)
-        self.total_progressBar.setMaximum(self.total_images)
-        self.imgProg_label.setText("Processed: %d of %d" % (totalCount, self.total_images))
-        self.top1_progressBar.setValue(top1)
-        self.top1_progressBar.setMaximum(totalCount)
-        self.top5_progressBar.setValue(top5)
-        self.top5_progressBar.setMaximum(totalCount)
-        self.mis_progressBar.setValue(mis)
-        self.mis_progressBar.setMaximum(totalCount)
 
     def plotGraph(self):
         if not self.pauseState:

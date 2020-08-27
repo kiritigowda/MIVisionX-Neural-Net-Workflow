@@ -5,7 +5,7 @@ import time
 import numpy as np
 import cv2
 from numpy.ctypeslib import ndpointer
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 from rali_setup import *
 
 # AMD Neural Net python wrapper
@@ -265,7 +265,7 @@ class modelInference(QtCore.QObject):
 					print("ERROR: Converting NNIR to OpenVX Failed")
 					quit()
 
-		os.system('(cd '+self.modelBuildDir+'; cmake ../openvx-files; make; ./anntest ../openvx-files/weights.bin )')
+		#os.system('(cd '+self.modelBuildDir+'; cmake ../openvx-files; make; ./anntest ../openvx-files/weights.bin )')
 		print("\nSUCCESS: Converting Pre-Trained model to MIVisionX Runtime successful\n")
 
 		# create inference classifier
@@ -344,7 +344,7 @@ class modelInference(QtCore.QObject):
 				end = time.time()
 				msFrame += (end-start)*1000
 				if (self.verbosePrint):
-					print '%30s' % 'Get next image from RALI took', str((end - start)*1000), 'ms'
+					print ('%30s' % 'Get next image from RALI took', str((end - start)*1000), 'ms')
 	
 				if self.gui:
 					text_width, text_height = cv2.getTextSize(groundTruthLabel[1].split(',')[0], cv2.FONT_HERSHEY_SIMPLEX, 1.0, 2)[0]
@@ -361,13 +361,13 @@ class modelInference(QtCore.QObject):
 				end = time.time()
 				msFrame += (end-start)*1000
 				if (self.verbosePrint):
-					print '%30s' % 'inference took', str((end - start)*1000), 'ms' 
+					print ('%30s' % 'inference took', str((end - start)*1000), 'ms' )
 				start = time.time()
 				topIndex, topProb = self.processClassificationOutput(output)
 				end = time.time()
 				msFrame += (end-start)*1000
 				if (self.verbosePrint):
-					print '%30s' % 'Processing inference output took', str((end - start)*1000), 'ms' 
+					print ('%30s' % 'Processing inference output took', str((end - start)*1000), 'ms' )
 				# Process output for each of the 64 images
 				for i in range(self.modelBatchSizeInt):
 					#process the output tensor
@@ -376,7 +376,7 @@ class modelInference(QtCore.QObject):
 					end = time.time()
 					msFrame += (end-start)*1000
 					if (self.verbosePrint):
-						print '%30s' % 'Processing top 5 results took ', str((end - start)*1000), 'ms' 
+						print ('%30s' % 'Processing top 5 results took ', str((end - start)*1000), 'ms' )
 
 					if self.gui:
 						augmentationText = self.raliList[i].split('+')
@@ -418,7 +418,7 @@ class modelInference(QtCore.QObject):
 			fpsText = open(self.fps_fileName, "w")
 			fpsText.write(str(int(self.totalFPS)))
 			fpsText.close()
-			print 'FPS: %d\n' % self.totalFPS
+			print ('FPS: %d\n' % self.totalFPS)
 	
 	def getFPS(self):
 		return self.totalFPS

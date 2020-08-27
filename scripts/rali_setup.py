@@ -291,7 +291,7 @@ class DataLoader(RaliGraph):
 		self.w = self.getOutputWidth()
 		self.h = self.getOutputHeight()
 		self.b = self.getBatchSize()
-            	self.n = self.raliGetAugmentationBranchCount()
+		self.n = self.raliGetAugmentationBranchCount()
 		color_format = self.getOutputColorFormat()
 		self.p = (1 if color_format is ColorFormat.IMAGE_U8 else 3)
 		height = self.h*self.n
@@ -306,7 +306,7 @@ class DataLoader(RaliGraph):
 
 	def process_validation(self, validation_list):
 		for i in range(len(validation_list)):
-			name, groundTruthIndex = validation_list[i].decode("utf-8").split(' ')
+			name, groundTruthIndex = validation_list[i].split(' ')
 			self.validation_dict[name] = groundTruthIndex
 
 	def get_ground_truth(self):
@@ -379,9 +379,9 @@ class DataLoader(RaliGraph):
 		self.reset()
 		
 	def get_next_augmentation(self):
-                if self.raliIsEmpty() == 1:
-			#raise StopIteration
+		if self.raliIsEmpty() == 1:
 			return -1
+			#raise StopIteration
 		self.renew_parameters()
 		if self.run() != 0:
 			#raise StopIteration

@@ -1,16 +1,32 @@
 import os
-from PyQt4 import QtGui, uic
+import enum
+#from PyQt4 import QtGui, uic
+from PyQt5 import QtWidgets, uic
 from inference_viewer import *
+#from train_viewer import *
 
-class InferenceControl(QtGui.QMainWindow):
+class Mode(enum.Enum):
+    TRAINING = 0,
+    INFERENCE = 1
+
+class InferenceControl(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         super(InferenceControl, self).__init__(parent)
         self.runningState = False
+        self.mode = None
         self.initUI()
 
     def initUI(self):
         uic.loadUi("inference_control.ui", self)
         #self.setStyleSheet("background-color: white")
+        self.tabWidget.setCurrentIndex(0)
+        self.ti_pushButton.clicked.connect(self.confirmMode)
+        self.close_pushButton.clicked.connect(self.closeEvent)
+        self.run_pushButton.clicked.connect(self.runConfig)
+        self.run_pushButton.setEnabled(False)
+        self.close_pushButton.setStyleSheet("color: white; background-color: darkRed")
+
+        #inference
         self.upload_comboBox.activated.connect(self.fromFile)
         self.file_pushButton.clicked.connect(self.browseFile)
         self.output_pushButton.clicked.connect(self.browseOutput)
@@ -18,7 +34,6 @@ class InferenceControl(QtGui.QMainWindow):
         self.image_pushButton.clicked.connect(self.browseImage)
         self.val_pushButton.clicked.connect(self.browseVal)
         self.hier_pushButton.clicked.connect(self.browseHier)
-        self.run_pushButton.clicked.connect(self.runConfig)
         self.file_lineEdit.textChanged.connect(self.checkInput)
         self.name_lineEdit.textChanged.connect(self.checkInput)
         self.idims_lineEdit.textChanged.connect(self.checkInput)
@@ -27,7 +42,6 @@ class InferenceControl(QtGui.QMainWindow):
         self.label_lineEdit.textChanged.connect(self.checkInput)
         self.image_lineEdit.textChanged.connect(self.checkInput)
         self.image_lineEdit.textChanged.connect(self.checkInput)
-        self.close_pushButton.clicked.connect(self.closeEvent)
         self.file_lineEdit.setPlaceholderText("File Directory [required]")
         self.name_lineEdit.setPlaceholderText("Model Name [required]")
         self.idims_lineEdit.setPlaceholderText("c,h,w [required]")
@@ -39,30 +53,78 @@ class InferenceControl(QtGui.QMainWindow):
         self.image_lineEdit.setPlaceholderText("Image Folder [required]")
         self.val_lineEdit.setPlaceholderText("[optional]")
         self.hier_lineEdit.setPlaceholderText("[optional]")
-        self.close_pushButton.setStyleSheet("color: white; background-color: darkRed")
         self.gui_checkBox.setChecked(True)
         self.readSetupFile()
 
+        # training
+        self.tidims_lineEdit.setPlaceholderText("n,c,h,w [required]")
+        self.dpath_lineEdit.setPlaceholderText("Data Directory [required]")
+        self.opath_lineEdit.setPlaceholderText("Output Directory [required]")
+        self.numgpu_lineEdit.setPlaceholderText("GPU(s)")
+        self.epoch_lineEdit.setPlaceholderText("Epoch(s)")
+        self.tgpu_radioButton.setChecked(1)
+        self.rcpu_radioButton.setChecked(1)
+        self.model_comboBox.currentIndexChanged.connect(self.checkTInput)
+        self.dtype_comboBox.currentIndexChanged.connect(self.checkTInput)
+        self.tidims_lineEdit.textChanged.connect(self.checkTInput)
+        self.opath_lineEdit.textChanged.connect(self.checkTInput)
+        self.dpath_lineEdit.textChanged.connect(self.checkTInput)
+        self.numgpu_lineEdit.textChanged.connect(self.checkTInput)
+        self.epoch_lineEdit.textChanged.connect(self.checkTInput)
+        self.dpath_pushButton.clicked.connect(self.browseDPath)
+        self.opath_pushButton.clicked.connect(self.browseOPath)
+
+        self.model_comboBox.setCurrentIndex(1)
+        self.dtype_comboBox.setCurrentIndex(3)
+        self.opath_lineEdit.setText("./")
+        self.numgpu_lineEdit.setText("1")
+        self.epoch_lineEdit.setText("10")
+        self.tidims_lineEdit.setText("1,3,224,224")
+
+    def confirmMode(self):
+        self.tabWidget.setEnabled(True)
+        self.ti_comboBox.setEnabled(False)
+        self.ti_pushButton.setEnabled(False)
+
+        if self.ti_comboBox.currentIndex() == 0:
+            self.mode = Mode.TRAINING
+            self.tabWidget.setCurrentIndex(0)
+            self.tabWidget.setTabEnabled(0, True)
+            self.tabWidget.setTabEnabled(1, False)
+        elif self.ti_comboBox.currentIndex() == 1:
+            self.mode = Mode.INFERENCE
+            self.tabWidget.setCurrentIndex(1)
+            self.tabWidget.setTabEnabled(1, True)
+            self.tabWidget.setTabEnabled(0, False)
+
+
+
     def browseFile(self):
         if self.format_comboBox.currentText() == 'nnef':
-            self.file_lineEdit.setText(QtGui.QFileDialog.getExistingDirectory(self, 'Open Folder', './'))    
+            self.file_lineEdit.setText(QtWidgets.QFileDialog.getExistingDirectory(self, 'Open Folder', './'))    
         else:
-            self.file_lineEdit.setText(QtGui.QFileDialog.getOpenFileName(self, 'Open File', './', '*'))
+            self.file_lineEdit.setText(QtWidgets.QFileDialog.getOpenFileName(self, 'Open File', './')[0])
+
+    def browseDPath(self):
+        self.dpath_lineEdit.setText(QtWidgets.QFileDialog.getExistingDirectory(self, 'Open Folder', './'))
+
+    def browseOPath(self):
+        self.opath_lineEdit.setText(QtWidgets.QFileDialog.getExistingDirectory(self, 'Open Folder', './'))
 
     def browseOutput(self):
-        self.output_lineEdit.setText(QtGui.QFileDialog.getExistingDirectory(self, 'Open Folder', './'))
+        self.output_lineEdit.setText(QtWidgets.QFileDialog.getExistingDirectory(self, 'Open Folder', './')[0])
 
     def browseLabel(self):
-        self.label_lineEdit.setText(QtGui.QFileDialog.getOpenFileName(self, 'Open File', './', '*.txt'))
+        self.label_lineEdit.setText(QtWidgets.QFileDialog.getOpenFileName(self, 'Open File', './', '*.txt')[0])
 
     def browseImage(self):
-        self.image_lineEdit.setText(QtGui.QFileDialog.getExistingDirectory(self, 'Open Folder', './'))
+        self.image_lineEdit.setText(QtWidgets.QFileDialog.getExistingDirectory(self, 'Open Folder', './')[0])
 
     def browseVal(self):
-        self.val_lineEdit.setText(QtGui.QFileDialog.getOpenFileName(self, 'Open File', './', '*.txt'))
+        self.val_lineEdit.setText(QtWidgets.QFileDialog.getOpenFileName(self, 'Open File', './', '*.txt')[0])
 
     def browseHier(self):
-        self.hier_lineEdit.setText(QtGui.QFileDialog.getOpenFileName(self, 'Open File', './', '*.csv'))
+        self.hier_lineEdit.setText(QtWidgets.QFileDialog.getOpenFileName(self, 'Open File', './', '*.csv')[0])
 
     def readSetupFile(self):
         setupDir = '~/.mivisionx-validation-tool'
@@ -175,17 +237,55 @@ class InferenceControl(QtGui.QMainWindow):
                         self.format_comboBox.setEnabled(False)
 
     def checkInput(self):
-        if not self.file_lineEdit.text().isEmpty() and not self.name_lineEdit.text().isEmpty() \
-            and not self.idims_lineEdit.text().isEmpty() \
-            and not self.odims_lineEdit.text().isEmpty() and not self.output_lineEdit.text().isEmpty() \
-            and not self.label_lineEdit.text().isEmpty() and not self.image_lineEdit.text().isEmpty():
+        if not (self.file_lineEdit.text() == '') and not (self.name_lineEdit.text() == '') \
+            and not (self.idims_lineEdit.text() == '') \
+            and not (self.odims_lineEdit.text() == '') and not (self.output_lineEdit.text() == '') \
+            and not (self.label_lineEdit.text() == '') and not (self.image_lineEdit.text() == ''):
                 self.run_pushButton.setEnabled(True)
                 self.run_pushButton.setStyleSheet("background-color: lightgreen")
         else:
             self.run_pushButton.setEnabled(False)
             self.run_pushButton.setStyleSheet("background-color: 0")
 
-    def runConfig(self):
+    def checkTInput(self):
+        if not (self.model_comboBox.currentIndex() == 0) and not (self.dtype_comboBox.currentIndex() == 0) \
+            and not (self.dpath_lineEdit.text() == '') and not (self.opath_lineEdit.text() == '') \
+            and not (self.tidims_lineEdit.text() == '') and not (self.numgpu_lineEdit.text() == '') \
+            and not (self.epoch_lineEdit.text() == ''):
+                self.run_pushButton.setEnabled(True)
+                self.run_pushButton.setStyleSheet("background-color: lightgreen")
+        else:
+            self.run_pushButton.setEnabled(False)
+            self.run_pushButton.setStyleSheet("background-color: 0")
+            
+    def runTraining(self):
+        model = (str)(self.model_comboBox.currentText())
+        datapath = (str)(self.dpath_lineEdit.text())
+        dataset_train =  datapath + '/train'
+        if not os.path.exists(dataset_train):
+            msg = QtWidgets.QMessageBox.critical(self, "Error", "Invalid dataset, requires train folder")
+            return
+        dataset_val = datapath + '/val'
+        if not os.path.exists(dataset_val):
+            msg = QtWidgets.QMessageBox.critical(self, "Error", "Invalid dataset, requires val folder")
+            return
+
+        PATH = (str)(self.opath_lineEdit.text())
+        training_device = self.tgpu_radioButton.isChecked()
+        num_gpu = (int)(self.numgpu_lineEdit.text())
+        batch_size = (int)(self.batch_comboBox.currentText())
+        epochs = (int)(self.epoch_lineEdit.text())
+        rali_cpu = self.rcpu_radioButton.isChecked()
+        input_dims = (str)('%s' % (self.tidims_lineEdit.text()))
+        num_thread = 1
+        gui = self.tgui_checkBox.isChecked()
+
+        self.runningState = True
+        self.close()
+        trainer = TrainViewer(model, datapath, PATH, training_device, num_gpu, batch_size, epochs, rali_cpu, input_dims, num_thread, gui, self)
+        trainer.show()
+
+    def runInference(self):
         model_format = (str)(self.format_comboBox.currentText())
         model_name = (str)(self.name_lineEdit.text())
         model_location = (str)(self.file_lineEdit.text())
@@ -216,6 +316,7 @@ class InferenceControl(QtGui.QMainWindow):
         cpu_name = self.cpu_comboBox.currentText()
         gpu_name = self.gpu_comboBox.currentText()
         self.runningState = True
+
         self.close()
 
         viewer = InferenceViewer(model_name, model_format, image_dir, model_location, label, hierarchy, image_val, input_dims, output_dims, batch_size, output_dir, 
@@ -223,6 +324,13 @@ class InferenceControl(QtGui.QMainWindow):
         if gui == 'yes':
             #viewer.show()
             viewer.showMaximized()
+            
+
+    def runConfig(self):
+        if self.mode == Mode.TRAINING:
+            self.runTraining()
+        elif self.mode == Mode.INFERENCE:
+            self.runInference()
             
 
     def closeEvent(self, event):
