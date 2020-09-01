@@ -177,7 +177,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideNone</enum>
@@ -191,8 +191,8 @@
          <rect>
           <x>10</x>
           <y>20</y>
-          <width>712</width>
-          <height>355</height>
+          <width>744</width>
+          <height>322</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout">
@@ -482,6 +482,59 @@
          </item>
          <item>
           <layout class="QGridLayout" name="gridLayout_2">
+           <item row="0" column="3">
+            <widget class="QRadioButton" name="rgpu_radioButton">
+             <property name="text">
+              <string>GPU</string>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">buttonGroup_2</string>
+             </attribute>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>RALI Mode</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLabel" name="rdevice_label">
+             <property name="text">
+              <string>RALI Device</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="2" colspan="2">
+            <widget class="QLineEdit" name="tidims_lineEdit"/>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLabel" name="tidims_label">
+             <property name="text">
+              <string>Input Dims</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QRadioButton" name="rcpu_radioButton">
+             <property name="text">
+              <string>CPU</string>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">buttonGroup_2</string>
+             </attribute>
+            </widget>
+           </item>
            <item row="2" column="2" colspan="2">
             <widget class="QComboBox" name="comboBox">
              <item>
@@ -516,59 +569,6 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="1">
-            <widget class="QLabel" name="tidims_label">
-             <property name="text">
-              <string>Input Dims</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="3">
-            <widget class="QRadioButton" name="rgpu_radioButton">
-             <property name="text">
-              <string>GPU</string>
-             </property>
-             <attribute name="buttonGroup">
-              <string notr="true">buttonGroup_2</string>
-             </attribute>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QLabel" name="label">
-             <property name="text">
-              <string>RALI Mode</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="2" colspan="2">
-            <widget class="QLineEdit" name="tidims_lineEdit"/>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="rdevice_label">
-             <property name="text">
-              <string>RALI Device</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <widget class="QRadioButton" name="rcpu_radioButton">
-             <property name="text">
-              <string>CPU</string>
-             </property>
-             <attribute name="buttonGroup">
-              <string notr="true">buttonGroup_2</string>
-             </attribute>
-            </widget>
-           </item>
           </layout>
          </item>
          <item>
@@ -580,9 +580,6 @@
             <string>GUI</string>
            </property>
           </widget>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout"/>
          </item>
         </layout>
        </widget>

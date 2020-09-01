@@ -3,7 +3,7 @@ import enum
 #from PyQt4 import QtGui, uic
 from PyQt5 import QtWidgets, uic
 from inference_viewer import *
-#from train_viewer import *
+from train_viewer import *
 
 class Mode(enum.Enum):
     TRAINING = 0,
@@ -80,6 +80,9 @@ class InferenceControl(QtWidgets.QMainWindow):
         self.numgpu_lineEdit.setText("1")
         self.epoch_lineEdit.setText("10")
         self.tidims_lineEdit.setText("1,3,224,224")
+        self.tidims_lineEdit.setText("1,3,224,224")
+        self.dpath_lineEdit.setText("/home/hansel/MIVisionX-Neural-Net-Workflow/sample/imagenet_10dir")
+        self.tgui_checkBox.setChecked(True)
 
     def confirmMode(self):
         self.tabWidget.setEnabled(True)
@@ -238,9 +241,9 @@ class InferenceControl(QtWidgets.QMainWindow):
 
     def checkInput(self):
         if not (self.file_lineEdit.text() == '') and not (self.name_lineEdit.text() == '') \
-            and not (self.idims_lineEdit.text() == '') \
-            and not (self.odims_lineEdit.text() == '') and not (self.output_lineEdit.text() == '') \
-            and not (self.label_lineEdit.text() == '') and not (self.image_lineEdit.text() == ''):
+            and not (self.idims_lineEdit.text() == '')  and not (self.odims_lineEdit.text() == '') \
+            and not (self.output_lineEdit.text() == '') and not (self.label_lineEdit.text() == '') \
+            and not (self.image_lineEdit.text() == ''):
                 self.run_pushButton.setEnabled(True)
                 self.run_pushButton.setStyleSheet("background-color: lightgreen")
         else:
