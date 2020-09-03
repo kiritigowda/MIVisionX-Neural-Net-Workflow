@@ -113,13 +113,13 @@ class TrainViewer(QtGui.QMainWindow):
     def initEngines(self):
         self.receiver_thread = QThread()
         # Creating an object for train
-        # self.trainEngine = modelTraining(self.model, self.datapath, self.PATH, self.training_device, self.num_gpu, self.batch_size, self.epochs, self.rali_cpu, self.input_dims, self.num_thread, self.gui)
+        self.trainEngine = modelTraining(self.model, self.datapath, self.PATH, self.training_device, self.num_gpu, self.batch_size, self.epochs, self.rali_cpu, self.input_dims, self.num_thread, self.gui)
         
-        # self.trainEngine.moveToThread(self.receiver_thread)
-        # self.receiver_thread.started.connect(self.trainEngine.setupDocker)
-        # self.receiver_thread.finished.connect(self.trainEngine.deleteLater)
-        # self.receiver_thread.start()
-        # self.receiver_thread.terminate()
+        self.trainEngine.moveToThread(self.receiver_thread)
+        self.receiver_thread.started.connect(self.trainEngine.runDocker)
+        self.receiver_thread.finished.connect(self.trainEngine.deleteLater)
+        self.receiver_thread.start()
+        self.receiver_thread.terminate()
 
     def paintEvent(self, event):
         pixmap = QPixmap(next(self.it)).scaled(200,200)

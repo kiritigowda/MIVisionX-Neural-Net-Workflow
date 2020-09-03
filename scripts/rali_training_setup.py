@@ -202,12 +202,8 @@ class trainAndTest():
                       (epoch + 1, i + 1, acc5 / print_interval))
 
         temp = [epoch, losses.avg, top1.avg.item(), top5.avg.item()]
-        with open('results_file.csv', 'w', newline='') as outcsv:
-            writer = csv.writer(outcsv)
-            writer = csv.DictWriter(outcsv, fieldnames=['Epoch', 'running_loss', 'top1', 'top5'])
-            writer.writeheader()
-            writer.writerow({'Epoch':epoch, 'running_loss':losses.avg, 'top1':top1.avg.item(), 'top5':top5.avg.item()})
-        self.results.append(temp)
+        return temp
+        #self.results.append(temp)
             
     def test(self):
         self.net.load_state_dict(torch.load(self.PATH))
@@ -279,9 +275,12 @@ def main():
     criterion = nn.CrossEntropyLoss()
 
     train_test_obj = trainAndTest(net, device, train_loader, val_loader, optimizer, criterion, PATH)
+    with open("results.txt", "w") as file:
+    	file.write("[0,0,0,0]")
     for epoch in range(epochs):
-        train_test_obj.train(epoch)
-
+        results = train_test_obj.train(epoch)
+        with open("results.txt", "w") as file:
+        	file.write(str(results))
     #print('final results' , train_test_obj.results)
     print('Finished Training')
     torch.save(net.state_dict(), PATH)      #save trained model
