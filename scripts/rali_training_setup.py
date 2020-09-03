@@ -276,7 +276,7 @@ def main():
 
     train_test_obj = trainAndTest(net, device, train_loader, val_loader, optimizer, criterion, PATH)
     with open("results.txt", "w") as file:
-    	file.write("0,0,0,0")
+    	file.write("[0,0,0,0]")
     for epoch in range(epochs):
         results = train_test_obj.train(epoch)
         with open("results.txt", "w") as file:
