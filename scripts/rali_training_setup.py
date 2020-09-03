@@ -1,13 +1,13 @@
 import os
 import torch
 import argparse
+import csv
 import numpy as np
 import torchvision.models as models
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 import torch.optim as optim
 import torch.nn as nn
-from PyQt5 import QtCore
 from PIL import Image
 
 DATA_BACKEND_CHOICES = ['pytorch']
@@ -202,7 +202,8 @@ class trainAndTest():
                       (epoch + 1, i + 1, acc5 / print_interval))
 
         temp = [epoch, losses.avg, top1.avg.item(), top5.avg.item()]
-        self.results.append(temp)
+        return temp
+        #self.results.append(temp)
             
     def test(self):
         self.net.load_state_dict(torch.load(self.PATH))
@@ -230,148 +231,74 @@ class trainAndTest():
     def getTop5(self, epoch):
         return self.results[epoch][3]
 
-class modelTraining(QtCore.QObject):
-    def __init__(self, model, datapath, PATH, training_device, num_gpu, batch_size, epochs, rali_cpu, input_dims, num_thread, gui, parent=None):
-        super(modelTraining, self).__init__(parent)
-        self.model = model
-        # self.datapath = datapath
-        self.PATH = PATH
-        training_device = training_device and torch.cuda.is_available() #checks for rocm installation of pytorch
-        self.device = torch.device("cuda" if training_device else "cpu") #device = GPU in this case
-        self.num_gpu = num_gpu
-        self.batch_size = batch_size
-        self.epochs = epochs
-        self.rali_cpu = rali_cpu
-        self.input_dims = input_dims
-        self.num_thread = num_thread
-        self.gui = gui
+def main():
+    #initialing parameters
+    training_device = not args.training_device and torch.cuda.is_available() #checks for rocm installation of pytorch
+    device = torch.device("cuda" if training_device else "cpu") #device = GPU in this case
+    model = args.model
+    PATH = args.path
 
-        self.dataset_train = datapath + '/train'
-        self.dataset_val = datapath + '/val'
-        
-        self.crop = (int)(input_dims.split(',')[2])
-        self.net = None
-        #self.train_loader = None
-        #self.val_loader = None
-        #self.optimizer = None
-        #self.criterion = None
-        self.train_test_obj = None
-
-        self.setupDone = False
-
-        self.setupTraining()
-
-    def setupTraining(self):
-        net_obj = Net(self.device)
-        if self.model == 'resnet50':
-            self.net = net_obj.ResNet()
+    dataset_train = args.dataset + '/train'
+    if not os.path.exists(dataset_train):
+        print("the dataset is invalid, requires train folder")
+        exit(0)
+    dataset_val = args.dataset + '/val'
+    if not os.path.exists(dataset_val):
+        print("the dataset is invalid, requires val folder")
+        exit(0)
+    batch_size = args.batch_size
+    epochs = args.epochs
+    num_gpu = args.GPU
+    input_dims = args.input_dimensions
+    rali_cpu = args.rali_cpu
+    num_thread = 1
+    input_dimensions = list(args.input_dimensions.split(","))
+    crop = int(input_dimensions[3]) #crop to the width or height of model input_dimensions
     
-        #train loader
-        train_loader_obj = trainLoader(self.dataset_train, self.batch_size, self.num_thread, self.crop, self.rali_cpu)
-        train_loader = train_loader_obj.get_pytorch_train_loader()
+    #object for class Net
+    net_obj = Net(device)
+    if model == 'resnet50':
+    	net = net_obj.ResNet()
+    	#print(net)
 
-        val_loader_obj = valLoader(self.dataset_val, self.batch_size, self.num_thread, self.crop, self.rali_cpu)
-        val_loader = val_loader_obj.get_pytorch_val_loader()
+    #train loader
+    train_loader_obj = trainLoader(dataset_train, batch_size, num_thread, crop, rali_cpu)
+    train_loader = train_loader_obj.get_pytorch_train_loader()
 
-        optimizer = optim.SGD(self.net.parameters(), lr=0.001)
-        criterion = nn.CrossEntropyLoss()
+    #print(train_loader)
+    #test loader
+    val_loader_obj = valLoader(dataset_val, batch_size, num_thread, crop, rali_cpu)
+    val_loader = val_loader_obj.get_pytorch_val_loader()
+    #print(val_loader)
 
-        self.train_test_obj = trainAndTest(self.net, self.device, train_loader, val_loader, optimizer, criterion, self.PATH)
+    optimizer = optim.SGD(net.parameters(), lr=0.001)
+    criterion = nn.CrossEntropyLoss()
 
-        self.setupDone = True
-        # self.runTraining()
+    train_test_obj = trainAndTest(net, device, train_loader, val_loader, optimizer, criterion, PATH)
+    with open("results.txt", "w") as file:
+    	file.write("[0,0,0,0]")
+    for epoch in range(epochs):
+        results = train_test_obj.train(epoch)
+        with open("results.txt", "w") as file:
+        	file.write(str(results))
+    #print('final results' , train_test_obj.results)
+    print('Finished Training')
+    torch.save(net.state_dict(), PATH)      #save trained model
 
-    def runTraining(self):
-        if self.setupDone:
-            for epoch in range(self.epochs):
-                self.train_test_obj.train(epoch)
+    train_test_obj.test()		#validation accuracy
+    print('test accuracy' , train_test_obj.test_acc)
 
-            print('final results' , train_test_obj.results)
-            print('Finished Training')
-            torch.save(net.state_dict(), PATH)      #save trained model
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--model', default='resnet50', required=False, help="PyTorch model for training")
+    parser.add_argument('--dataset', required=False, help="Dataset with train and val folders")
+    parser.add_argument('--batch_size', type=int, required=False, default=32, help="Batch size required for training")
+    parser.add_argument('--epochs', type=int, required=False, default=10, help="Number of epochs for training")
+    parser.add_argument('--GPU', type=int, required=False,default=1, help="Number of GPUs for training")
+    parser.add_argument('--input_dimensions', required=False, default='1,3,224,224', help="Model input dimensions")
+    parser.add_argument('--rali_cpu', type=bool, required=False, default=True, help="Rali cpu/gpu (true/false)")
+    parser.add_argument('--training_device', type=bool, required=False, default=False, help="Use cpu/gpu based training (true/false)")
+    parser.add_argument('--path', required=True, help="Path to store trained model")
 
-            train_test_obj.test()		#validation accuracy
-            print('test accuracy' , train_test_obj.test_acc)
-
-            #individual result fucntion tests
-            loss = train_test_obj.getLoss(1)
-            top1 = train_test_obj.getTop1(1)
-            top5 = train_test_obj.getTop5(1)
-
-            print(loss, top1,top5)
-        
-# def main():
-#     #initialing parameters
-#     training_device = not args.training_device and torch.cuda.is_available() #checks for rocm installation of pytorch
-#     device = torch.device("cuda" if training_device else "cpu") #device = GPU in this case
-#     model = args.model
-#     PATH = args.path
-
-#     dataset_train = args.dataset + '/train'
-#     if not os.path.exists(dataset_train):
-#         print("the dataset is invalid, requires train folder")
-#         exit(0)
-#     dataset_val = args.dataset + '/val'
-#     if not os.path.exists(dataset_val):
-#         print("the dataset is invalid, requires val folder")
-#         exit(0)
-#     batch_size = args.batch_size
-#     epochs = args.epochs
-#     num_gpu = args.GPU
-#     input_dims = args.input_dimensions
-#     rali_cpu = args.rali_cpu
-#     num_thread = 1
-#     input_dimensions = list(args.input_dimensions.split(","))
-#     crop = int(input_dimensions[3]) #crop to the width or height of model input_dimensions
-    
-#     #object for class Net
-#     net_obj = Net(device)
-#     if model == 'resnet50':
-#     	net = net_obj.ResNet()
-#     	#print(net)
-
-#     #train loader
-#     train_loader_obj = trainLoader(dataset_train, batch_size, num_thread, crop, rali_cpu)
-#     train_loader = train_loader_obj.get_pytorch_train_loader()
-
-#     #print(train_loader)
-#     #test loader
-#     val_loader_obj = valLoader(dataset_val, batch_size, num_thread, crop, rali_cpu)
-#     val_loader = val_loader_obj.get_pytorch_val_loader()
-#     #print(val_loader)
-
-#     optimizer = optim.SGD(net.parameters(), lr=0.001)
-#     criterion = nn.CrossEntropyLoss()
-
-#     train_test_obj = trainAndTest(net, device, train_loader, val_loader, optimizer, criterion, PATH)
-#     for epoch in range(epochs):
-#         train_test_obj.train(epoch)
-
-#     print('final results' , train_test_obj.results)
-#     print('Finished Training')
-#     torch.save(net.state_dict(), PATH)      #save trained model
-
-#     train_test_obj.test()		#validation accuracy
-#     print('test accuracy' , train_test_obj.test_acc)
-
-#     #individual result fucntion tests
-#     loss = train_test_obj.getLoss(1)
-#     top1 = train_test_obj.getTop1(1)
-#     top5 = train_test_obj.getTop5(1)
-
-#     print(loss, top1,top5)
-
-# if __name__ == '__main__':
-#     parser = argparse.ArgumentParser()
-#     parser.add_argument('--model', default='resnet50', required=False, help="PyTorch model for training")
-#     parser.add_argument('--dataset', required=False, help="Dataset with train and val folders")
-#     parser.add_argument('--batch_size', type=int, required=False, default=32, help="Batch size required for training")
-#     parser.add_argument('--epochs', type=int, required=False, default=10, help="Number of epochs for training")
-#     parser.add_argument('--GPU', type=int, required=False,default=1, help="Number of GPUs for training")
-#     parser.add_argument('--input_dimensions', required=False, default='1,3,224,224', help="Model input dimensions")
-#     parser.add_argument('--rali_cpu', type=bool, required=False, default=True, help="Rali cpu/gpu (true/false)")
-#     parser.add_argument('--training_device', type=bool, required=False, default=False, help="Use cpu/gpu based training (true/false)")
-#     parser.add_argument('--path', required=True, help="Path to store trained model")
-
-#     args = parser.parse_args()
-#     main()
+    args = parser.parse_args()
+    main()
