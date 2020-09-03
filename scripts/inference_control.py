@@ -76,7 +76,7 @@ class InferenceControl(QtWidgets.QMainWindow):
 
         self.model_comboBox.setCurrentIndex(1)
         self.dtype_comboBox.setCurrentIndex(3)
-        self.opath_lineEdit.setText("./")
+        self.opath_lineEdit.setText("model_rali.pth")
         self.numgpu_lineEdit.setText("1")
         self.epoch_lineEdit.setText("10")
         self.tidims_lineEdit.setText("1,3,224,224")

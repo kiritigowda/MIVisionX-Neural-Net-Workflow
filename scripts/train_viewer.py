@@ -34,6 +34,9 @@ class TrainViewer(QtGui.QMainWindow):
             trainpath = datapath + '/train/**'
             self.image_list = [f for f in iglob(trainpath, recursive=True) if os.path.isfile(f) and (f.endswith("JPEG") or f.endswith("PNG") or f.endswith("JPG"))]
             self.it = iter(self.image_list)
+            self.model_progressBar.setValue(0)
+            self.model_progressBar.setMaximum(epochs)
+            self.mProg_label.setText("Epoch %d of %d" % (1, self.epochs))
             # for image in self.image_list:
             #     count = count + 1
             #     print (image)
@@ -77,8 +80,8 @@ class TrainViewer(QtGui.QMainWindow):
             self.initGraph()
             self.updateTimer = QTimer()
             self.updateTimer.timeout.connect(self.update)
-            self.updateTimer.timeout.connect(self.paintEvent)
-            self.updateTimer.start(4000)
+            self.updateTimer.timeout.connect(self.showImage)
+            self.updateTimer.start(100)
        
     def initGraph(self):
         self.setStyleSheet("background-color: white")
@@ -113,7 +116,7 @@ class TrainViewer(QtGui.QMainWindow):
     def initEngines(self):
         self.receiver_thread = QThread()
         # Creating an object for train
-        self.trainEngine = modelTraining(self.model, self.datapath, self.PATH, self.training_device, self.num_gpu, self.batch_size, self.epochs, self.rali_cpu, self.input_dims, self.num_thread, self.gui)
+        self.trainEngine = modelTraining(self.model, self.datapath, self.PATH, self.training_device, self.num_gpu, self.batch_size, self.epochs, self.rali_cpu, self.input_dims, self.num_thread)
         
         self.trainEngine.moveToThread(self.receiver_thread)
         self.receiver_thread.started.connect(self.trainEngine.runDocker)
@@ -121,9 +124,9 @@ class TrainViewer(QtGui.QMainWindow):
         self.receiver_thread.start()
         self.receiver_thread.terminate()
 
-    def paintEvent(self, event):
-        pixmap = QPixmap(next(self.it)).scaled(200,200)
-        self.image_frame.setPixmap(pixmap)
+    # def paintEvent(self, event):
+    #     pixmap = QPixmap(next(self.it)).scaled(200,200)
+    #     self.image_frame.setPixmap(pixmap)
         #self.showAugImage()
         #self.showImage()
         #self.displayFPS()
@@ -132,7 +135,10 @@ class TrainViewer(QtGui.QMainWindow):
         #         self.resetViewer()
         #     else:
         #        self.terminate()
-                
+    
+    def showImage(self):
+        pixmap = QPixmap(next(self.it)).scaled(200,200)
+        self.image_frame.setPixmap(pixmap)
     # def resetViewer(self):
     #     self.imgCount = 0
     #     del self.x[:]
