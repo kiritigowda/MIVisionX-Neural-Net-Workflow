@@ -2,6 +2,7 @@ import os
 import torch
 import argparse
 import csv
+import time
 import numpy as np
 import torchvision.models as models
 import torchvision.datasets as datasets
@@ -254,12 +255,13 @@ def main():
     num_thread = 1
     input_dimensions = list(args.input_dimensions.split(","))
     crop = int(input_dimensions[3]) #crop to the width or height of model input_dimensions
-    
+    results_file =  'statistics.csv'        	
+
     #object for class Net
     net_obj = Net(device)
     if model == 'resnet50':
-    	net = net_obj.ResNet()
-    	#print(net)
+        net = net_obj.ResNet()
+        #print(net)
 
     #train loader
     train_loader_obj = trainLoader(dataset_train, batch_size, num_thread, crop, rali_cpu)
@@ -275,12 +277,28 @@ def main():
     criterion = nn.CrossEntropyLoss()
 
     train_test_obj = trainAndTest(net, device, train_loader, val_loader, optimizer, criterion, PATH)
-    with open("results.txt", "w") as file:
-    	file.write("[0,0,0,0]")
+    with open(results_file, 'w') as csvfile:
+        fieldnames = ['timestamp', 'epoch', 'running_loss', 'top1', 'top5']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({'timestamp':0.0, 'epoch':0, 'running_loss':0.0, 'top1':0.0, 'top5':0.0})
     for epoch in range(epochs):
+        start_time = time.time()
         results = train_test_obj.train(epoch)
-        with open("results.txt", "w") as file:
-        	file.write(str(results))
+        end_time = time.time()
+        time_elapsed = end_time - start_time
+        with open(results_file, "r") as infile:
+            reader = csv.reader(infile)
+            next(reader, None)  # skip the header
+            for row in reader:
+                old_timestamp = float(row[0])     
+        with open(results_file, 'w') as outfile:
+            fieldnames = ['timestamp', 'epoch', 'running_loss', 'top1', 'top5']
+            writer = csv.DictWriter(outfile, fieldnames=fieldnames)
+            writer.writeheader()
+            new_timestamp = old_timestamp + time_elapsed
+            writer.writerow({'timestamp':new_timestamp, 'epoch':results[0], 'running_loss':results[1], 'top1':results[2], 'top5'        :results[3]})
+        	
     #print('final results' , train_test_obj.results)
     print('Finished Training')
     torch.save(net.state_dict(), PATH)      #save trained model
