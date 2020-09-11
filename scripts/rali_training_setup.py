@@ -2,10 +2,7 @@ import os
 import torch
 import argparse
 import csv
-<<<<<<< HEAD
-=======
 import time
->>>>>>> Lakshmi/lk/outputFiles
 import numpy as np
 import torchvision.models as models
 import torchvision.datasets as datasets
@@ -258,8 +255,14 @@ def main():
     num_thread = 1
     input_dimensions = list(args.input_dimensions.split(","))
     crop = int(input_dimensions[3]) #crop to the width or height of model input_dimensions
-    results_file =  'statistics.csv'        	
-
+    
+    file_directory = os.path.join(os.path.expanduser('~'), 'hostDrive')
+    results_file =  os.path.join(file_directory, 'statistics.csv')
+    with open(results_file, 'w') as csvfile:
+        fieldnames = ['epoch', 'running_loss', 'top1', 'top5', 'timestamp']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        #writer.writeheader()
+        writer.writerow({'epoch':0, 'running_loss':0.0, 'top1':0.0, 'top5':0.0, 'timestamp':0.0})
     #object for class Net
     net_obj = Net(device)
     if model == 'resnet50':
@@ -280,11 +283,7 @@ def main():
     criterion = nn.CrossEntropyLoss()
 
     train_test_obj = trainAndTest(net, device, train_loader, val_loader, optimizer, criterion, PATH)
-    with open(results_file, 'w') as csvfile:
-        fieldnames = ['timestamp', 'epoch', 'running_loss', 'top1', 'top5']
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerow({'timestamp':0.0, 'epoch':0, 'running_loss':0.0, 'top1':0.0, 'top5':0.0})
+    
     for epoch in range(epochs):
         start_time = time.time()
         results = train_test_obj.train(epoch)
@@ -296,11 +295,11 @@ def main():
             for row in reader:
                 old_timestamp = float(row[0])     
         with open(results_file, 'w') as outfile:
-            fieldnames = ['timestamp', 'epoch', 'running_loss', 'top1', 'top5']
+            fieldnames = ['epoch', 'running_loss', 'top1', 'top5', 'timestamp']
             writer = csv.DictWriter(outfile, fieldnames=fieldnames)
-            writer.writeheader()
+            #writer.writeheader()
             new_timestamp = old_timestamp + time_elapsed
-            writer.writerow({'timestamp':new_timestamp, 'epoch':results[0], 'running_loss':results[1], 'top1':results[2], 'top5'        :results[3]})
+            writer.writerow({'epoch':results[0], 'running_loss':results[1], 'top1':results[2], 'top5':results[3], 'timestamp':new_timestamp})
         	
     #print('final results' , train_test_obj.results)
     print('Finished Training')

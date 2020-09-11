@@ -25,7 +25,7 @@ class TrainViewer(QtGui.QMainWindow):
         self.gui = gui
         self.trainEngine = None
         self.receiver_thread = None
-
+        self.lastEpoch = 0
         self.initEngines()
         
         if self.gui:
@@ -82,7 +82,8 @@ class TrainViewer(QtGui.QMainWindow):
             self.snoopTimer = QTimer()
             self.updateTimer.timeout.connect(self.update)
             self.updateTimer.timeout.connect(self.showImage)
-            self.snoopTimer.timeout.connect(self.)
+            self.snoopTimer.timeout.connect(self.getEpochValues)
+            self.snoopTimer.start(100)
             self.updateTimer.start(100)
        
     def initGraph(self):
@@ -126,6 +127,13 @@ class TrainViewer(QtGui.QMainWindow):
         self.receiver_thread.start()
         self.receiver_thread.terminate()
 
+    def getEpochValues(self):
+        epoch, loss, top1, top5 = self.trainEngine.getValues()
+        if self.lastEpoch is not epoch:
+            self.lastEpoch = epoch
+            print('epoch changed to', epoch)
+        else:
+            print('still 0')
     # def paintEvent(self, event):
     #     pixmap = QPixmap(next(self.it)).scaled(200,200)
     #     self.image_frame.setPixmap(pixmap)
