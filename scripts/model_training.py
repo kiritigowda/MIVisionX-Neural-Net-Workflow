@@ -1,4 +1,5 @@
 import os
+import csv
 from PyQt5 import QtCore
 
 class modelTraining(QtCore.QObject):
@@ -18,9 +19,9 @@ class modelTraining(QtCore.QObject):
         self.setupDone = False
 
     def runDocker(self):
-        os.system('sudo docker rm -f training')
-        os.system('sudo docker run -it -d -v $(pwd):/root/hostDrive/ --name training --device=/dev/kfd --device=/dev/dri --cap-add=SYS_RAWIO --device=/dev/mem --group-add video --network host mivisionx/pytorch-ubuntu-16.04 bash')
-        os.system('sudo docker cp rali_training_setup.py training:/')    
+        #os.system('sudo docker rm -f training')
+        #os.system('sudo docker run -it -d -v $(pwd):/root/hostDrive/ --name training --device=/dev/kfd --device=/dev/dri --cap-add=SYS_RAWIO --device=/dev/mem --group-add video --network host mivisionx/pytorch-ubuntu-16.04 bash')
+        os.system('sudo docker start training')    
         os.system('sudo docker cp %s training:/' % self.datapath)
         os.system('sudo docker exec -i training bash -c "python3.6 rali_training_setup.py --dataset %s --batch_size %d --epochs %d --path %s"' % (self.dataset_folder, self.batch_size, self.epochs, self.PATH))
         self.setupDone = True
@@ -35,4 +36,10 @@ class modelTraining(QtCore.QObject):
                 top1 = values[2]
                 top5 = values[3]
 
-                return epoch, loss, top1, top5
+                return (int)(epoch), (float)(loss), (float)(top1), (float)(top5)
+
+    def terminate(self):
+        os.system('sudo docker stop training')
+
+    def isSetupDone(self):
+        return self.setupDone

@@ -202,7 +202,7 @@ class trainAndTest():
                 print('[%d, %5d] accuracy5: %.3f' %
                       (epoch + 1, i + 1, acc5 / print_interval))
 
-        temp = [epoch, losses.avg, top1.avg.item(), top5.avg.item()]
+        temp = [epoch+1, losses.avg, top1.avg.item(), top5.avg.item()]
         return temp
         #self.results.append(temp)
             
@@ -257,12 +257,13 @@ def main():
     crop = int(input_dimensions[3]) #crop to the width or height of model input_dimensions
     
     file_directory = os.path.join(os.path.expanduser('~'), 'hostDrive')
-    results_file =  os.path.join(file_directory, 'statistics.csv')
+    results_file =  os.path.join(file_directory, 'statistics.csv')        	
     with open(results_file, 'w') as csvfile:
         fieldnames = ['epoch', 'running_loss', 'top1', 'top5', 'timestamp']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         #writer.writeheader()
         writer.writerow({'epoch':0, 'running_loss':0.0, 'top1':0.0, 'top5':0.0, 'timestamp':0.0})
+
     #object for class Net
     net_obj = Net(device)
     if model == 'resnet50':
@@ -291,14 +292,15 @@ def main():
         time_elapsed = end_time - start_time
         with open(results_file, "r") as infile:
             reader = csv.reader(infile)
-            next(reader, None)  # skip the header
+            #next(reader, None)  # skip the header
             for row in reader:
-                old_timestamp = float(row[0])     
+                old_timestamp = float(row[4])     
         with open(results_file, 'w') as outfile:
             fieldnames = ['epoch', 'running_loss', 'top1', 'top5', 'timestamp']
             writer = csv.DictWriter(outfile, fieldnames=fieldnames)
             #writer.writeheader()
             new_timestamp = old_timestamp + time_elapsed
+            print('writing', results[0], results[1], results[2])
             writer.writerow({'epoch':results[0], 'running_loss':results[1], 'top1':results[2], 'top5':results[3], 'timestamp':new_timestamp})
         	
     #print('final results' , train_test_obj.results)

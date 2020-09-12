@@ -18,7 +18,7 @@ class TrainViewer(QtGui.QMainWindow):
         self.training_device = training_device
         self.num_gpu = num_gpu
         self.batch_size = batch_size
-        self.epochs = epochs
+        self.epoch = (int)(epochs)
         self.rali_cpu = rali_cpu
         self.input_dims = input_dims
         self.num_thread = num_thread
@@ -30,13 +30,14 @@ class TrainViewer(QtGui.QMainWindow):
         
         if self.gui:
             uic.loadUi("train_viewer.ui", self)
-            self.model_label.setText(model)
+            self.model_label.setText("Training model: %s" % model)
             trainpath = datapath + '/train/**'
             self.image_list = [f for f in iglob(trainpath, recursive=True) if os.path.isfile(f) and (f.endswith("JPEG") or f.endswith("PNG") or f.endswith("JPG"))]
             self.it = iter(self.image_list)
             self.model_progressBar.setValue(0)
-            self.model_progressBar.setMaximum(epochs)
-            self.mProg_label.setText("Epoch %d of %d" % (1, self.epochs))
+            self.model_progressBar.setMinimum(0)
+            self.model_progressBar.setMaximum(self.epoch)
+            self.mProg_label.setText("Epoch %d of %d" % (0, self.epoch))
             # for image in self.image_list:
             #     count = count + 1
             #     print (image)
@@ -55,15 +56,16 @@ class TrainViewer(QtGui.QMainWindow):
             # self.imgCount = 0
             # self.frameCount = 9
             # self.lastIndex = self.frameCount - 1
-            self.x = [0] 
-            self.y = [0]
-            # self.augAccuracy = []
+            self.epochs = [0] 
+            self.loss = [0]
+            self.top1 = [0]
+            self.top5 = [0]
             # self.totalCurve = None
             # self.augCurve = None
             self.lgraph = None
             self.agraph = None
             self.legend = None
-            self.pen = pg.mkPen('w', width=4)
+            # self.pen = pg.mkPen('w', width=4)
             # self.AMD_Radeon_pixmap = QPixmap("./data/images/AMD_Radeon.png")
             # self.AMD_Radeon_white_pixmap = QPixmap("./data/images/AMD_Radeon-white.png")
             # self.MIVisionX_pixmap = QPixmap("./data/images/MIVisionX-logo.png")
@@ -83,32 +85,32 @@ class TrainViewer(QtGui.QMainWindow):
             self.updateTimer.timeout.connect(self.update)
             self.updateTimer.timeout.connect(self.showImage)
             self.snoopTimer.timeout.connect(self.getEpochValues)
-            self.snoopTimer.start(100)
             self.updateTimer.start(100)
+            self.snoopTimer.start(100)
        
     def initGraph(self):
-        self.setStyleSheet("background-color: white")
+        # self.setStyleSheet("background-color: white")
         self.lgraph = pg.PlotWidget(title="Loss vs Epoch")
         self.lgraph.setLabel('left', 'Loss')
         self.lgraph.setLabel('bottom', 'Epoch(s)')
-        self.lgraph.setXRange(0, self.epochs, padding=0)
-        self.lgraph.setYRange(0, 100, padding=0)
+        self.lgraph.setXRange(0, self.epoch+1, padding=0)
+        self.lgraph.setYRange(0, 4, padding=0)
 
         self.agraph = pg.PlotWidget(title="Accuracy vs Epoch")
-        self.agraph.setLabel('left', 'Accuracy')
+        self.agraph.setLabel('left', 'Accuracy(top1)')
         self.agraph.setLabel('bottom', 'Epoch(s)')
-        self.agraph.setXRange(0, self.epochs, padding=0)
-        self.agraph.setYRange(0, 100, padding=0)
+        self.agraph.setXRange(0, self.epoch+1, padding=0)
+        self.agraph.setYRange(0, 80, padding=0)
 
         pg.setConfigOptions(antialias=True)
         
         self.lcurve = self.lgraph.plot(pen=pg.mkPen('b', width=4))
-        self.acurve = self.agraph.plot(pen=pg.mkPen('b', width=4))
+        self.acurve = self.agraph.plot(pen=pg.mkPen('r', width=4))
         self.lgraph.setBackground(None)
-        self.lgraph.setMaximumWidth(550)
+        self.lgraph.setMaximumWidth(500)
         self.lgraph.setMaximumHeight(300)
         self.agraph.setBackground(None)
-        self.agraph.setMaximumWidth(550)
+        self.agraph.setMaximumWidth(500)
         self.agraph.setMaximumHeight(300)        
         self.legend = pg.LegendItem(offset=(370,1))
         self.legend.setParentItem(self.lgraph.plotItem)
@@ -119,7 +121,7 @@ class TrainViewer(QtGui.QMainWindow):
     def initEngines(self):
         self.receiver_thread = QThread()
         # Creating an object for train
-        self.trainEngine = modelTraining(self.model, self.datapath, self.PATH, self.training_device, self.num_gpu, self.batch_size, self.epochs, self.rali_cpu, self.input_dims, self.num_thread)
+        self.trainEngine = modelTraining(self.model, self.datapath, self.PATH, self.training_device, self.num_gpu, self.batch_size, self.epoch, self.rali_cpu, self.input_dims, self.num_thread)
         
         self.trainEngine.moveToThread(self.receiver_thread)
         self.receiver_thread.started.connect(self.trainEngine.runDocker)
@@ -129,11 +131,19 @@ class TrainViewer(QtGui.QMainWindow):
 
     def getEpochValues(self):
         epoch, loss, top1, top5 = self.trainEngine.getValues()
-        if self.lastEpoch is not epoch:
+        if self.lastEpoch is not epoch and epoch is not 0:
+            self.mProg_label.setText("Epoch %d of %d" % (epoch, self.epoch))
+            self.loss_label.setText("Loss %d%%" % loss)
+            self.top1_label.setText("Accuracy(top1): %d%%" % top1)
+            self.top5_label.setText("Accuracy(top5): %d%%" % top5)
             self.lastEpoch = epoch
-            print('epoch changed to', epoch)
-        else:
-            print('still 0')
+            self.model_progressBar.setValue(epoch)
+            self.epochs.append(epoch)
+            self.loss.append(loss)
+            self.top1.append(top1)
+            self.top5.append(top5)
+            self.plotGraph()
+
     # def paintEvent(self, event):
     #     pixmap = QPixmap(next(self.it)).scaled(200,200)
     #     self.image_frame.setPixmap(pixmap)
@@ -170,10 +180,9 @@ class TrainViewer(QtGui.QMainWindow):
     #     self.name_label.setText("Model: %s" % (self.model_name))
     #     self.legend.removeItem(self.lastAugName)
 
-    #def plotGraph(self):
-        #self.x.append(epoch)
-        #self.y.append(self.totalAccuracy)
-        #self.lgraph.setData(x=self.x, y=self.y, pen=self.pen)
+    def plotGraph(self):
+        self.lcurve.setData(x=self.epochs, y=self.loss)
+        self.acurve.setData(x=self.epochs, y=self.top1)
         # for augmentation in range(self.batch_size_int):
         #     augStats = self.inferenceEngine.getAugStats(augmentation)
         #     top5 = augStats[1]
@@ -250,6 +259,7 @@ class TrainViewer(QtGui.QMainWindow):
     #         self.totalCurve.setData(x=self.x, y=self.y, pen=self.pen)
 
     def closeEvent(self, event):
+        self.trainEngine.terminate()
         self.receiver_thread.quit()
         self.close()
         exit(0)
