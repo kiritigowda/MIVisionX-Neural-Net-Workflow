@@ -383,27 +383,17 @@
             <widget class="QComboBox" name="batch_comboBox">
              <item>
               <property name="text">
-               <string>32</string>
+               <string>64</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>16</string>
+               <string>128</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>8</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>4</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>1</string>
+               <string>256</string>
               </property>
              </item>
             </widget>
