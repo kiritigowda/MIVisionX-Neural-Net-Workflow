@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>MIVisionX Validation Tool</string>
+   <string>MIVisionX Neural Net Workflow</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -1413,7 +1413,7 @@
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroup"/>
   <buttongroup name="buttonGroup_2"/>
+  <buttongroup name="buttonGroup"/>
  </buttongroups>
 </ui>
