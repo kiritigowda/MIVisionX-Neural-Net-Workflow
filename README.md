@@ -2,7 +2,13 @@
 
 # MIVisionX Neural Net Workflow
 
-[MIVisionX](https://gpuopen-professionalcompute-libraries.github.io/MIVisionX/) infrastructure for ML Model training with optimized data augmentation with RALI and ML Model Validation through Inference using pre-trained `ONNX`/`NNEF`/`Caffe` models and data augmentation to analyze, summarize, & validate.
+[MIVisionX](https://gpuopen-professionalcompute-libraries.github.io/MIVisionX/) infrastructure for ML Model training with optimized data augmentation with RALI and ML Model Inference Validation using pre-trained `ONNX`/`NNEF`/`Caffe` models and data augmentation to analyze, summarize, & validate.
+
+## Training
+ML training with PyTorch using dockers.
+
+## Inference
+Inference with pre-trained models for validation and performance measurement.
 
 Pre-trained models in [ONNX](https://onnx.ai/), [NNEF](https://www.khronos.org/nnef), & [Caffe](http://caffe.berkeleyvision.org/) formats are supported by MIVisionX. The app first converts the pre-trained models to AMD Neural Net Intermediate Representation (NNIR), once the model has been translated into AMD NNIR (AMD's internal open format), the Optimizer goes through the NNIR and applies various optimizations which would allow the model to be deployed on to target hardware most efficiently. Finally, AMD NNIR is converted into OpenVX C code, which is compiled and wrapped with a python API to run on any targeted hardware.
 
@@ -35,9 +41,6 @@ Pre-trained models in [ONNX](https://onnx.ai/), [NNEF](https://www.khronos.org/n
     export PATH=$PATH:/opt/rocm/mivisionx/bin
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/rocm/mivisionx/lib:/opt/rocm/rpp/lib
     ````
-**NOTE:**
-To get the best performance from the validation toolkit use the [RPP Develop Branch](https://github.com/GPUOpen-ProfessionalCompute-Libraries/rpp/tree/develop)
-
 * Install OpenMP
 ```
 sudo apt-get install libomp-dev
