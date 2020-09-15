@@ -115,6 +115,9 @@ class TrainViewer(QtGui.QMainWindow):
 
     def getEpochValues(self):
         epoch, loss, top1, top5 = self.trainEngine.getValues()
+        if epoch is self.epoch:
+            self.updateTimer.stop()
+            
         if self.lastEpoch is not epoch and epoch is not 0:
             self.mProg_label.setText("Epoch %d of %d" % (epoch, self.epoch))
             self.loss_label.setText("Loss %0.1f%%" % loss)
