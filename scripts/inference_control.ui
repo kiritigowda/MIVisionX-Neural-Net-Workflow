@@ -436,6 +436,21 @@
                <string>resnet50</string>
               </property>
              </item>
+             <item>
+              <property name="text">
+               <string>squeezenet</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>vgg19</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>ssd-mobilenet</string>
+              </property>
+             </item>
             </widget>
            </item>
            <item row="2" column="5">

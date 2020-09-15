@@ -52,9 +52,7 @@ class TrainViewer(QtGui.QMainWindow):
             self.t1Curve = None
             self.t5Curve= None
             self.legend = None
-    
-            pixmap = QPixmap(next(self.it)).scaled(100,100)
-            self.image_frame.setPixmap(pixmap)
+            #self.imageLength = self.image_frame.Width() - 10
             self.loss_label.setStyleSheet("color: red")
             self.top1_label.setStyleSheet("color: blue")
             self.top5_label.setStyleSheet("color: green")
@@ -96,7 +94,7 @@ class TrainViewer(QtGui.QMainWindow):
         self.lcurve = self.lgraph.plot(pen=pg.mkPen('r', width=4))
         self.t1Curve = self.agraph.plot(pen=pg.mkPen('b', width=4))
         self.t5Curve = self.agraph.plot(pen=pg.mkPen('g', width=4))
-        self.legend = pg.LegendItem(offset=(420,5), labelTextColor='k')
+        self.legend = pg.LegendItem(offset=(-20,5), labelTextColor='k')
         self.legend.setParentItem(self.agraph.plotItem)
         self.legend.addItem(self.t1Curve, 'Top1')
         self.legend.addItem(self.t5Curve, 'Top5')
@@ -119,9 +117,9 @@ class TrainViewer(QtGui.QMainWindow):
         epoch, loss, top1, top5 = self.trainEngine.getValues()
         if self.lastEpoch is not epoch and epoch is not 0:
             self.mProg_label.setText("Epoch %d of %d" % (epoch, self.epoch))
-            self.loss_label.setText("Loss %d%%" % loss)
-            self.top1_label.setText("Accuracy(top1): %d%%" % top1)
-            self.top5_label.setText("Accuracy(top5): %d%%" % top5)
+            self.loss_label.setText("Loss %0.1f%%" % loss)
+            self.top1_label.setText("Top1: %0.1f%%" % top1)
+            self.top5_label.setText("Top5: %0.1f%%" % top5)
             self.lastEpoch = epoch
             self.model_progressBar.setValue(epoch)
             self.epochs.append(epoch)
@@ -132,7 +130,7 @@ class TrainViewer(QtGui.QMainWindow):
 
     def showImage(self):
         index = self.imgCount % self.frameCount
-        pixmap = QPixmap(next(self.it)).scaled(100,100)
+        pixmap = QPixmap(next(self.it)).scaled(180, 180)
         self.image_layout.itemAt(index).widget().setPixmap(pixmap)
         self.image_layout.itemAt(index).widget().setStyleSheet("border: 5px solid darkred;");
         self.image_layout.itemAt(self.lastIndex).widget().setStyleSheet("border: 0");
@@ -144,6 +142,9 @@ class TrainViewer(QtGui.QMainWindow):
         self.t1Curve.setData(x=self.epochs, y=self.top1)
         self.t5Curve.setData(x=self.epochs, y=self.top5)
     
+    # def resizeEvent(self, event):
+    #     self.imageLength = self.image_frame.Width() - 10
+
     def closeEvent(self, event):
         self.trainEngine.terminate()
         #self.receiver_thread.quit()

@@ -74,14 +74,13 @@ class InferenceControl(QtWidgets.QMainWindow):
         self.dpath_pushButton.clicked.connect(self.browseDPath)
         self.opath_pushButton.clicked.connect(self.browseOPath)
 
-        self.model_comboBox.setCurrentIndex(1)
-        self.dtype_comboBox.setCurrentIndex(3)
-        self.opath_lineEdit.setText("model_rali.pth")
-        self.numgpu_lineEdit.setText("1")
-        self.epoch_lineEdit.setText("10")
-        self.tidims_lineEdit.setText("1,3,224,224")
-        self.tidims_lineEdit.setText("1,3,224,224")
-        self.dpath_lineEdit.setText("/home/hansel/MIVisionX-Neural-Net-Workflow/sample/imagenet_10dir")
+        # self.model_comboBox.setCurrentIndex(1)
+        # self.dtype_comboBox.setCurrentIndex(3)
+        # self.opath_lineEdit.setText("model_rali.pth")
+        # self.numgpu_lineEdit.setText("1")
+        # self.epoch_lineEdit.setText("10")
+        # self.tidims_lineEdit.setText("1,3,224,224")
+        # self.dpath_lineEdit.setText("/home/hansel/MIVisionX-Neural-Net-Workflow/sample/imagenet_10dir")
         self.tgui_checkBox.setChecked(True)
 
     def confirmMode(self):
@@ -286,7 +285,9 @@ class InferenceControl(QtWidgets.QMainWindow):
         self.runningState = True
         self.close()
         trainer = TrainViewer(model, datapath, PATH, training_device, num_gpu, batch_size, epochs, rali_cpu, input_dims, num_thread, gui, self)
-        trainer.show()
+        trainer.showMaximized()
+        #trainer.show()
+
 
     def runInference(self):
         model_format = (str)(self.format_comboBox.currentText())
