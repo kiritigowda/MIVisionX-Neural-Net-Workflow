@@ -129,7 +129,7 @@ class InferenceControl(QtWidgets.QMainWindow):
         self.hier_lineEdit.setText(QtWidgets.QFileDialog.getOpenFileName(self, 'Open File', './', '*.csv')[0])
 
     def readSetupFile(self):
-        setupDir = '~/.mivisionx-validation-tool'
+        setupDir = '~/.mivisionx-neural-net-workflow'
         analyzerDir = os.path.expanduser(setupDir)
         if os.path.isfile(analyzerDir + "/setupFile.txt"):
             for line in open(analyzerDir + "/setupFile.txt", "r"):
@@ -185,7 +185,7 @@ class InferenceControl(QtWidgets.QMainWindow):
             self.loop_checkBox.setChecked(True)
         else:
             modelName = self.upload_comboBox.currentText()
-            setupDir = '~/.mivisionx-validation-tool'
+            setupDir = '~/.mivisionx-neural-net-workflow'
             analyzerDir = os.path.expanduser(setupDir)
             for line in open(analyzerDir + "/setupFile.txt", "r"):
                 tokens = line.split(';')
