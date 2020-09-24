@@ -47,16 +47,29 @@ class TrainViewer(QtGui.QMainWindow):
             self.top1 = [0]
             self.top5 = [0]
 
+            self.AMD_Radeon_pixmap = QPixmap("../data/images/AMD_Radeon.png")
+            self.AMD_Radeon_white_pixmap = QPixmap("../data/images/AMD_Radeon-white.png")
+            self.MIVisionX_pixmap = QPixmap("../data/images/MIVisionX-logo.png")
+            self.MIVisionX_white_pixmap = QPixmap("../data/images/MIVisionX-logo-white.png")
+            self.EPYC_pixmap = QPixmap("../data/images/EPYC-blue.png")
+            self.EPYC_white_pixmap = QPixmap("../data/images/EPYC-blue-white.png")
+            self.docker_pixmap = QPixmap("./data/images/Docker.png")
+            self.singularity_pixmap = QPixmap("../data/images/Singularity.png")
+            self.rali_pixmap = QPixmap("../data/images/RALI.png")
+            self.rali_white_pixmap = QPixmap("../data/images/RALI-white.png")
+            self.graph_image_pixmap = QPixmap("../data/images/Graph-image.png")
+            self.graph_image_white_pixmap = QPixmap("../data/images/Graph-image-white.png")
+
             self.lgraph = None
             self.agraph = None
             self.t1Curve = None
             self.t5Curve= None
             self.legend = None
-            #self.imageLength = self.image_frame.Width() - 10
             self.loss_label.setStyleSheet("color: red")
             self.top1_label.setStyleSheet("color: blue")
             self.top5_label.setStyleSheet("color: green")
             self.initGraph()
+            self.tdark_checkBox.stateChanged.connect(self.setBackground)
             self.updateTimer = QTimer()
             self.snoopTimer = QTimer()
             self.updateTimer.timeout.connect(self.update)
@@ -66,7 +79,6 @@ class TrainViewer(QtGui.QMainWindow):
             self.snoopTimer.start(300)
        
     def initGraph(self):
-        #self.setStyleSheet("background-color: white")
         self.lgraph = pg.PlotWidget()
         self.lgraph.setLabel('left', 'Loss(%)')
         self.lgraph.setLabel('bottom', 'Epoch(s)')
@@ -80,17 +92,6 @@ class TrainViewer(QtGui.QMainWindow):
         self.agraph.setYRange(0, 105, padding=0)
 
         pg.setConfigOptions(antialias=True)
-        
-        self.lgraph.setBackground(None)
-        self.lgraph.getAxis('left').setPen(pg.mkPen('k', width=2))
-        self.lgraph.getAxis('left').setTextPen(pg.mkPen('k', width=2))
-        self.lgraph.getAxis('bottom').setPen(pg.mkPen('k', width=2))
-        self.lgraph.getAxis('bottom').setTextPen(pg.mkPen('k', width=2))
-        self.agraph.setBackground(None)
-        self.agraph.getAxis('left').setPen(pg.mkPen('k', width=2))
-        self.agraph.getAxis('left').setTextPen(pg.mkPen('k', width=2))
-        self.agraph.getAxis('bottom').setPen(pg.mkPen('k', width=2))        
-        self.agraph.getAxis('bottom').setTextPen(pg.mkPen('k', width=2))        
         self.lcurve = self.lgraph.plot(pen=pg.mkPen('r', width=4))
         self.t1Curve = self.agraph.plot(pen=pg.mkPen('b', width=4))
         self.t5Curve = self.agraph.plot(pen=pg.mkPen('g', width=4))
@@ -100,6 +101,7 @@ class TrainViewer(QtGui.QMainWindow):
         self.legend.addItem(self.t5Curve, 'Top5')
         self.verticalLayout.addWidget(self.lgraph)
         self.verticalLayout_2.addWidget(self.agraph)
+        self.setBackground()
     
     def initEngines(self):
         self.receiver_thread = QThread()
@@ -145,10 +147,58 @@ class TrainViewer(QtGui.QMainWindow):
         self.t1Curve.setData(x=self.epochs, y=self.top1)
         self.t5Curve.setData(x=self.epochs, y=self.top5)
     
-    # def resizeEvent(self, event):
-    #     self.imageLength = self.image_frame.Width() - 10
+    def setBackground(self):
+        if self.tdark_checkBox.isChecked():
+            self.setStyleSheet("background-color: #25232F;")
+            self.AMD_logo.setPixmap(self.AMD_Radeon_white_pixmap)
+            self.MIVisionX_logo.setPixmap(self.MIVisionX_white_pixmap)
+            self.EPYC_logo.setPixmap(self.EPYC_white_pixmap)
+            self.image_label.setStyleSheet("color: #C82327;")
+            self.model_label.setStyleSheet("color: #C82327;")
+            self.ltitle_label.setStyleSheet("color: #C82327;")
+            self.atitle_label.setStyleSheet("color: #C82327;")
+            self.lgraph.setBackground(None)
+            self.lgraph.getAxis('left').setPen(pg.mkPen('w', width=2))
+            self.lgraph.getAxis('left').setTextPen(pg.mkPen('w', width=2))
+            self.lgraph.getAxis('bottom').setPen(pg.mkPen('w', width=2))
+            self.lgraph.getAxis('bottom').setTextPen(pg.mkPen('w', width=2))
+            self.agraph.setBackground(None)
+            self.agraph.getAxis('left').setPen(pg.mkPen('w', width=2))
+            self.agraph.getAxis('left').setTextPen(pg.mkPen('w', width=2))
+            self.agraph.getAxis('bottom').setPen(pg.mkPen('w', width=2))        
+            self.agraph.getAxis('bottom').setTextPen(pg.mkPen('w', width=2))
+            self.legend.getLabel(self.t1Curve).setText('Top1', color='FFFFFF')
+            self.legend.getLabel(self.t5Curve).setText('Top5', color='FFFFFF')
+            self.mProg_label.setStyleSheet("color: #FFFFFF;")
+            self.tdark_checkBox.setStyleSheet("color: #FFFFFF;")
+            self.model_progressBar.setStyleSheet("background-color: #FFFFFF")
+        else:
+            self.setStyleSheet("background-color: 0;")
+            self.AMD_logo.setPixmap(self.AMD_Radeon_pixmap)
+            self.MIVisionX_logo.setPixmap(self.MIVisionX_pixmap)
+            self.EPYC_logo.setPixmap(self.EPYC_pixmap)
+            self.image_label.setStyleSheet("color: 0;")
+            self.model_label.setStyleSheet("color: 0;")
+            self.ltitle_label.setStyleSheet("color: 0;")
+            self.atitle_label.setStyleSheet("color: 0;")
+            self.lgraph.setBackground(None)
+            self.lgraph.getAxis('left').setPen(pg.mkPen('k', width=2))
+            self.lgraph.getAxis('left').setTextPen(pg.mkPen('k', width=2))
+            self.lgraph.getAxis('bottom').setPen(pg.mkPen('k', width=2))
+            self.lgraph.getAxis('bottom').setTextPen(pg.mkPen('k', width=2))
+            self.agraph.setBackground(None)
+            self.agraph.getAxis('left').setPen(pg.mkPen('k', width=2))
+            self.agraph.getAxis('left').setTextPen(pg.mkPen('k', width=2))
+            self.agraph.getAxis('bottom').setPen(pg.mkPen('k', width=2))        
+            self.agraph.getAxis('bottom').setTextPen(pg.mkPen('k', width=2))        
+            self.legend.getLabel(self.t1Curve).setText('Top1', color='000000')
+            self.legend.getLabel(self.t5Curve).setText('Top5', color='000000')
+            self.mProg_label.setStyleSheet("color: 0;")
+            self.tdark_checkBox.setStyleSheet("color: 0;")
+            self.model_progressBar.setStyleSheet("background-color: 0")
 
     def closeEvent(self, event):
+        print("Closing...")
         self.trainEngine.terminate()
         #self.receiver_thread.quit()
         self.close()

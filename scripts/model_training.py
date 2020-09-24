@@ -19,27 +19,35 @@ class modelTraining(QtCore.QObject):
         self.setupDone = False
 
     def runDocker(self):
-        #os.system('sudo docker rm -f training')
-        #os.system('sudo docker run -it -d -v $(pwd):/root/hostDrive/ --name training --device=/dev/kfd --device=/dev/dri --cap-add=SYS_RAWIO --device=/dev/mem --group-add video --network host mivisionx/pytorch-ubuntu-16.04 bash')
+        if (os.path.exists('statistics.csv')):
+            os.system('sudo rm statistics.csv')
+
+        print("Training start")
+        os.system('sudo docker rm -f training')
+        os.system('sudo docker run -it -d -v $(pwd):/root/hostDrive/ --name training --device=/dev/kfd --device=/dev/dri --cap-add=SYS_RAWIO --device=/dev/mem --group-add video --network host mivisionx/pytorch-ubuntu-16.04 bash')
         os.system('sudo docker start training')    
         os.system('sudo docker cp %s training:/' % self.datapath)
         os.system('sudo docker exec -i training bash -c "python3.6 rali_training_setup.py --dataset %s --batch_size %d --epochs %d --path %s"' % (self.dataset_folder, self.batch_size, self.epochs, self.PATH))
         self.setupDone = True
 
     def getValues(self):
-        #print ('getting epoch value')
-        with open('statistics.csv', 'r') as f:
-            for line in f:
-                values = [x.strip() for x in line.split(',')]
-                epoch = values[0]
-                loss = values[1]
-                top1 = values[2]
-                top5 = values[3]
+        if (os.path.exists('statistics.csv')):
+            with open('statistics.csv', 'r') as f:
+                for line in f:
+                    values = [x.strip() for x in line.split(',')]
+                    epoch = values[0]
+                    loss = values[1]
+                    top1 = values[2]
+                    top5 = values[3]
 
-                return (int)(epoch), (float)(loss), (float)(top1), (float)(top5)
+                    return (int)(epoch), (float)(loss), (float)(top1), (float)(top5)
+        else:
+            return (0,0,0,0)
 
     def terminate(self):
+        print("Terminating...")
         os.system('sudo docker stop training')
+        print("Done")
 
     def isSetupDone(self):
         return self.setupDone
