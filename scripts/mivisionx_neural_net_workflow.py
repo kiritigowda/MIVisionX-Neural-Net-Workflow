@@ -73,5 +73,5 @@ if __name__ == '__main__':
 		gpu_name = args.gpu_name
 
 		viewer = InferenceViewer(modelName, modelFormat, imageDir, modelLocation, label, hierarchy, imageVal, modelInputDims, modelOutputDims, 
-                                    modelBatchSize, outputDir, inputAdd, inputMultiply, verbose, fp16, replaceModel, loop, rocalMode, gui, container_logo, fps_file, parent=None)
+                                    modelBatchSize, outputDir, inputAdd, inputMultiply, verbose, fp16, replaceModel, loop, rocalMode, gui, container_logo, fps_file, cpu_name, gpu_name, parent=None)
 	app.exec_()
