@@ -3,13 +3,9 @@ import torch
 import argparse
 import csv
 import time
-import numpy as np
 import torchvision.models as models
-import torchvision.datasets as datasets
-import torchvision.transforms as transforms
 import torch.optim as optim
 import torch.nn as nn
-from PIL import Image
 
 DATA_BACKEND_CHOICES = ['pytorch']
 from amd.rocal.plugin.pytorch import ROCALClassificationIterator
@@ -76,7 +72,7 @@ class trainLoader():
 
 class valPipeline(Pipeline):
     def __init__(self, data_path, batch_size, num_classes, one_hot, local_rank, world_size, num_thread, crop, rocal_cpu, fp16, parent=None):
-        super(trainPipeline, self).__init__(parent)
+        super(valPipeline, self).__init__(parent)
         self.pipe = Pipeline(batch_size=batch_size, num_threads=num_thread, device_id=local_rank, seed=local_rank+10, rocal_cpu=rocal_cpu, 
                     tensor_dtype = types.FLOAT16 if fp16 else types.FLOAT, tensor_layout=types.NCHW, prefetch_queue_depth = 7)
         with self.pipe:
@@ -112,7 +108,7 @@ class valLoader():
         self.fp16 = True
 
     def get_pytorch_val_loader(self):
-        pipe_val = valPipeline(self.data_path, self.batch_size, self.num_thread, self.crop, self.rocal_cpu)
+        pipe_val = valPipeline(self.data_path, self.batch_size, self.num_classes, self.one_hot, self.local_rank, self.world_size, self.num_thread, self.crop, self.rocal_cpu, self.fp16)
         pipe_val.build()
         val_loader = ROCALClassificationIterator(pipe_val, device="cpu" if self.rocal_cpu else "cuda", device_id = self.local_rank)
         if self.rocal_cpu:
