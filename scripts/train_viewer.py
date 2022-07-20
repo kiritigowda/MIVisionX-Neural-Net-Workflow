@@ -4,10 +4,11 @@ import queue
 from PyQt5 import QtGui, uic
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import QTime, QTimer, QThread
+from PyQt5 import QtWidgets
 from glob import iglob
 from model_training import *
 
-class TrainViewer(QtGui.QMainWindow):
+class TrainViewer(QtWidgets.QMainWindow):
     def __init__(self, model, datapath, PATH, training_device, num_gpu, batch_size, epochs, rocal_cpu, input_dims, num_thread, gui, parent):
         super(TrainViewer, self).__init__(parent)
         self.parent = parent
@@ -120,7 +121,7 @@ class TrainViewer(QtGui.QMainWindow):
         if epoch is self.epoch:
             self.updateTimer.stop()
             
-        if self.lastEpoch is not epoch and epoch is not 0:
+        if self.lastEpoch != epoch and epoch != 0:
             self.mProg_label.setText("Epoch %d of %d" % (epoch, self.epoch))
             self.loss_label.setText("Loss %0.1f%%" % loss)
             self.top1_label.setText("Top1: %0.1f%%" % top1)
