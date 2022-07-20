@@ -6,7 +6,11 @@ import numpy as np
 import cv2
 from numpy.ctypeslib import ndpointer
 from PyQt5 import QtCore
-from rali_setup import *
+from rocal_setup import *
+import amd.rocal.types as types
+from amd.rocal.plugin.pytorch import ROCAL_iterator
+from amd.rocal.pipeline import Pipeline
+
 
 # AMD Neural Net python wrapper
 class AnnAPI:
@@ -77,12 +81,12 @@ class annieObjectWrapper():
 
 class modelInference(QtCore.QObject):
 	def __init__(self, modelName, modelFormat, imageDir, modelLocation, label, hierarchy, imageVal, modelInputDims, modelOutputDims, 
-				modelBatchSize, outputDir, inputAdd, inputMultiply, verbose, fp16, replaceModel, loop, rali_mode, origQueue, augQueue, gui, totalImages, fps_file, parent=None):
+				modelBatchSize, outputDir, inputAdd, inputMultiply, verbose, fp16, replaceModel, loop, rocal_mode, origQueue, augQueue, gui, totalImages, fps_file, parent=None):
 
 		super(modelInference, self).__init__(parent)
-		self.modelCompilerPath = '/opt/rocm/mivisionx/model_compiler/python'
-		self.ADATPath= '/opt/rocm/mivisionx/toolkit/analysis_and_visualization/classification'
-		self.setupDir = '~/.mivisionx-validation-tool'
+		self.modelCompilerPath = '/opt/rocm/libexec/mivisionx/model_compiler/python'
+		self.ADATPath = '/opt/rocm/libexec/mivisionx/toolkit/analysis_and_visualization/classification'
+		self.setupDir = '~/.mivisionx-neuralnet-workflow'
 
 		self.analyzerDir = os.path.expanduser(self.setupDir)
 		self.modelName = modelName
@@ -111,8 +115,8 @@ class modelInference(QtCore.QObject):
 		self.loop = False
 		self.classifier = None
 		self.labelNames = []
-		self.raliEngine = None
-		self.rali_mode = rali_mode
+		self.rocalEngine = None
+		self.rocal_mode = rocal_mode
 		self.origQueue = origQueue
 		self.augQueue = augQueue
 		self.imgCount = 0
@@ -137,10 +141,10 @@ class modelInference(QtCore.QObject):
 			self.replaceModel = True
 
 		# set fp16 inference turned on/off
-		self.tensor_dtype = TensorDataType.FLOAT32
+		self.tensor_dtype = types.FLOAT
 		if(fp16 != 'no'):
 			self.FP16inference = True
-			self.tensor_dtype=TensorDataType.FLOAT16
+			self.tensor_dtype = types.FLOAT16
 
 		#set loop parameter based on user input
 		if loop == 'yes':
@@ -162,15 +166,15 @@ class modelInference(QtCore.QObject):
 
 		# MIVisionX setup
 		if(os.path.exists(self.analyzerDir)):
-			print("\nMIVisionX Validation Tool\n")
+			print("\nMIVisionX Neural Net Workflow\n")
 			# replace old model or throw error
 			if(self.replaceModel):
 				os.system('rm -rf '+self.modelDir)
 			elif(os.path.exists(self.modelDir)):
 				print("OK: Model exists")
 		else:
-			print("\nMIVisionX Validation Tool Created\n")
-			os.system('(cd ; mkdir .mivisionx-validation-tool)')
+			print("\nMIVisionX Neural Net Workflow Created\n")
+			os.system('(cd ; mkdir .mivisionx-neuralnet-workflow)')
 
 		# Setup Text File for Demo
 		if (not os.path.isfile(self.analyzerDir + "/setupFile.txt")):
@@ -198,7 +202,7 @@ class modelInference(QtCore.QObject):
 				if(os.path.exists(delmodelPath)): 
 					os.system('rm -rf ' + delmodelPath)
 				with open(self.analyzerDir + "/setupFile.txt", "w") as fout:
-				    fout.writelines(data[1:])
+					fout.writelines(data[1:])
 				with open(self.analyzerDir + "/setupFile.txt", "a") as fappend:
 					fappend.write("\n" + modelFormat + ';' + modelName + ';' + modelLocation + ';' + modelBatchSize + ';' + modelInputDims + ';' + modelOutputDims + ';' + label + ';' + outputDir + ';' + imageDir + ';' + imageVal + ';' + hierarchy + ';' + str(self.Ax).strip('[]').replace(" ","") + ';' + str(self.Mx).strip('[]').replace(" ","") + ';' + fp16 + ';' + replaceModel + ';' + verbose + ';' + loop)
 					fappend.close()
@@ -212,7 +216,7 @@ class modelInference(QtCore.QObject):
 		self.msFrame = 0.0
 		self.totalFPS = 0.0
 		# get correct list for augmentations
-		self.raliList = []
+		self.rocalList = []
 		self.setupInference()
 
 	def setupInference(self):
@@ -236,24 +240,24 @@ class modelInference(QtCore.QObject):
 			if(os.path.exists(self.modelDir)):
 				# convert to NNIR
 				if(self.modelFormat == 'caffe'):
-					os.system('(cd '+self.modelDir+'; python '+self.modelCompilerPath+'/caffe_to_nnir.py '+self.trainedModel+' nnir-files --input-dims 1,' + self.modelInputDims + ')')
-					os.system('(cd '+self.modelDir+'; python '+self.modelCompilerPath+'/nnir_update.py --batch-size ' + self.modelBatchSize + ' nnir-files nnir-files)')
+					os.system('(cd '+self.modelDir+'; python3 '+self.modelCompilerPath+'/caffe_to_nnir.py '+self.trainedModel+' nnir-files --input-dims 1,' + self.modelInputDims + ')')
+					os.system('(cd '+self.modelDir+'; python3 '+self.modelCompilerPath+'/nnir_update.py --batch-size ' + self.modelBatchSize + ' nnir-files nnir-files)')
 				elif(self.modelFormat == 'onnx'):
-					os.system('(cd '+self.modelDir+'; python '+self.modelCompilerPath+'/onnx_to_nnir.py '+self.trainedModel+' nnir-files --input_dims 1,' + self.modelInputDims + ')')
-					os.system('(cd '+self.modelDir+'; python '+self.modelCompilerPath+'/nnir_update.py --batch-size ' + self.modelBatchSize + ' nnir-files nnir-files)')
+					os.system('(cd '+self.modelDir+'; python3 '+self.modelCompilerPath+'/onnx_to_nnir.py '+self.trainedModel+' nnir-files --input_dims 1,' + self.modelInputDims + ')')
+					os.system('(cd '+self.modelDir+'; python3 '+self.modelCompilerPath+'/nnir_update.py --batch-size ' + self.modelBatchSize + ' nnir-files nnir-files)')
 				elif(self.modelFormat == 'nnef'):
-					os.system('(cd '+self.modelDir+'; python '+self.modelCompilerPath+'/nnef_to_nnir.py '+self.trainedModel+' nnir-files --batch-size ' + self.modelBatchSize + ')')
-					#os.system('(cd '+self.modelDir+'; python '+self.modelCompilerPath+'/nnir_update.py --batch-size ' + self.modelBatchSize + ' nnir-files nnir-files)')
+					os.system('(cd '+self.modelDir+'; python3 '+self.modelCompilerPath+'/nnef_to_nnir.py '+self.trainedModel+' nnir-files --batch-size ' + self.modelBatchSize + ')')
+					#os.system('(cd '+self.modelDir+'; python3 '+self.modelCompilerPath+'/nnir_update.py --batch-size ' + self.modelBatchSize + ' nnir-files nnir-files)')
 				else:
 					print("ERROR: Neural Network Format Not supported, use caffe/onnx/nnef in arugment --model_format")
 					quit()
 				# convert the model to FP16
 				if(self.FP16inference):
-					os.system('(cd '+self.modelDir+'; python '+self.modelCompilerPath+'/nnir_update.py --convert-fp16 1 --fuse-ops 1 nnir-files nnir-files)')
+					os.system('(cd '+self.modelDir+'; python3 '+self.modelCompilerPath+'/nnir_update.py --convert-fp16 1 --fuse-ops 1 nnir-files nnir-files)')
 					print("\nModel Quantized to FP16\n")
 				# convert to openvx
 				if(os.path.exists(self.nnirDir)):
-					os.system('(cd '+self.modelDir+'; python '+self.modelCompilerPath+'/nnir_to_openvx.py nnir-files openvx-files)')
+					os.system('(cd '+self.modelDir+'; python3 '+self.modelCompilerPath+'/nnir_to_openvx.py nnir-files openvx-files)')
 				else:
 					print("ERROR: Converting Pre-Trained model to NNIR Failed")
 					quit()
@@ -265,7 +269,7 @@ class modelInference(QtCore.QObject):
 					print("ERROR: Converting NNIR to OpenVX Failed")
 					quit()
 
-		#os.system('(cd '+self.modelBuildDir+'; cmake ../openvx-files; make; ./anntest ../openvx-files/weights.bin )')
+		os.system('(cd '+self.modelBuildDir+'; cmake ../openvx-files; make; ./anntest ../openvx-files/weights.bin )')
 		print("\nSUCCESS: Converting Pre-Trained model to MIVisionX Runtime successful\n")
 
 		# create inference classifier
@@ -291,11 +295,16 @@ class modelInference(QtCore.QObject):
 		print('Image File Name,Ground Truth Label,Output Label 1,Output Label 2,Output Label 3,Output Label 4,Output Label 5,Prob 1,Prob 2,Prob 3,Prob 4,Prob 5')
 		sys.stdout = self.orig_stdout
 
-		# Setup Rali Data Loader. 
-		rali_batch_size = 1
-		self.raliEngine = DataLoader(self.inputImageDir, rali_batch_size, self.modelBatchSizeInt, ColorFormat.IMAGE_RGB24, Affinity.PROCESS_CPU, imageValidation, self.h_i, self.w_i, self.rali_mode, self.loop, 
-										TensorLayout.NCHW, False, self.Mx, self.Ax, self.tensor_dtype)
-		self.raliList = self.raliEngine.get_rali_list(self.rali_mode, self.modelBatchSizeInt)
+		# Setup rocal Data Loader. 
+		rocal_batch_size = 1
+		device_id = 0
+		self.pipe = Pipeline(batch_size=rocal_batch_size, num_threads=1, device_id=0, seed=12 + device_id, rocal_cpu=True, tensor_layout = types.NCHW, tensor_dtype=self.tensor_dtype)
+		self.rocalEngine = InferencePipe(self.pipe, imageValidation, self.modelBatchSizeInt, self.rocal_mode, self.c_i, 
+                                    self.h_i, self.w_i, rocal_batch_size, self.tensor_dtype, self.Mx, self.Ax, 
+                                    tensor_layout = types.NCHW, num_threads=1, device_id=0, 
+                                    data_dir=self.inputImageDir, crop=224, rocal_cpu=True)
+		self.imageIterator = ROCAL_iterator(self.pipe)
+		self.rocalList = self.rocalEngine.get_rocal_list(self.rocal_mode, self.modelBatchSizeInt)
 		for i in range(self.modelBatchSizeInt):
 			self.augStats.append([0,0,0])
 		self.setupDone = True
@@ -317,7 +326,7 @@ class modelInference(QtCore.QObject):
 		return topIndex, topProb
 
 	def setIntensity(self, intensity):
-		self.raliEngine.updateAugmentationParameter(intensity)
+		self.rocalEngine.updateAugmentationParameter(intensity)
 	
 	def pauseInference(self):
 		self.pauseState = not self.pauseState
@@ -327,32 +336,37 @@ class modelInference(QtCore.QObject):
 
 	def runInference(self):
 		while self.setupDone:
-			while not self.pauseState and self.raliEngine.getReaminingImageCount() > 0:
+			while not self.pauseState:
 				msFrame = 0.0
 				start = time.time()
-				image_batch, image_tensor = self.raliEngine.get_next_augmentation()
-				frame = image_tensor
+				image_RGB_it, image_tensor = self.rocalEngine.get_next_augmentation(self.imageIterator)
+				image_RGB = image_RGB_it[0]
+				image_batch = cv2.cvtColor(image_RGB, cv2.COLOR_RGB2BGR)
 				original_image = image_batch[0:self.h_i, 0:self.w_i]
 				cloned_image = np.copy(image_batch)
+				frame = image_tensor
 			
 				#get image file name and ground truth
-				imageFileName = self.raliEngine.get_input_name()
-				groundTruthIndex = self.raliEngine.get_ground_truth()
+				imageFileName = self.rocalEngine.get_input_name()
+				groundTruthIndex = self.rocalEngine.get_ground_truth()
 				groundTruthIndex = int(groundTruthIndex)
-				groundTruthLabel = self.labelNames[groundTruthIndex].decode("utf-8").split(' ', 1)
+				groundTruthLabel = self.labelNames[groundTruthIndex]
+				groundTruthLabel = groundTruthLabel.split(" ", 1)[1]
+				groundTruthLabel = groundTruthLabel.split(",", 1)[0]
 
 				end = time.time()
 				msFrame += (end-start)*1000
 				if (self.verbosePrint):
-					print ('%30s' % 'Get next image from RALI took', str((end - start)*1000), 'ms')
+					print ('%30s' % 'Get next image from rocal took', str((end - start)*1000), 'ms')
 	
 				if self.gui:
-					text_width, text_height = cv2.getTextSize(groundTruthLabel[1].split(',')[0], cv2.FONT_HERSHEY_SIMPLEX, 1.0, 2)[0]
+					text_width, text_height = cv2.getTextSize(groundTruthLabel, cv2.FONT_HERSHEY_SIMPLEX, 1.0, 2)[0]
 					text_off_x = (self.w_i/2) - (text_width/2)
 					text_off_y = self.h_i-7
 					box_coords = ((text_off_x, text_off_y), (text_off_x + text_width - 2, text_off_y - text_height - 2))
-					cv2.rectangle(original_image, box_coords[0], box_coords[1], (245, 197, 66), cv2.FILLED)
-					cv2.putText(original_image, groundTruthLabel[1].split(',')[0], (text_off_x, text_off_y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0,0,0), 2)
+					color = (245, 197, 66)
+					cv2.rectangle(original_image, (text_off_x, text_off_y), (text_off_x + text_width + 15, text_off_y - text_height), color, cv2.FILLED)
+					cv2.putText(original_image, groundTruthLabel, (text_off_x, text_off_y), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0,0,0), 2)
 					self.origQueue.put(original_image)
 				
 				# call python inference. Returns output tensor with 1000 class probabilites
@@ -379,7 +393,7 @@ class modelInference(QtCore.QObject):
 						print ('%30s' % 'Processing top 5 results took ', str((end - start)*1000), 'ms' )
 
 					if self.gui:
-						augmentationText = self.raliList[i].split('+')
+						augmentationText = self.rocalList[i].split('+')
 						textCount = len(augmentationText)
 						for cnt in range(0,textCount):
 							currentText = augmentationText[cnt]
@@ -430,7 +444,7 @@ class modelInference(QtCore.QObject):
 		return self.augStats[augmentation]
 
 	def getAugName(self, index):
-		return self.raliList[index]
+		return self.rocalList[index]
 
 	def processOutput(self, groundTruthIndex, topIndex, topProb, i, imageFileName):
 		sys.stdout = open(self.finalImageResultsFile,'a')
@@ -477,9 +491,9 @@ class modelInference(QtCore.QObject):
 			os.system('mkdir ' + self.adatOutputDir)
 		
 		if(hierarchy == ''):
-			os.system('python '+self.ADATPath+'/generate-visualization.py --inference_results '+self.finalImageResultsFile+
+			os.system('python3 '+self.ADATPath+'/generate-visualization.py --inference_results '+self.finalImageResultsFile+
 			' --image_dir '+self.inputImageDir+' --label '+self.labelText+' --model_name '+modelName+' --output_dir '+self.adatOutputDir+' --output_name '+modelName+'-ADAT')
 		else:
-			os.system('python '+self.ADATPath+'/generate-visualization.py --inference_results '+self.finalImageResultsFile+
+			os.system('python3 '+self.ADATPath+'/generate-visualization.py --inference_results '+self.finalImageResultsFile+
 			' --image_dir '+self.inputImageDir+' --label '+self.labelText+' --hierarchy '+self.hierarchyText+' --model_name '+modelName+' --output_dir '+self.adatOutputDir+' --output_name '+modelName+'-ADAT')
 		print("\nSUCCESS: Image Analysis Toolkit Created\n")

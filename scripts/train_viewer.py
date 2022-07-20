@@ -8,7 +8,7 @@ from glob import iglob
 from model_training import *
 
 class TrainViewer(QtGui.QMainWindow):
-    def __init__(self, model, datapath, PATH, training_device, num_gpu, batch_size, epochs, rali_cpu, input_dims, num_thread, gui, parent):
+    def __init__(self, model, datapath, PATH, training_device, num_gpu, batch_size, epochs, rocal_cpu, input_dims, num_thread, gui, parent):
         super(TrainViewer, self).__init__(parent)
         self.parent = parent
 
@@ -19,7 +19,7 @@ class TrainViewer(QtGui.QMainWindow):
         self.num_gpu = num_gpu
         self.batch_size = batch_size
         self.epoch = (int)(epochs)
-        self.rali_cpu = rali_cpu
+        self.rocal_cpu = rocal_cpu
         self.input_dims = input_dims
         self.num_thread = num_thread
         self.gui = gui
@@ -55,8 +55,8 @@ class TrainViewer(QtGui.QMainWindow):
             self.EPYC_white_pixmap = QPixmap("../data/images/EPYC-blue-white.png")
             self.docker_pixmap = QPixmap("./data/images/Docker.png")
             self.singularity_pixmap = QPixmap("../data/images/Singularity.png")
-            self.rali_pixmap = QPixmap("../data/images/RALI.png")
-            self.rali_white_pixmap = QPixmap("../data/images/RALI-white.png")
+            self.rocal_pixmap = QPixmap("../data/images/rocal.png")
+            self.rocal_white_pixmap = QPixmap("../data/images/rocal-white.png")
             self.graph_image_pixmap = QPixmap("../data/images/Graph-image.png")
             self.graph_image_white_pixmap = QPixmap("../data/images/Graph-image-white.png")
 
@@ -107,7 +107,7 @@ class TrainViewer(QtGui.QMainWindow):
         self.receiver_thread = QThread()
 
         # Creating an object for train
-        self.trainEngine = modelTraining(self.model, self.datapath, self.PATH, self.training_device, self.num_gpu, self.batch_size, self.epoch, self.rali_cpu, self.input_dims, self.num_thread)
+        self.trainEngine = modelTraining(self.model, self.datapath, self.PATH, self.training_device, self.num_gpu, self.batch_size, self.epoch, self.rocal_cpu, self.input_dims, self.num_thread)
         
         self.trainEngine.moveToThread(self.receiver_thread)
         self.receiver_thread.started.connect(self.trainEngine.runDocker)

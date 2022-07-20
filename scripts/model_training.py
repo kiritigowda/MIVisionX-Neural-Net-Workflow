@@ -3,7 +3,7 @@ import csv
 from PyQt5 import QtCore
 
 class modelTraining(QtCore.QObject):
-    def __init__(self, model, datapath, PATH, training_device, num_gpu, batch_size, epochs, rali_cpu, input_dims, num_thread, parent=None):
+    def __init__(self, model, datapath, PATH, training_device, num_gpu, batch_size, epochs, rocal_cpu, input_dims, num_thread, parent=None):
         super(modelTraining, self).__init__(parent)
         self.model = model
         self.datapath = datapath
@@ -13,7 +13,7 @@ class modelTraining(QtCore.QObject):
         self.num_gpu = num_gpu
         self.batch_size = batch_size
         self.epochs = epochs
-        self.rali_cpu = rali_cpu
+        self.rocal_cpu = rocal_cpu
         self.input_dims = input_dims
         self.num_thread = num_thread
         self.setupDone = False
@@ -27,7 +27,7 @@ class modelTraining(QtCore.QObject):
         os.system('sudo docker run -it -d -v $(pwd):/root/hostDrive/ --name training --device=/dev/kfd --device=/dev/dri --cap-add=SYS_RAWIO --device=/dev/mem --group-add video --network host mivisionx/pytorch-ubuntu-16.04 bash')
         os.system('sudo docker start training')    
         os.system('sudo docker cp %s training:/' % self.datapath)
-        os.system('sudo docker exec -i training bash -c "python3.6 rali_training_setup.py --dataset %s --batch_size %d --epochs %d --path %s"' % (self.dataset_folder, self.batch_size, self.epochs, self.PATH))
+        os.system('sudo docker exec -i training bash -c "python3 rocal_training_setup.py --dataset %s --batch_size %d --epochs %d --path %s"' % (self.dataset_folder, self.batch_size, self.epochs, self.PATH))
         self.setupDone = True
 
     def getValues(self):
