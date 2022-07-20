@@ -363,7 +363,6 @@ class modelInference(QtCore.QObject):
 					text_width, text_height = cv2.getTextSize(groundTruthLabel, cv2.FONT_HERSHEY_SIMPLEX, 1.0, 2)[0]
 					text_off_x = (self.w_i/2) - (text_width/2)
 					text_off_y = self.h_i-7
-					box_coords = ((text_off_x, text_off_y), (text_off_x + text_width - 2, text_off_y - text_height - 2))
 					color = (245, 197, 66)
 					cv2.rectangle(original_image, (text_off_x, text_off_y), (text_off_x + text_width + 15, text_off_y - text_height), color, cv2.FILLED)
 					cv2.putText(original_image, groundTruthLabel, (text_off_x, text_off_y), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0,0,0), 2)
