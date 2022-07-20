@@ -117,7 +117,7 @@ class valLoader():
             return val_loader , len(val_loader)
 
 class PrefetchedWrapper_rocal(object):
-    def prefetched_loader(loader, rocal_cpu):
+    def prefetched_loader(self, loader, rocal_cpu):
 
         stream = torch.cuda.Stream()
         first = True
