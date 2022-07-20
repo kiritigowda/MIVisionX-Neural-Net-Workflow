@@ -43,6 +43,8 @@ if __name__ == '__main__':
 		parser.add_argument('--loop',				type=str, default='yes',	help='verbose                   [optional - default:yes]')
 		parser.add_argument('--gui',				type=str, default='yes',	help='verbose                   [optional - default:yes]')
 		parser.add_argument('--fps_file',			type=str, default='',		help='verbose                   [optional]')
+		parser.add_argument('--cpu_name',			type=str, default='epyc',	help='verbose                   [optional - default:epyc]')
+		parser.add_argument('--gpu_name',			type=str, default='vega20',	help='verbose                   [optional - default:vega20]')
 		args = parser.parse_args()
 		
 		# get arguments
@@ -67,6 +69,8 @@ if __name__ == '__main__':
 		gui = args.gui
 		fps_file = args.fps_file
 		container_logo = 0
+		cpu_name = args.cpu_name
+		gpu_name = args.gpu_name
 
 		viewer = InferenceViewer(modelName, modelFormat, imageDir, modelLocation, label, hierarchy, imageVal, modelInputDims, modelOutputDims, 
                                     modelBatchSize, outputDir, inputAdd, inputMultiply, verbose, fp16, replaceModel, loop, rocalMode, gui, container_logo, fps_file, parent=None)
