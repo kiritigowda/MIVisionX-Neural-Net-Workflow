@@ -1,10 +1,9 @@
 import os
 import pyqtgraph as pg
 import queue
-from PyQt5 import QtGui, uic
+from PyQt5 import QtWidgets, uic
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import QTime, QTimer, QThread
-from PyQt5 import QtWidgets
 from glob import iglob
 from model_training import *
 
