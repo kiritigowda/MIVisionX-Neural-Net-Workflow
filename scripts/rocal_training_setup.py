@@ -149,7 +149,7 @@ class PrefetchedWrapper_rocal(object):
 
     def __iter__(self):
         self.epoch += 1
-        return PrefetchedWrapper_rocal.prefetched_loader(self.dataloader, self.rocal_cpu)
+        return self.prefetched_loader(self.dataloader, self.rocal_cpu)
 
 class AverageMeter(object):
     #Computes and stores the average and current value
