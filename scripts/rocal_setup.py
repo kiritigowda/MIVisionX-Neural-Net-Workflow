@@ -357,7 +357,7 @@ class InferencePipe():
 		self.p = (1 if color_format is types.GRAY else 3)
 		height = self.h*self.n
 		self.out_image = np.zeros((height, self.w, self.p), dtype = "uint8")
-		self.out_tensor = np.zeros(( self.b*self.n, self.p, self.h/self.b, self.w,), dtype = "float32")
+		self.out_tensor = np.zeros(( self.b*self.n, self.p, int(self.h/self.b), self.w,), dtype = "float32")
 
 	def get_input_name(self):
 		self.img_names_length = np.empty(self.rocal_batch_size, dtype="int32")
@@ -436,8 +436,8 @@ class InferencePipe():
 	def start_iterator(self):
 		self.rocalResetLoaders()
 		
-	def get_next_augmentation(self):
-		if self.rocalIsEmpty() == 1:
+	def get_next_augmentation(self, imageIterator):
+		if self.pipe.isEmpty() == 1:
 			return -1
 			#raise StopIteration
 		self.renew_parameters()

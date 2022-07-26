@@ -361,7 +361,7 @@ class modelInference(QtCore.QObject):
 	
 				if self.gui:
 					text_width, text_height = cv2.getTextSize(groundTruthLabel, cv2.FONT_HERSHEY_SIMPLEX, 1.0, 2)[0]
-					text_off_x = (self.w_i/2) - (text_width/2)
+					text_off_x = int((self.w_i/2) - (text_width/2))
 					text_off_y = self.h_i-7
 					color = (245, 197, 66)
 					cv2.rectangle(original_image, (text_off_x, text_off_y), (text_off_x + text_width + 15, text_off_y - text_height), color, cv2.FILLED)
@@ -397,7 +397,7 @@ class modelInference(QtCore.QObject):
 						for cnt in range(0,textCount):
 							currentText = augmentationText[cnt]
 							text_width, text_height = cv2.getTextSize(currentText, cv2.FONT_HERSHEY_SIMPLEX, 1.2, 2)[0]
-							text_off_x = (self.w_i/2) - (text_width/2)
+							text_off_x = int((self.w_i/2) - (text_width/2))
 							text_off_y = (i*self.h_i)+self.h_i-7-(cnt*text_height)
 							box_coords = ((text_off_x, text_off_y), (text_off_x + text_width - 2, text_off_y - text_height - 2))
 							cv2.rectangle(cloned_image, box_coords[0], box_coords[1], (245, 197, 66), cv2.FILLED)
