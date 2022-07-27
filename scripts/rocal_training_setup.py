@@ -287,7 +287,7 @@ def main():
     input_dimensions = list(args.input_dimensions.split(","))
     crop = int(input_dimensions[3]) #crop to the width or height of model input_dimensions
     
-    file_directory = os.path.join(os.path.expanduser('~'), 'hostDrive')
+    file_directory = os.path.join(os.path.expanduser('/workspace'), '/MIVisionX-Neural-Net-Workflow/')
     results_file =  os.path.join(file_directory, 'statistics.csv')        	
     with open(results_file, 'w') as csvfile:
         fieldnames = ['epoch', 'running_loss', 'top1', 'top5', 'timestamp']
