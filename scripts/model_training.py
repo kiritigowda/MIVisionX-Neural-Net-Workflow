@@ -25,7 +25,7 @@ class modelTraining(QtCore.QObject):
 
         print("Training start")
         os.system('sudo docker rm -f training')
-        os.system('sudo docker run -it -d -v $(pwd):/workspace/MIVisionX-Neural-Net-Workflow -v %s:/data/imagenet_20dir/ --name training --device=/dev/kfd --device=/dev/dri --cap-add=SYS_RAWIO --device=/dev/mem --group-add video --network host --env DISPLAY=unix$DISPLAY --privileged --volume $XAUTH:/root/.Xauthority --volume /tmp/.X11-unix/:/tmp/.X11-unix lakshmikumar/rocm5.2_pytorch_mivisionx:latest bash' % self.datapath)
+        os.system('sudo docker run -it -d -v $(pwd):/workspace/MIVisionX-Neural-Net-Workflow -v %s:/data/imagenet_20dir/ --name training --device=/dev/kfd --device=/dev/dri --cap-add=SYS_RAWIO --device=/dev/mem --group-add video --network host --env DISPLAY=unix$DISPLAY --privileged --volume $XAUTH:/root/.Xauthority --volume /tmp/.X11-unix/:/tmp/.X11-unix lakshmikumar/rocm5.2_pytorch_mivisionx:v0.1 bash' % self.datapath)
         os.system('sudo docker start training')
         os.system('sudo docker exec training bash -c "cd /workspace/MIVisionX/; mkdir build; cd build; cmake -DNEURAL_NET=OFF ../; make -j; make install"')
         os.system('sudo docker exec training bash -c "cd /workspace/MIVisionX/rocAL/rocAL_pybind/ ; ./run.sh"')
