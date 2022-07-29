@@ -42,12 +42,13 @@ class trainPipeline(Pipeline):
                                                 mean=[0.485 * 255,0.456 * 255,0.406 * 255],
                                                 std=[0.229 * 255,0.224 * 255,0.225 * 255])
             if(self.one_hot):
-                _ = fn.one_hot(self.labels, self.num_classes)
+                _ = fn.one_hot(self.labels, num_classes)
             self.pipe.set_outputs(self.cmnp)
         print('rocal "{0}" variant'.format(self.rocal_device))
 
 class trainLoader():
     def __init__(self, data_path, batch_size, num_thread, crop, rocal_cpu):
+        super(trainLoader, self).__init__()
         self.data_path = data_path
         self.batch_size = batch_size
         self.num_thread = num_thread
@@ -303,12 +304,12 @@ def main():
 
     #train loader
     train_loader_obj = trainLoader(dataset_train, batch_size, num_thread, crop, rocal_cpu)
-    train_loader = train_loader_obj.get_pytorch_train_loader()
+    train_loader, train_loader_len = train_loader_obj.get_pytorch_train_loader()
 
     #print(train_loader)
     #test loader
     val_loader_obj = valLoader(dataset_val, batch_size, num_thread, crop, rocal_cpu)
-    val_loader = val_loader_obj.get_pytorch_val_loader()
+    val_loader, val_loader_len = val_loader_obj.get_pytorch_val_loader()
     #print(val_loader)
 
     optimizer = optim.SGD(net.parameters(), lr=0.001)
