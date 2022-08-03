@@ -21,30 +21,29 @@ class Net():
         model = models.resnet50().to(self.device)
         return model
 
-class trainPipeline(Pipeline):
-    def __init__(self, data_path, batch_size, num_classes, one_hot, local_rank, world_size, num_thread, crop, rocal_cpu, fp16, parent=None):
-        super(trainPipeline, self).__init__(parent)
-        self.pipe = Pipeline(batch_size=batch_size, num_threads=num_thread, device_id=local_rank, seed=local_rank+10, rocal_cpu=rocal_cpu, 
-                    tensor_dtype = types.FLOAT16 if fp16 else types.FLOAT, tensor_layout=types.NCHW, prefetch_queue_depth = 7)
-        with self.pipe:
-            self.jpegs, self.labels = fn.readers.file(file_root=data_path, shard_id=local_rank, num_shards=world_size, random_shuffle=True)
-            self.rocal_device = 'cpu' if rocal_cpu else 'gpu'
-            self.decode = fn.decoders.image_slice(self.jpegs, output_type=types.RGB,
-                                                    file_root=data_path, shard_id=local_rank, num_shards=world_size, random_shuffle=True)
-            self.res = fn.resize(self.decode, resize_x=224, resize_y=224)
-            self.flip_coin = fn.random.coin_flip(probability=0.5)
-            self.cmnp = fn.crop_mirror_normalize(self.res, device="gpu",
-                                                output_dtype=types.FLOAT,
-                                                output_layout=types.NCHW,
-                                                crop=(crop, crop),
-                                                mirror=self.flip_coin,
-                                                image_type=types.RGB,
-                                                mean=[0.485 * 255,0.456 * 255,0.406 * 255],
-                                                std=[0.229 * 255,0.224 * 255,0.225 * 255])
-            if(self.one_hot):
-                _ = fn.one_hot(self.labels, num_classes)
-            self.pipe.set_outputs(self.cmnp)
-        print('rocal "{0}" variant'.format(self.rocal_device))
+def trainPipeline(data_path, batch_size, num_classes, one_hot, local_rank, world_size, num_thread, crop, rocal_cpu, fp16):
+    pipe = Pipeline(batch_size=batch_size, num_threads=num_thread, device_id=local_rank, seed=local_rank+10, rocal_cpu=rocal_cpu, 
+                tensor_dtype = types.FLOAT16 if fp16 else types.FLOAT, tensor_layout=types.NCHW, prefetch_queue_depth = 7)
+    with pipe:
+        jpegs, labels = fn.readers.file(file_root=data_path, shard_id=local_rank, num_shards=world_size, random_shuffle=True)
+        rocal_device = 'cpu' if rocal_cpu else 'gpu'
+        decode = fn.decoders.image_slice(jpegs, output_type=types.RGB,
+                                                file_root=data_path, shard_id=local_rank, num_shards=world_size, random_shuffle=True)
+        res = fn.resize(decode, resize_x=224, resize_y=224)
+        flip_coin = fn.random.coin_flip(probability=0.5)
+        cmnp = fn.crop_mirror_normalize(res, device="gpu",
+                                            output_dtype=types.FLOAT,
+                                            output_layout=types.NCHW,
+                                            crop=(crop, crop),
+                                            mirror=flip_coin,
+                                            image_type=types.RGB,
+                                            mean=[0.485 * 255,0.456 * 255,0.406 * 255],
+                                            std=[0.229 * 255,0.224 * 255,0.225 * 255])
+        if(one_hot):
+            _ = fn.one_hot(labels, num_classes)
+        pipe.set_outputs(cmnp)
+    print('rocal "{0}" variant'.format(rocal_device))
+    return pipe
 
 class trainLoader():
     def __init__(self, data_path, batch_size, num_thread, crop, rocal_cpu):
@@ -61,8 +60,9 @@ class trainLoader():
         self.fp16 = True
 
     def get_pytorch_train_loader(self):
-        print("in get_pytorch_train_loader function")   
-        pipe_train = trainPipeline(self.data_path, self.batch_size, self.num_classes, self.one_hot, self.local_rank, self.world_size, self.num_thread, self.crop, self.rocal_cpu, self.fp16)
+        print("in get_pytorch_train_loader function")
+        pipe_train = trainPipeline(self.data_path, self.batch_size, self.num_classes, self.one_hot, self.local_rank, self.world_size, self.num_thread, 
+                                self.crop, self.rocal_cpu, self.fp16)
         pipe_train.build()
         train_loader = ROCALClassificationIterator(pipe_train, device="cpu" if self.rocal_cpu else "cuda", device_id = self.local_rank)
         if self.rocal_cpu:
@@ -71,29 +71,30 @@ class trainLoader():
             return train_loader , len(train_loader)
 
 
-class valPipeline(Pipeline):
-    def __init__(self, data_path, batch_size, num_classes, one_hot, local_rank, world_size, num_thread, crop, rocal_cpu, fp16, parent=None):
-        super(valPipeline, self).__init__(parent)
-        self.pipe = Pipeline(batch_size=batch_size, num_threads=num_thread, device_id=local_rank, seed=local_rank+10, rocal_cpu=rocal_cpu, 
-                    tensor_dtype = types.FLOAT16 if fp16 else types.FLOAT, tensor_layout=types.NCHW, prefetch_queue_depth = 7)
-        with self.pipe:
-            self.jpegs, self.labels = fn.readers.file(file_root=data_path)
-            rocal_device = 'cpu' if rocal_cpu else 'gpu'
-            decode = fn.decoders.image(self.jpegs, output_type=types.RGB,file_root=data_path, shard_id=local_rank, num_shards=world_size, random_shuffle=False)
-            res = fn.resize_shorter(decode, resize_size=256)
-            centrecrop = fn.centre_crop(res, crop=(224, 224))
-            cmnp = fn.crop_mirror_normalize(centrecrop , device="cpu",
-                                                output_dtype=types.FLOAT16 if fp16 else types.FLOAT,
-                                                output_layout=types.NCHW,
-                                                crop=(224, 224),
-                                                mirror=0,
-                                                image_type=types.RGB,
-                                                mean=[0.485 * 255,0.456 * 255,0.406 * 255],
-                                                std=[0.229 * 255,0.224 * 255,0.225 * 255])
-            if(one_hot):
-                _ = fn.one_hot(self.labels, num_classes)
-            self.pipe.set_outputs(cmnp)
-        print('rocal "{0}" variant'.format(rocal_device))
+def valPipeline(data_path, batch_size, num_classes, one_hot, local_rank, world_size, num_thread, crop, rocal_cpu, fp16):
+    
+    pipe = Pipeline(batch_size=batch_size, num_threads=num_thread, device_id=local_rank, seed=local_rank+10, rocal_cpu=rocal_cpu, 
+                tensor_dtype = types.FLOAT16 if fp16 else types.FLOAT, tensor_layout=types.NCHW, prefetch_queue_depth = 7)
+    with pipe:
+        jpegs, labels = fn.readers.file(file_root=data_path)
+        rocal_device = 'cpu' if rocal_cpu else 'gpu'
+        decode = fn.decoders.image(jpegs, output_type=types.RGB,file_root=data_path, shard_id=local_rank, num_shards=world_size, random_shuffle=False)
+        #TODO: Change to resize_shorter once TOT is updated
+        res = fn.resize(decode, resize_x=256, resize_y=256)
+        centrecrop = fn.centre_crop(res, crop=(224, 224))
+        cmnp = fn.crop_mirror_normalize(centrecrop , device="cpu",
+                                            output_dtype=types.FLOAT16 if fp16 else types.FLOAT,
+                                            output_layout=types.NCHW,
+                                            crop=(224, 224),
+                                            mirror=0,
+                                            image_type=types.RGB,
+                                            mean=[0.485 * 255,0.456 * 255,0.406 * 255],
+                                            std=[0.229 * 255,0.224 * 255,0.225 * 255])
+        if(one_hot):
+            _ = fn.one_hot(labels, num_classes)
+        pipe.set_outputs(cmnp)
+    print('rocal "{0}" variant'.format(rocal_device))
+    return pipe
 
 class valLoader():
     def __init__(self, data_path, batch_size, num_thread, crop, rocal_cpu):
@@ -109,7 +110,8 @@ class valLoader():
         self.fp16 = True
 
     def get_pytorch_val_loader(self):
-        pipe_val = valPipeline(self.data_path, self.batch_size, self.num_classes, self.one_hot, self.local_rank, self.world_size, self.num_thread, self.crop, self.rocal_cpu, self.fp16)
+        pipe_val = valPipeline(self.data_path, self.batch_size, self.num_classes, self.one_hot, self.local_rank, self.world_size, self.num_thread, 
+                            self.crop, self.rocal_cpu, self.fp16)
         pipe_val.build()
         val_loader = ROCALClassificationIterator(pipe_val, device="cpu" if self.rocal_cpu else "cuda", device_id = self.local_rank)
         if self.rocal_cpu:
@@ -189,10 +191,10 @@ class trainAndTest():
             batch_size = labels.size(0)
             _, pred = outputs.topk(maxk, 1, True, True)
             pred = pred.t()
-            correct = pred.eq(labels.view(1, -1).expand_as(pred))
+            correct = pred.eq(labels.reshape(1, -1).expand_as(pred))
             res = []
             for k in topk:
-                correct_k = correct[:k].view(-1).float().sum(0, keepdim=True)
+                correct_k = correct[:k].reshape(-1).float().sum(0, keepdim=True)
                 res.append(correct_k.mul_(100.0 / batch_size))
             return res
 
@@ -288,7 +290,7 @@ def main():
     input_dimensions = list(args.input_dimensions.split(","))
     crop = int(input_dimensions[3]) #crop to the width or height of model input_dimensions
     
-    file_directory = os.path.join(os.path.expanduser('/workspace'), '/MIVisionX-Neural-Net-Workflow/')
+    file_directory = '/workspace/MIVisionX-Neural-Net-Workflow/'
     results_file =  os.path.join(file_directory, 'statistics.csv')        	
     with open(results_file, 'w') as csvfile:
         fieldnames = ['epoch', 'running_loss', 'top1', 'top5', 'timestamp']
