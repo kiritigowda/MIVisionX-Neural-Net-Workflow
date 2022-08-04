@@ -3,11 +3,12 @@ import queue
 from PyQt5 import QtGui, uic
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import QTime, QTimer, QThread
+from PyQt5 import QtWidgets
 from inference_setup import *
 
-class InferenceViewer(QtGui.QMainWindow):
+class InferenceViewer(QtWidgets.QMainWindow):
     def __init__(self, model_name, model_format, image_dir, model_location, label, hierarchy, image_val, input_dims, output_dims, batch_size, output_dir, 
-                                        add, multiply, verbose, fp16, replace, loop, rali_mode, gui, container_logo, fps_file, cpu_name, gpu_name, parent):
+                                        add, multiply, verbose, fp16, replace, loop, rocal_mode, gui, container_logo, fps_file, cpu_name, gpu_name, parent):
         super(InferenceViewer, self).__init__(parent)
         self.parent = parent
 
@@ -30,7 +31,7 @@ class InferenceViewer(QtGui.QMainWindow):
         self.replace = replace
         self.verbose = verbose
         self.loop = loop
-        self.rali_mode = rali_mode
+        self.rocal_mode = rocal_mode
         inputImageDir = os.path.expanduser(image_dir)
         self.total_images = len(os.listdir(inputImageDir))
         self.origImageQueue = queue.Queue()
@@ -73,8 +74,8 @@ class InferenceViewer(QtGui.QMainWindow):
             self.EPYC_white_pixmap = QPixmap("./data/images/EPYC-blue-white.png")
             self.docker_pixmap = QPixmap("./data/images/Docker.png")
             self.singularity_pixmap = QPixmap("./data/images/Singularity.png")
-            self.rali_pixmap = QPixmap("./data/images/RALI.png")
-            self.rali_white_pixmap = QPixmap("./data/images/RALI-white.png")
+            self.rocal_pixmap = QPixmap("./data/images/rocal.png")
+            self.rocal_white_pixmap = QPixmap("./data/images/rocal-white.png")
             self.graph_image_pixmap = QPixmap("./data/images/Graph-image.png")
             self.graph_image_white_pixmap = QPixmap("./data/images/Graph-image-white.png")
             
@@ -91,7 +92,7 @@ class InferenceViewer(QtGui.QMainWindow):
         self.name_label.setText("Model: %s" % (self.model_name))
         self.cpuName_label.setText(self.cpu_name)
         self.gpuName_label.setText(self.gpu_name)
-        self.dataset_label.setText("Augmentation set - %d" % (self.rali_mode))
+        self.dataset_label.setText("Augmentation set - %d" % (self.rocal_mode))
         self.imagesFrame.setStyleSheet(".QFrame {border-width: 20px; border-image: url(./data/images/filmStrip.png);}")
         self.total_progressBar.setStyleSheet("QProgressBar::chunk { background: lightblue; }")
         self.top1_progressBar.setStyleSheet("QProgressBar::chunk { background: green; }")
@@ -120,7 +121,7 @@ class InferenceViewer(QtGui.QMainWindow):
         self.stop_pushButton.clicked.connect(self.terminate)
         self.dark_checkBox.stateChanged.connect(self.setBackground)
         self.verbose_checkBox.stateChanged.connect(self.showVerbose)
-        self.rali_checkBox.stateChanged.connect(self.showRALI)
+        self.rocal_checkBox.stateChanged.connect(self.showRocal)
         self.dark_checkBox.setChecked(True)
         self.graph_imageLabel.setPixmap(self.graph_image_pixmap)
         if self.container_index == 1:
@@ -133,14 +134,14 @@ class InferenceViewer(QtGui.QMainWindow):
             self.augAccuracy.append([0])
 
         self.showVerbose()
-        self.showRALI()
+        self.showRocal()
 
     def initEngines(self):
         self.receiver_thread = QThread()
         # Creating an object for inference.
         self.inferenceEngine = modelInference(self.model_name, self.model_format, self.image_dir, self.model_location, self.label, self.hierarchy, self.image_val,
                                                 self.input_dims, self.output_dims, self.batch_size, self.output_dir, self.add, self.multiply, self.verbose, self.fp16, 
-                                                self.replace, self.loop, self.rali_mode, self.origImageQueue, self.augImageQueue, self.gui, self.total_images, self.fps_file)
+                                                self.replace, self.loop, self.rocal_mode, self.origImageQueue, self.augImageQueue, self.gui, self.total_images, self.fps_file)
         
         self.inferenceEngine.moveToThread(self.receiver_thread)
         self.receiver_thread.started.connect(self.inferenceEngine.runInference)
@@ -312,7 +313,7 @@ class InferenceViewer(QtGui.QMainWindow):
             self.fps_label.setStyleSheet("color: #C82327;")
             self.dark_checkBox.setStyleSheet("color: white;")
             self.verbose_checkBox.setStyleSheet("color: white;")
-            self.rali_checkBox.setStyleSheet("color: white;")
+            self.rocal_checkBox.setStyleSheet("color: white;")
             self.level_label.setStyleSheet("color: white;")
             self.low_label.setStyleSheet("color: white;")
             self.high_label.setStyleSheet("color: white;")
@@ -321,8 +322,8 @@ class InferenceViewer(QtGui.QMainWindow):
             self.cpuName_label.setStyleSheet("color: white;")
             self.gpuName_label.setStyleSheet("color: white;")
             self.AMD_logo.setPixmap(self.AMD_Radeon_white_pixmap)
-            if self.rali_checkBox.isChecked():
-                self.MIVisionX_logo.setPixmap(self.rali_white_pixmap)
+            if self.rocal_checkBox.isChecked():
+                self.MIVisionX_logo.setPixmap(self.rocal_white_pixmap)
                 self.graph_imageLabel.setPixmap(self.graph_image_white_pixmap)
             else:
                 self.MIVisionX_logo.setPixmap(self.MIVisionX_white_pixmap)
@@ -343,7 +344,7 @@ class InferenceViewer(QtGui.QMainWindow):
             self.fps_label.setStyleSheet("color: 0;")
             self.dark_checkBox.setStyleSheet("color: 0;")
             self.verbose_checkBox.setStyleSheet("color: 0;")
-            self.rali_checkBox.setStyleSheet("color: 0;")
+            self.rocal_checkBox.setStyleSheet("color: 0;")
             self.level_label.setStyleSheet("color: 0;")
             self.low_label.setStyleSheet("color: 0;")
             self.high_label.setStyleSheet("color: 0;")
@@ -352,8 +353,8 @@ class InferenceViewer(QtGui.QMainWindow):
             self.cpuName_label.setStyleSheet("color: 0;")
             self.gpuName_label.setStyleSheet("color: 0;")
             self.AMD_logo.setPixmap(self.AMD_Radeon_pixmap)
-            if self.rali_checkBox.isChecked():
-                self.MIVisionX_logo.setPixmap(self.rali_pixmap)
+            if self.rocal_checkBox.isChecked():
+                self.MIVisionX_logo.setPixmap(self.rocal_pixmap)
                 self.graph_imageLabel.setPixmap(self.graph_image_pixmap)
             else:
                 self.MIVisionX_logo.setPixmap(self.MIVisionX_pixmap)
@@ -380,13 +381,13 @@ class InferenceViewer(QtGui.QMainWindow):
             self.gpuName_label.hide()
             self.cpuName_label.hide()
         
-    def showRALI(self):
-        if self.rali_checkBox.isChecked():
+    def showRocal(self):
+        if self.rocal_checkBox.isChecked():
             if self.dark_checkBox.isChecked():
-                self.MIVisionX_logo.setPixmap(self.rali_white_pixmap)
+                self.MIVisionX_logo.setPixmap(self.rocal_white_pixmap)
                 self.graph_imageLabel.setPixmap(self.graph_image_white_pixmap)
             else:
-                self.MIVisionX_logo.setPixmap(self.rali_pixmap)
+                self.MIVisionX_logo.setPixmap(self.rocal_pixmap)
                 self.graph_imageLabel.setPixmap(self.graph_image_pixmap)
             self.graph_imageLabel.show()
         else:

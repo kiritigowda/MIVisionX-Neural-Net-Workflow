@@ -2,7 +2,7 @@
 
 # MIVisionX Neural Net Workflow
 
-[MIVisionX](https://gpuopen-professionalcompute-libraries.github.io/MIVisionX/) infrastructure for ML Model training with optimized data augmentation with RALI and ML Model Inference Validation using pre-trained `ONNX`/`NNEF`/`Caffe` models and data augmentation to analyze, summarize, & validate.
+[MIVisionX](https://gpuopen-professionalcompute-libraries.github.io/MIVisionX/) infrastructure for ML Model training with optimized data augmentation with rocal and ML Model Inference Validation using pre-trained `ONNX`/`NNEF`/`Caffe` models and data augmentation to analyze, summarize, & validate.
 
 ## Training
 ML training with PyTorch using dockers.
@@ -82,7 +82,7 @@ usage: python mivisionx_validation_tool.py  [-h]
                                             --model_input_dims MODEL_INPUT_DIMS 
                                             --model_output_dims MODEL_OUTPUT_DIMS
                                             --model_batch_size MODEL_BATCH_SIZE 
-                                            --rali_mode RALI_MODE
+                                            --rocal_mode rocal_MODE
                                             --label LABEL 
                                             --output_dir OUTPUT_DIR 
                                             --image_dir IMAGE_DIR
@@ -105,7 +105,7 @@ usage: python mivisionx_validation_tool.py  [-h]
   --model_input_dims    c,h,w - channel,height,width                      [required]
   --model_output_dims   c,h,w - channel,height,width                      [required]
   --model_batch_size    n - batch size                                    [required]
-  --rali_mode           rali mode (1/2/3)                                 [required]
+  --rocal_mode           rocal mode (1/2/3)                                 [required]
   --label               labels text file                                  [required]
   --output_dir          output dir to store ADAT results                  [required]
   --image_dir           image directory for analysis                      [required]
@@ -170,7 +170,7 @@ usage: python mivisionx_validation_tool.py
     
     * Run SqueezeNet Inference validation tool
     ```
-    python mivisionx_validation_tool.py --model_format onnx --model_name SqueezeNet --model ~/sample-1/squeezenet/model.onnx --model_input_dims 3,224,224 --model_output_dims 1000,1,1 --model_batch_size 64 --rali_mode 1 --label ./sample/labels.txt --output_dir ~/sample-1/ --image_dir ../../data/images/AMD-tinyDataSet/ --image_val ./sample/AMD-tinyDataSet-val.txt --hierarchy ./sample/hierarchy.csv --replace yes
+    python mivisionx_validation_tool.py --model_format onnx --model_name SqueezeNet --model ~/sample-1/squeezenet/model.onnx --model_input_dims 3,224,224 --model_output_dims 1000,1,1 --model_batch_size 64 --rocal_mode 1 --label ./sample/labels.txt --output_dir ~/sample-1/ --image_dir ../../data/images/AMD-tinyDataSet/ --image_val ./sample/AMD-tinyDataSet-val.txt --hierarchy ./sample/hierarchy.csv --replace yes
     ```
 
 ### Sample 2 - Using Pre-Trained Caffe Model
@@ -205,7 +205,7 @@ usage: python mivisionx_validation_tool.py
     
     * Run VGGNet-16 Inference Validation Tool
     ```
-    python mivisionx_validation_tool.py --model_format caffe --model_name VggNet-16-Caffe --model ~/sample-2/VGG_ILSVRC_16_layers.caffemodel --model_input_dims 3,224,224 --model_output_dims 1000,1,1 --model_batch_size 64 --rali_mode 1 --label ./sample/labels.txt --output_dir ~/sample-2/ --image_dir ../../data/images/AMD-tinyDataSet/ --image_val ./sample/AMD-tinyDataSet-val.txt --hierarchy ./sample/hierarchy.csv --replace yes
+    python mivisionx_validation_tool.py --model_format caffe --model_name VggNet-16-Caffe --model ~/sample-2/VGG_ILSVRC_16_layers.caffemodel --model_input_dims 3,224,224 --model_output_dims 1000,1,1 --model_batch_size 64 --rocal_mode 1 --label ./sample/labels.txt --output_dir ~/sample-2/ --image_dir ../../data/images/AMD-tinyDataSet/ --image_val ./sample/AMD-tinyDataSet-val.txt --hierarchy ./sample/hierarchy.csv --replace yes
     ```
 
 ## Sample 3 - Using Pre-Trained NNEF Model
@@ -243,8 +243,8 @@ usage: python mivisionx_validation_tool.py
     
     * Run VGGNet-16 Inference Validation Tool
     ```
-    python mivisionx_validation_tool.py --model_format nnef --model_name VggNet-16-NNEF --model ~/sample-3/vgg16/ --model_input_dims 3,224,224 --model_output_dims 1000,1,1 --model_batch_size 64 --rali_mode 1 --label ./sample/labels.txt --output_dir ~/sample-3/ --image_dir ../../data/images/AMD-tinyDataSet/ --image_val ./sample/AMD-tinyDataSet-val.txt --hierarchy ./sample/hierarchy.csv --replace yes
+    python mivisionx_validation_tool.py --model_format nnef --model_name VggNet-16-NNEF --model ~/sample-3/vgg16/ --model_input_dims 3,224,224 --model_output_dims 1000,1,1 --model_batch_size 64 --rocal_mode 1 --label ./sample/labels.txt --output_dir ~/sample-3/ --image_dir ../../data/images/AMD-tinyDataSet/ --image_val ./sample/AMD-tinyDataSet-val.txt --hierarchy ./sample/hierarchy.csv --replace yes
     ```
 * **Preprocessing the model:** Use the --add/--multiply option to preprocess the input images
 
-        python mivisionx_validation_tool.py --model_format nnef --model_name VggNet-16-NNEF --model ~/sample-3/vgg16/ --model_input_dims 3,224,224 --model_output_dims 1000,1,1 --model_batch_size 64 --rali_mode 1 --label ./sample/labels.txt --output_dir ~/sample-3/ --image_dir ../../data/images/AMD-tinyDataSet/ --image_val ./sample/AMD-tinyDataSet-val.txt --hierarchy ./sample/hierarchy.csv --replace yes --add [-2.1179,-2.0357,-1.8044] --multiply [0.0171,0.0175,0.0174]
+        python mivisionx_validation_tool.py --model_format nnef --model_name VggNet-16-NNEF --model ~/sample-3/vgg16/ --model_input_dims 3,224,224 --model_output_dims 1000,1,1 --model_batch_size 64 --rocal_mode 1 --label ./sample/labels.txt --output_dir ~/sample-3/ --image_dir ../../data/images/AMD-tinyDataSet/ --image_val ./sample/AMD-tinyDataSet-val.txt --hierarchy ./sample/hierarchy.csv --replace yes --add [-2.1179,-2.0357,-1.8044] --multiply [0.0171,0.0175,0.0174]
