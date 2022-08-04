@@ -53,6 +53,7 @@ class InferenceControl(QtWidgets.QMainWindow):
         self.image_lineEdit.setPlaceholderText("Image Folder [required]")
         self.val_lineEdit.setPlaceholderText("[optional]")
         self.hier_lineEdit.setPlaceholderText("[optional]")
+        self.mode_comboBox.setEnabled(True)
         self.gui_checkBox.setChecked(True)
         self.readSetupFile()
 
@@ -74,13 +75,13 @@ class InferenceControl(QtWidgets.QMainWindow):
         self.dpath_pushButton.clicked.connect(self.browseDPath)
         self.opath_pushButton.clicked.connect(self.browseOPath)
 
-        # self.model_comboBox.setCurrentIndex(1)
-        # self.dtype_comboBox.setCurrentIndex(3)
-        # self.opath_lineEdit.setText("model_rocal.pth")
-        # self.numgpu_lineEdit.setText("1")
-        # self.epoch_lineEdit.setText("10")
-        # self.tidims_lineEdit.setText("1,3,224,224")
-        # self.dpath_lineEdit.setText("/home/hansel/MIVisionX-Neural-Net-Workflow/sample/imagenet_10dir")
+        self.model_comboBox.setCurrentIndex(1)
+        self.dtype_comboBox.setCurrentIndex(3)
+        self.opath_lineEdit.setText("model_rocal.pth")
+        self.numgpu_lineEdit.setText("1")
+        self.epoch_lineEdit.setText("10")
+        self.tidims_lineEdit.setText("1,3,224,224")
+        self.dpath_lineEdit.setText("/home/hansel/imagenet_20dir")
         self.tgui_checkBox.setChecked(True)
 
     def confirmMode(self):
@@ -120,7 +121,7 @@ class InferenceControl(QtWidgets.QMainWindow):
         self.label_lineEdit.setText(QtWidgets.QFileDialog.getOpenFileName(self, 'Open File', './', '*.txt')[0])
 
     def browseImage(self):
-        self.image_lineEdit.setText(QtWidgets.QFileDialog.getExistingDirectory(self, 'Open Folder', './')[0])
+        self.image_lineEdit.setText(QtWidgets.QFileDialog.getExistingDirectory(self, 'Open Folder', './'))
 
     def browseVal(self):
         self.val_lineEdit.setText(QtWidgets.QFileDialog.getOpenFileName(self, 'Open File', './', '*.txt')[0])
@@ -129,7 +130,7 @@ class InferenceControl(QtWidgets.QMainWindow):
         self.hier_lineEdit.setText(QtWidgets.QFileDialog.getOpenFileName(self, 'Open File', './', '*.csv')[0])
 
     def readSetupFile(self):
-        setupDir = '~/.mivisionx-neural-net-workflow'
+        setupDir = '~/.mivisionx-neuralnet-workflow'
         analyzerDir = os.path.expanduser(setupDir)
         if os.path.isfile(analyzerDir + "/setupFile.txt"):
             for line in open(analyzerDir + "/setupFile.txt", "r"):
@@ -185,7 +186,7 @@ class InferenceControl(QtWidgets.QMainWindow):
             self.loop_checkBox.setChecked(True)
         else:
             modelName = self.upload_comboBox.currentText()
-            setupDir = '~/.mivisionx-neural-net-workflow'
+            setupDir = '~/.mivisionx-neuralnet-workflow'
             analyzerDir = os.path.expanduser(setupDir)
             for line in open(analyzerDir + "/setupFile.txt", "r"):
                 tokens = line.split(';')
