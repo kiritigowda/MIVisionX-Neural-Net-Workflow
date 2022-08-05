@@ -124,7 +124,8 @@ class PrefetchedWrapper_rocal(object):
 
         stream = torch.cuda.Stream()
         first = True
-
+        input = None 
+        target = None
         for next_input, next_target in loader:
             with torch.cuda.stream(stream):
                 if rocal_cpu:
