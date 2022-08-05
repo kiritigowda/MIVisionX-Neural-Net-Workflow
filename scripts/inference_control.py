@@ -74,14 +74,6 @@ class InferenceControl(QtWidgets.QMainWindow):
         self.epoch_lineEdit.textChanged.connect(self.checkTInput)
         self.dpath_pushButton.clicked.connect(self.browseDPath)
         self.opath_pushButton.clicked.connect(self.browseOPath)
-
-        # self.model_comboBox.setCurrentIndex(1)
-        # self.dtype_comboBox.setCurrentIndex(3)
-        # self.opath_lineEdit.setText("model_rocal.pth")
-        # self.numgpu_lineEdit.setText("1")
-        # self.epoch_lineEdit.setText("10")
-        # self.tidims_lineEdit.setText("1,3,224,224")
-        # self.dpath_lineEdit.setText("/home/hansel/imagenet_20dir")
         self.tgui_checkBox.setChecked(True)
 
     def confirmMode(self):
