@@ -83,7 +83,7 @@ def valPipeline(data_path, batch_size, num_classes, one_hot, local_rank, world_s
         res = fn.resize(decode, resize_x=256, resize_y=256)
         centrecrop = fn.centre_crop(res, crop=(224, 224))
         cmnp = fn.crop_mirror_normalize(centrecrop , device="cpu",
-                                            output_dtype=types.FLOAT16 if fp16 else types.FLOAT,
+                                            output_dtype=types.FLOAT,
                                             output_layout=types.NCHW,
                                             crop=(224, 224),
                                             mirror=0,
@@ -246,13 +246,13 @@ class trainAndTest():
         correct = 0
         total = 0
         with torch.no_grad():
-            for data in self.val_loader:
-                images, labels = data
+            for i, (images, labels) in enumerate(self.val_loader, 0):
                 images, labels = images.to(self.device), labels.to(self.device)
                 outputs = self.net(images)
                 _, predicted = torch.max(outputs.data, 1)
                 total += labels.size(0)
                 correct += (predicted == labels).sum().item()
+            self.val_loader.reset()
         self.test_acc = 100 * correct / total
         #print('Accuracy of the network on the test images: %d %%' % (100 * correct / total))
 
@@ -343,7 +343,9 @@ def main():
     torch.save(net.state_dict(), PATH)      #save trained model
 
     train_test_obj.test()		#validation accuracy
-    print('test accuracy' , train_test_obj.test_acc)
+    print('Test accuracy' , train_test_obj.test_acc)
+    print('Finished Validation. Exiting!')
+    exit(0)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

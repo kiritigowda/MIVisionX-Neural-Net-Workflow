@@ -30,6 +30,7 @@ class modelTraining(QtCore.QObject):
         os.system('sudo docker exec training bash -c "cd /workspace/MIVisionX/; mkdir build; cd build; cmake -DNEURAL_NET=OFF ../; make -j8; make install"')
         os.system('sudo docker exec training bash -c "cd /workspace/MIVisionX/rocAL/rocAL_pybind/ ; ./run.sh"')
         os.system('sudo docker exec training bash -c "python3 /workspace/MIVisionX-Neural-Net-Workflow/rocal_training_setup.py --dataset /data/imagenet_20dir/ --batch_size %d --epochs %d --path %s"' % (self.batch_size, self.epochs, self.PATH))
+        os.system('sudo docker exec training bash -c "exit"')
         self.setupDone = True
 
     def getValues(self):
