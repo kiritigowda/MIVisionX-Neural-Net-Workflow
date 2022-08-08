@@ -240,8 +240,8 @@ class modelInference(QtCore.QObject):
 			if(os.path.exists(self.modelDir)):
 				# convert to NNIR
 				if(self.modelFormat == 'caffe'):
-					os.system('(cd '+self.modelDir+'; python3.8 '+self.modelCompilerPath+'/caffe_to_nnir.py '+self.trainedModel+' nnir-files --input-dims 1,' + self.modelInputDims + ')')
-					os.system('(cd '+self.modelDir+'; python3.8 '+self.modelCompilerPath+'/nnir_update.py --batch-size ' + self.modelBatchSize + ' nnir-files nnir-files)')
+					os.system('(cd '+self.modelDir+'; python3 '+self.modelCompilerPath+'/caffe_to_nnir.py '+self.trainedModel+' nnir-files --input-dims 1,' + self.modelInputDims + ')')
+					os.system('(cd '+self.modelDir+'; python3 '+self.modelCompilerPath+'/nnir_update.py --batch-size ' + self.modelBatchSize + ' nnir-files nnir-files)')
 				elif(self.modelFormat == 'onnx'):
 					os.system('(cd '+self.modelDir+'; python3 '+self.modelCompilerPath+'/onnx_to_nnir.py '+self.trainedModel+' nnir-files --input_dims 1,' + self.modelInputDims + ')')
 					os.system('(cd '+self.modelDir+'; python3 '+self.modelCompilerPath+'/nnir_update.py --batch-size ' + self.modelBatchSize + ' nnir-files nnir-files)')
@@ -253,11 +253,11 @@ class modelInference(QtCore.QObject):
 					quit()
 				# convert the model to FP16
 				if(self.FP16inference):
-					os.system('(cd '+self.modelDir+'; python3.8 '+self.modelCompilerPath+'/nnir_update.py --convert-fp16 1 --fuse-ops 1 nnir-files nnir-files)')
+					os.system('(cd '+self.modelDir+'; python3 '+self.modelCompilerPath+'/nnir_update.py --convert-fp16 1 --fuse-ops 1 nnir-files nnir-files)')
 					print("\nModel Quantized to FP16\n")
 				# convert to openvx
 				if(os.path.exists(self.nnirDir)):
-					os.system('(cd '+self.modelDir+'; python3.8 '+self.modelCompilerPath+'/nnir_to_openvx.py nnir-files openvx-files)')
+					os.system('(cd '+self.modelDir+'; python3 '+self.modelCompilerPath+'/nnir_to_openvx.py nnir-files openvx-files)')
 				else:
 					print("ERROR: Converting Pre-Trained model to NNIR Failed")
 					quit()

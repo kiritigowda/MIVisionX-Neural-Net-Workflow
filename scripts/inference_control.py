@@ -75,7 +75,7 @@ class InferenceControl(QtWidgets.QMainWindow):
         self.dpath_pushButton.clicked.connect(self.browseDPath)
         self.opath_pushButton.clicked.connect(self.browseOPath)
         self.tgui_checkBox.setChecked(True)
-
+    
     def confirmMode(self):
         self.tabWidget.setEnabled(True)
         self.ti_comboBox.setEnabled(False)
@@ -278,8 +278,8 @@ class InferenceControl(QtWidgets.QMainWindow):
         self.runningState = True
         self.close()
         trainer = TrainViewer(model, datapath, PATH, training_device, num_gpu, batch_size, epochs, rocal_cpu, input_dims, num_thread, gui, self)
-        trainer.showMaximized()
-        #trainer.show()
+        # trainer.showMaximized()
+        # trainer.show()
 
 
     def runInference(self):
