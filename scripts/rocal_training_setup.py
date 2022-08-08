@@ -124,7 +124,7 @@ class PrefetchedWrapper_rocal(object):
 
         stream = torch.cuda.Stream()
         first = True
-        input = None 
+        input = None
         target = None
         for next_input, next_target in loader:
             with torch.cuda.stream(stream):
@@ -236,7 +236,7 @@ class trainAndTest():
                       (epoch + 1, i + 1, acc1 / print_interval))
                 print('[%d, %5d] accuracy5: %.3f' %
                       (epoch + 1, i + 1, acc5 / print_interval))
-
+        self.train_loader.reset()
         temp = [epoch+1, losses.avg, top1.avg.item(), top5.avg.item()]
         return temp
         #self.results.append(temp)
