@@ -77,6 +77,8 @@ class TrainViewer(QtWidgets.QMainWindow):
             self.snoopTimer.timeout.connect(self.getEpochValues)
             self.updateTimer.start(100)
             self.snoopTimer.start(300)
+            
+            self.showMaximized()
        
     def initGraph(self):
         self.lgraph = pg.PlotWidget()

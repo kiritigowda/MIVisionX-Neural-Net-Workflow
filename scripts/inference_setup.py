@@ -424,6 +424,7 @@ class modelInference(QtCore.QObject):
 						self.generateADAT(self.modelName, self.hierarchy)
 						self.adatFlag = True
 					self.resetStats()
+					self.imageIterator.reset()
 
 	def updateFPS(self, msFrame):
 		self.totalFPS = 1000/(msFrame/self.modelBatchSizeInt)
